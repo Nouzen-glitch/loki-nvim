@@ -91,9 +91,9 @@ M.keys = {
     { group = "Fundamentals", mode = "v", lhs = "K", rhs = ":m '<-2<CR>gv=gv", desc = "Move selected lines up",
       long = "Moves the selected lines one line up and re-indents them. The selection stays active.",
       see = "docs/KEYBINDINGS.md#fundamentals" },
-    { group = "Fundamentals", mode = "x", lhs = "p", rhs = [["_dP]], desc = "Paste over selection, keep register",
+    { group = "Fundamentals", mode = "x", lhs = "p", rhs = "P", desc = "Paste over selection, keep register",
       long = "Pastes over the selected text without replacing what you yanked, so you can paste the same text again. "
-          .. "The replaced text is discarded (it goes to the black-hole register).",
+          .. "It uses Visual P, so the replaced text is discarded and never touches a register, even at the end of a line.",
       see = "docs/KEYBINDINGS.md#fundamentals" },
 
     -- ===================================================================
@@ -562,8 +562,10 @@ M.topics = {
         title = "Adding and changing languages", tag = "loki-languages",
         intro = {
             "Nothing is installed unless a language is listed. One line in lua/config/languages_local.lua (:LokiEdit languages) gives a language its server, tree-sitter parser, formatter, linter and tools.",
-            "Example:  go = { lsp = \"gopls\", parser = \"go\", formatter = \"gofumpt\", tools = { \"gofumpt\" } },",
-            "Restart Neovim afterwards and watch :Mason. Disable a default with  rust = false,",
+            "Example, in lua/config/languages_local.lua:",
+            "  go = { lsp = \"gopls\", parser = \"go\", formatter = \"gofumpt\", tools = { \"gofumpt\" } },",
+            "Restart Neovim afterwards and watch :Mason. Disable a default with:",
+            "  rust = false,",
             "Three naming systems: lsp uses lspconfig names (ts_ls), formatter and linter use Conform / nvim-lint names, tools uses Mason package names.",
         },
         commands = { "LokiEdit", "LokiLsp" },

@@ -66,6 +66,9 @@ case "$cmd" in
         [[ -z "$archive" ]] || archive="$(abspath "$archive")"
         [[ -n "$archive" && -f "$archive" ]] || die "Give the archive to import: scripts/user-layer.sh import FILE"
         entries="$(tar tzf "$archive")" || die "Not a valid archive: $archive"
+        # Only regular files and folders: a symlink or hard link entry could redirect a later write.
+        bad="$(tar tvzf "$archive" | grep -v '^[-d]' || true)"
+        [[ -z "$bad" ]] || die "Refusing archive with links or special files: $(printf '%s\n' "$bad" | head -n1)"
         while IFS= read -r e; do
             case "$e" in
                 /*|*..*) die "Refusing archive with unsafe path: $e" ;;

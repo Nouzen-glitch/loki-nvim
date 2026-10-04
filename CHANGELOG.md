@@ -27,6 +27,10 @@ Newest first. `scripts/update.sh` prints the new entries when you update.
 - nvim-cmp capabilities are passed to every language server.
 - `uninstall.sh` also finds installs made under the old `elite` name.
 - Docs: stale tree-sitter comment, clone URL, command tables, `j`/`k` count behaviour.
+- Visual `p` pasted one character too early when the selection ended at the end of a line; it now uses Visual `P`.
+- `:LokiHelp` and `:help loki` no longer collapse the indentation of code examples (`go = { ... }`, `vim.g.loki_extras = ...`).
+- `scripts/user-layer.sh` import refuses archives that contain links or special files.
+- The `lint` extra no longer calls a private nvim-lint function; the first-run window uses extmarks instead of the deprecated `nvim_buf_add_highlight`.
 
 ### Upgrade notes
 - **Renamed install (alongside, app name `elite`)**: run `scripts/install.sh --alongside` (creates `loki`), then `scripts/uninstall.sh --appname elite`. Plugins reinstall under the new app name. Your `lua/user/` files stay in the repo folder; rename any `vim.g.elite_*` setting in them to `vim.g.loki_*`, and any `:Elite*` mapping to `:Loki*`.

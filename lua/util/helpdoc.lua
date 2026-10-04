@@ -8,6 +8,10 @@ local M = {}
 
 local function wrap(text, width, indent)
     local pad = string.rep(" ", indent)
+    -- Lines that start with whitespace are code or examples: keep them as written.
+    if text:match("^%s") then
+        return { pad .. text }
+    end
     local out, line = {}, ""
     for word in text:gmatch("%S+") do
         if line == "" then

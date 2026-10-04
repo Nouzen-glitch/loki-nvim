@@ -105,8 +105,9 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
 
     `p` [x] Paste over selection, keep register
         Pastes over the selected text without replacing what you yanked, so
-        you can paste the same text again. The replaced text is discarded (it
-        goes to the black-hole register).
+        you can paste the same text again. It uses Visual P, so the replaced
+        text is discarded and never touches a register, even at the end of a
+        line.
 
 
     Windows
@@ -459,10 +460,10 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     Nothing is installed unless a language is listed. One line in
     lua/config/languages_local.lua (:LokiEdit languages) gives a language its
     server, tree-sitter parser, formatter, linter and tools.
-    Example: go = { lsp = "gopls", parser = "go", formatter = "gofumpt", tools = {
-    "gofumpt" } },
-    Restart Neovim afterwards and watch :Mason. Disable a default with rust =
-    false,
+    Example, in lua/config/languages_local.lua:
+  go = { lsp = "gopls", parser = "go", formatter = "gofumpt", tools = { "gofumpt" } },
+    Restart Neovim afterwards and watch :Mason. Disable a default with:
+  rust = false,
     Three naming systems: lsp uses lspconfig names (ts_ls), formatter and linter
     use Conform / nvim-lint names, tools uses Mason package names.
 
@@ -491,7 +492,7 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
 
     Heavier features are off until you enable them in lua/user/options.lua, then
     restart:
-    vim.g.loki_extras = { "sessions", "dashboard", "dap" }
+  vim.g.loki_extras = { "sessions", "dashboard", "dap" }
     :LokiExtras lists them: sessions, dashboard, docker, database, rest, dap,
     lint, surround.
     Keys below exist only while their extra is enabled.

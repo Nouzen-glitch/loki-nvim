@@ -117,7 +117,7 @@ local function show(lines, title)
     local ns = vim.api.nvim_create_namespace("loki_help")
     for i, l in ipairs(lines) do
         if l:match("^%u%u%u+") and not l:match("^%u%u%u+%l") then
-            vim.api.nvim_buf_add_highlight(buf, ns, "Title", i - 1, 0, -1)
+            vim.api.nvim_buf_set_extmark(buf, ns, i - 1, 0, { end_col = #l, hl_group = "Title" })
         end
     end
     vim.fn.matchadd("Special", [[<leader>\S\+\|<[CSMA]-\S\+>\|:Loki\w\+\|:Cheatsheet\w*\|:checkhealth \w\+]], 10, -1, { window = win })

@@ -10,7 +10,11 @@ return {
             lint.linters_by_ft = require("util.languages").linters_by_ft()
 
             local function run()
-                local names = lint._resolve_linter_by_ft(vim.bo.filetype)
+                -- Public API only; "a.b" filetypes use the linters of both parts.
+                local names = {}
+                for _, ft in ipairs(vim.split(vim.bo.filetype, ".", { plain = true })) do
+                    vim.list_extend(names, lint.linters_by_ft[ft] or {})
+                end
                 local usable = {}
                 for _, name in ipairs(names) do
                     local linter = lint.linters[name]
