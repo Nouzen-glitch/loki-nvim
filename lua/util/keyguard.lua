@@ -11,6 +11,7 @@ M.shipped = {}   -- "mode\0rawlhs" -> { mode, lhs, raw, desc, plugin }
 M.overrides = {} -- user key replaced a shipped key
 M.removed = {}   -- user deleted a shipped key
 M.clashes = {}   -- user key is a prefix of / extends a shipped key
+M.user_set = {}  -- "mode\0rawlhs" -> true for every global key set in lua/user/keymaps.lua
 
 -- Keys that plugins set AFTER user keymaps load (so they win over yours).
 local PLUGIN_KEYS = {
@@ -37,6 +38,10 @@ local function raw(lhs)
     return vim.api.nvim_replace_termcodes(lhs, true, true, true)
 end
 
+local function has_desc(opts)
+    return type(opts) == "table" and type(opts.desc) == "string" and opts.desc ~= ""
+end
+
 local function describe(rhs, opts)
     if type(opts) == "table" and opts.desc then
         return opts.desc
@@ -60,7 +65,9 @@ local function on_shipped(mode, lhs, rhs, opts)
     end
     local r = raw(lhs)
     for _, m in ipairs(expand(mode)) do
-        M.shipped[m .. "\0" .. r] = { mode = m, lhs = lhs, raw = r, desc = describe(rhs, opts) }
+        M.shipped[m .. "\0" .. r] = {
+            mode = m, lhs = lhs, raw = r, desc = describe(rhs, opts), nodesc = not has_desc(opts),
+        }
     end
 end
 
@@ -70,6 +77,7 @@ local function on_user_set(mode, lhs, rhs, opts)
     end
     local r = raw(lhs)
     for _, m in ipairs(expand(mode)) do
+        M.user_set[m .. "\0" .. r] = true
         local hit = M.shipped[m .. "\0" .. r]
         if hit then
             table.insert(M.overrides, {
@@ -96,6 +104,7 @@ local function on_user_del(mode, lhs, opts)
     local r = raw(lhs)
     for _, m in ipairs(expand(mode)) do
         local k = m .. "\0" .. r
+        M.user_set[k] = nil
         local hit = M.shipped[k]
         if hit then
             table.insert(M.removed, { mode = m, lhs = lhs, was = hit.desc })
@@ -128,9 +137,22 @@ local function watch(on_set, on_del, fn)
     end
 end
 
+-- True when lua/user/keymaps.lua set this key globally. util/lsp.lua uses it so
+-- a buffer-local LSP key never shadows a key the user chose.
+function M.user_owns(mode, lhs)
+    local r = raw(lhs)
+    for _, m in ipairs(expand(mode)) do
+        if M.user_set[m .. "\0" .. r] then
+            return true
+        end
+    end
+    return false
+end
+
 function M.track_shipped(fn)
     watch(on_shipped, function() end, fn)
-    for _, p in ipairs(PLUGIN_KEYS) do
+    local plugin_keys = vim.list_extend(vim.deepcopy(PLUGIN_KEYS), require("util.extras").plugin_keys())
+    for _, p in ipairs(plugin_keys) do
         local r = raw(p.lhs)
         for _, m in ipairs(p.modes) do
             M.shipped[m .. "\0" .. r] = { mode = m, lhs = p.lhs, raw = r, desc = p.desc, plugin = true }
@@ -221,16 +243,16 @@ local function signature()
 end
 
 function M.setup()
-    vim.api.nvim_create_user_command("EliteKeys", function()
+    vim.api.nvim_create_user_command("LokiKeys", function()
         local lines = { "Shipped keys versus your lua/user/keymaps.lua", "" }
         vim.list_extend(lines, M.report_lines())
-        vim.list_extend(lines, { "", "Search any key: <leader>fk     Full check: :checkhealth elite" })
+        vim.list_extend(lines, { "", "Search any key: <leader>fk     Full check: :checkhealth loki" })
         require("util.welcome").show(lines, "Your keys")
-    end, { desc = "Show shipped keys your keymaps replace" })
+    end, { desc = require("util.registry").command_desc("LokiKeys") })
 
     -- Tell the user once per change, not on every start.
     local sig = signature()
-    local path = vim.fn.stdpath("state") .. "/elite-keys-seen"
+    local path = vim.fn.stdpath("state") .. "/loki-keys-seen"
     local last = ""
     if vim.fn.filereadable(path) == 1 then
         last = table.concat(vim.fn.readfile(path), "\n")
@@ -249,7 +271,7 @@ function M.setup()
     else
         local n = #M.overrides_grouped() + #M.removed_grouped()
         local msg = string.format(
-            "Elite: your keymaps replace or remove %d shipped key(s)%s. Run :EliteKeys to review.",
+            "Loki: your keymaps replace or remove %d shipped key(s)%s. Run :LokiKeys to review.",
             n, #M.clashes_grouped() > 0 and " and delay some others" or "")
         vim.api.nvim_create_autocmd("VimEnter", {
             once = true,

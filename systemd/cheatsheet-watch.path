@@ -1,8 +1,8 @@
 [Unit]
-Description=Watch Elite Neovim configuration
+Description=Watch Loki Neovim configuration (template: scripts/install-watcher.sh fills in @REPO@)
 
 [Path]
-PathChanged=%h/dotfiles/nvim
+PathChanged=@REPO@
 Unit=cheatsheet-watch.service
 
 [Install]

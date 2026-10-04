@@ -1,15 +1,15 @@
--- Copy to lua/user/options.lua (or run :EliteEdit options). Loaded right after
+-- Copy to lua/user/options.lua (or run :LokiEdit options). Loaded right after
 -- config/options.lua, so anything you set here wins. Gitignored: your changes
--- never conflict on update. NOT in git means NOT backed up: run :EliteBackup.
+-- never conflict on update. NOT in git means NOT backed up: run :LokiBackup.
 
 -- Turn the arrow-key ban off:
--- vim.g.elite_disable_arrows = false
+-- vim.g.loki_disable_arrows = false
 
 -- Name your own <leader> prefixes (shown in which-key and the cheatsheet):
--- vim.g.elite_leader_groups = { g = "Git", o = "Notes" }
+-- vim.g.loki_leader_groups = { g = "Git", o = "Notes" }
 
 -- Hide the one-time welcome notice shown when the config was cloned by hand:
--- vim.g.elite_hide_notices = true
+-- vim.g.loki_hide_notices = true
 
 -- vim.opt.shiftwidth = 2
 -- vim.opt.tabstop = 2

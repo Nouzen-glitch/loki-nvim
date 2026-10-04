@@ -9,7 +9,7 @@ return {
         config = function()
             local alpha = require("alpha")
             local d = require("alpha.themes.dashboard")
-            d.section.header.val = { "E L I T E   N E O V I M" }
+            d.section.header.val = { "L O K I   N E O V I M" }
 
             local buttons = {
                 d.button("f", "  Find file", "<cmd>Telescope find_files<cr>"),
@@ -19,8 +19,8 @@ return {
                 table.insert(buttons, d.button("s", "  Restore session", '<cmd>lua require("persistence").load()<cr>'))
             end
             vim.list_extend(buttons, {
-                d.button("h", "  Guide", "<cmd>EliteHelp<cr>"),
-                d.button("t", "  Tutorial", "<cmd>EliteTutor<cr>"),
+                d.button("h", "  Guide", "<cmd>LokiHelp<cr>"),
+                d.button("t", "  Tutorial", "<cmd>LokiTutor<cr>"),
                 d.button("l", "󰒲  Plugins", "<cmd>Lazy<cr>"),
                 d.button("q", "  Quit", "<cmd>qa<cr>"),
             })

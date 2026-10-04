@@ -1,9 +1,9 @@
--- Copy to lua/user/keymaps.lua (or run :EliteEdit keymaps). Loaded right after
+-- Copy to lua/user/keymaps.lua (or run :LokiEdit keymaps). Loaded right after
 -- config/keymaps.lua, so a mapping here replaces a default with the same key.
 -- Always give it a desc. Use vim.keymap.set (other APIs are not checked).
 --
 -- If you replace or shadow a shipped key, Neovim tells you once at startup;
--- :EliteKeys and :checkhealth elite list them. <leader>fk shows what a key does.
+-- :LokiKeys and :checkhealth loki list them. <leader>fk shows what a key does.
 -- A key that is the start of a longer key (<leader>f vs <leader>ff) makes the
 -- shorter one wait 'timeoutlen' (400 ms). Keys to think twice about: jk, <C-s>,
 -- <C-h/j/k/l>, H, L, K, gd, gr, <Esc>, <C-\>, and <leader>f / w / c prefixes.

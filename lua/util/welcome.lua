@@ -1,13 +1,13 @@
 -- Tells the user, once, what scripts/install.sh did (backup location, how to
--- start, how to undo). The installer writes <state>/elite-install-info; the
+-- start, how to undo). The installer writes <state>/loki-install-info; the
 -- first launch shows it in a centered window and renames the file to *.shown.
--- `:EliteInfo` shows it again. A config that was cloned by hand (no install
+-- `:LokiInfo` shows it again. A config that was cloned by hand (no install
 -- record) gets a one-time notice explaining what it is missing.
--- M.show(lines, title) is reused by :EliteHelp and :EliteKeys.
+-- M.show(lines, title) is reused by :LokiHelp and :LokiKeys.
 local M = {}
 
 local function paths()
-    local base = vim.fn.stdpath("state") .. "/elite-install-info"
+    local base = vim.fn.stdpath("state") .. "/loki-install-info"
     return base, base .. ".shown"
 end
 
@@ -23,7 +23,7 @@ local function read(path)
 end
 
 local function message(info)
-    local lines = { "Elite Neovim was installed (" .. (info.mode or "unknown") .. " mode).", "" }
+    local lines = { "Loki Neovim was installed (" .. (info.mode or "unknown") .. " mode).", "" }
 
     if info.backup and info.backup ~= "" then
         table.insert(lines, "Your previous config was moved to:")
@@ -45,30 +45,30 @@ local function message(info)
         table.insert(lines, "")
         table.insert(lines, "Keep that folder: the config is a link to it, and your personal files")
         table.insert(lines, "(lua/user/, not in git) live inside it. Save them before deleting or")
-        table.insert(lines, "re-cloning it:  :EliteBackup  or  scripts/user-layer.sh export FILE")
+        table.insert(lines, "re-cloning it:  :LokiBackup  or  scripts/user-layer.sh export FILE")
     end
     table.insert(lines, "")
-    table.insert(lines, "Start here:  :EliteHelp (one-screen guide)   :EliteTutor (practice)")
-    table.insert(lines, "Show this again: :EliteInfo     Check your setup: :checkhealth elite")
+    table.insert(lines, "Start here:  :LokiHelp (one-screen guide)   :LokiTutor (practice)")
+    table.insert(lines, "Show this again: :LokiInfo     Check your setup: :checkhealth loki")
 
     return lines
 end
 
 local function manual_message()
     return {
-        "Welcome to Elite Neovim.",
+        "Welcome to Loki Neovim.",
         "",
         "This config was not set up by scripts/install.sh, so there is no install",
         "record, undo or launcher. It works fine as it is. Two things to know:",
         "",
         "1. Your personal files live in lua/user/ inside this config folder and are",
         "   NOT tracked by git. Deleting or re-cloning the folder deletes them.",
-        "   Save them with :EliteBackup (or scripts/user-layer.sh export FILE).",
+        "   Save them with :LokiBackup (or scripts/user-layer.sh export FILE).",
         "",
         "2. For the safest setup (backup of an old config, undo, safety copies",
         "   before updates) run scripts/install.sh from the repo.",
         "",
-        "Start here:  :EliteHelp (guide)   :EliteTutor (practice)   :checkhealth elite",
+        "Start here:  :LokiHelp (guide)   :LokiTutor (practice)   :checkhealth loki",
         "(This notice appears once.)",
     }
 end
@@ -103,13 +103,25 @@ local function show(lines, title)
         height = height,
         style = "minimal",
         border = "rounded",
-        title = " " .. (title or "Elite Neovim") .. " ",
+        title = " " .. (title or "Loki Neovim") .. " ",
         title_pos = "center",
         footer = " q / <Esc> / <CR> to close (j/k to scroll) ",
         footer_pos = "center",
         zindex = 250,
     })
     vim.wo[win].wrap = true
+    vim.wo[win].linebreak = true
+    vim.wo[win].cursorline = false
+
+    -- Headings (lines that start with an all-caps word) and key/command tokens.
+    local ns = vim.api.nvim_create_namespace("loki_help")
+    for i, l in ipairs(lines) do
+        if l:match("^%u%u%u+") and not l:match("^%u%u%u+%l") then
+            vim.api.nvim_buf_add_highlight(buf, ns, "Title", i - 1, 0, -1)
+        end
+    end
+    vim.fn.matchadd("Special", [[<leader>\S\+\|<[CSMA]-\S\+>\|:Loki\w\+\|:Cheatsheet\w*\|:checkhealth \w\+]], 10, -1, { window = win })
+    vim.fn.matchadd("Comment", [[^\s*Example:.*$]], 10, -1, { window = win })
 
     local function close()
         if vim.api.nvim_win_is_valid(win) then
@@ -129,7 +141,7 @@ M.show = show
 function M.setup()
     local fresh, shown = paths()
 
-    vim.api.nvim_create_user_command("EliteInfo", function()
+    vim.api.nvim_create_user_command("LokiInfo", function()
         local path = (vim.fn.filereadable(fresh) == 1 and fresh)
             or (vim.fn.filereadable(shown) == 1 and shown)
             or nil
@@ -138,7 +150,7 @@ function M.setup()
             return
         end
         show(message(read(path)))
-    end, { desc = "Show how Elite Neovim was installed" })
+    end, { desc = require("util.registry").command_desc("LokiInfo") })
 
     if vim.fn.filereadable(fresh) == 1 then
         vim.api.nvim_create_autocmd("VimEnter", {
@@ -159,9 +171,9 @@ function M.setup()
     end
 
     -- No install record: cloned by hand. Explain once. Opt out with
-    -- vim.g.elite_hide_notices = true in lua/user/options.lua.
-    local marker = vim.fn.stdpath("state") .. "/elite-manual-notice-shown"
-    if vim.fn.filereadable(shown) == 1 or vim.fn.filereadable(marker) == 1 or vim.g.elite_hide_notices then
+    -- vim.g.loki_hide_notices = true in lua/user/options.lua.
+    local marker = vim.fn.stdpath("state") .. "/loki-manual-notice-shown"
+    if vim.fn.filereadable(shown) == 1 or vim.fn.filereadable(marker) == 1 or vim.g.loki_hide_notices then
         return
     end
     vim.api.nvim_create_autocmd("VimEnter", {

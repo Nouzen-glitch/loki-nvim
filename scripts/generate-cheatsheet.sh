@@ -8,7 +8,7 @@ REPO="$(pwd -P)"
 # install unless the caller already chose one.
 if [[ -z "${NVIM_APPNAME:-}" ]]; then
     config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
-    for name in elite nvim; do
+    for name in loki nvim; do
         link="$config_home/$name"
         if [[ -e "$link" && "$(readlink -f "$link")" == "$REPO" ]]; then
             [[ "$name" == "nvim" ]] || export NVIM_APPNAME="$name"

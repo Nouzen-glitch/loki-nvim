@@ -59,3 +59,47 @@ vim.diagnostic.config({
         source = "if_many",
     },
 })
+
+-- LSP keys (K, gd, gr, ...) are attached per buffer when a server attaches.
+require("util.lsp").setup()
+
+-- `nvim some/folder` (or `nvim .`): netrw is disabled, so open the file explorer
+-- for the folder instead of showing an empty directory buffer.
+vim.api.nvim_create_autocmd("VimEnter", {
+    group = group,
+    once = true,
+    callback = function()
+        if vim.fn.argc() ~= 1 or #vim.api.nvim_list_uis() == 0 then
+            return
+        end
+        local dir = vim.fn.argv(0)
+        if vim.fn.isdirectory(dir) ~= 1 then
+            return
+        end
+        vim.cmd.cd(vim.fn.fnameescape(dir))
+        -- Replace the directory buffer with an empty one, then show the tree.
+        vim.cmd("enew")
+        pcall(vim.cmd, "bwipeout #")
+        require("nvim-tree.api").tree.open({ path = vim.fn.getcwd() })
+    end,
+})
+
+-- Tree-sitter folding, opt-in: vim.g.loki_treesitter_folding = true in
+-- lua/user/options.lua. Folds start open; za toggles, zR opens all, zM closes all.
+vim.api.nvim_create_autocmd("FileType", {
+    group = group,
+    callback = function(args)
+        if not vim.g.loki_treesitter_folding then
+            return
+        end
+        if vim.bo[args.buf].buftype ~= "" then
+            return
+        end
+        if not pcall(vim.treesitter.get_parser, args.buf) then
+            return
+        end
+        vim.wo[0][0].foldmethod = "expr"
+        vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        vim.wo[0][0].foldlevel = 99
+    end,
+})

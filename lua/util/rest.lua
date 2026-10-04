@@ -86,7 +86,7 @@ function M.command(req)
 end
 
 local function show(text)
-    local name = "Elite REST response"
+    local name = "Loki REST response"
     local buf = vim.fn.bufnr(name)
     if buf == -1 then
         buf = vim.api.nvim_create_buf(false, true)

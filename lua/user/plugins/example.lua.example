@@ -1,4 +1,4 @@
--- Copy to lua/user/plugins/anything.lua (or run :EliteEdit plugins). Every .lua
+-- Copy to lua/user/plugins/anything.lua (or run :LokiEdit plugins). Every .lua
 -- file in this folder is a lazy.nvim spec file, loaded after the shipped plugins.
 --
 -- lazy.nvim merges specs that name the same plugin, and merges `opts` tables,

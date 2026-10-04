@@ -1,17 +1,19 @@
 -- Opt-in "extras": heavier features that are off by default.
 --
 -- Enable them in lua/user/options.lua (read before lazy.nvim starts):
---   vim.g.elite_extras = { "sessions", "dashboard" }
+--   vim.g.loki_extras = { "sessions", "dashboard" }
 --
 -- Each extra is described in M.registry:
---   desc     one line for :EliteExtras
+--   desc     one line for :LokiExtras
 --   plugins  true if lua/extras/<name>.lua exists (a lazy.nvim spec, imported
 --            by config/lazy.lua only when the extra is enabled)
 --   groups   <leader> prefixes it adds (feeds which-key and the cheatsheet)
---   keys     function(map) defining its shipped keys. Called while
---            config.keymaps loads, so util/keyguard sees them
+--   keys     (none here) the keys of an extra live in util/registry.lua with
+--            `extra = "<name>"`; M.keymaps() creates them while the extra is enabled
+--   plugin_keys  keys the plugin itself creates late (listed so util/keyguard can
+--            warn when your keymaps clash): { { modes = {...}, lhs = "...", desc = "..." } }
 --   setup    optional function run once at startup (commands)
---   health   optional function(ctx) for :checkhealth elite
+--   health   optional function(ctx) for :checkhealth loki
 -- Nothing here loads a plugin; disabled extras cost nothing.
 local M = {}
 
@@ -19,18 +21,13 @@ local function has(name)
     return vim.fn.executable(name) == 1
 end
 
-M.order = { "sessions", "dashboard", "docker", "database", "rest", "dap" }
+M.order = { "sessions", "dashboard", "docker", "database", "rest", "dap", "lint", "surround" }
 
 M.registry = {
     sessions = {
         desc = "Restore the files and splits you had open in a folder (persistence.nvim)",
         plugins = true,
         groups = { { key = "s", label = "Session" } },
-        keys = function(map)
-            map("n", "<leader>ss", function() require("persistence").load() end, { desc = "Restore session for this folder" })
-            map("n", "<leader>sl", function() require("persistence").load({ last = true }) end, { desc = "Restore last session" })
-            map("n", "<leader>sd", function() require("persistence").stop() end, { desc = "Do not save this session" })
-        end,
     },
 
     dashboard = {
@@ -43,9 +40,6 @@ M.registry = {
         plugins = false,
         parsers = { "dockerfile" },
         groups = { { key = "k", label = "Clients" } },
-        keys = function(map)
-            map("n", "<leader>kk", function() M.tui("lazydocker") end, { desc = "Docker (lazydocker)" })
-        end,
         health = function(c)
             c.check_tool("docker", c.h.warn, "Needed by the docker extra.")
             c.check_tool("lazydocker", c.h.warn, "The docker extra opens it. Install: https://github.com/jesseduffield/lazydocker")
@@ -57,9 +51,6 @@ M.registry = {
         plugins = true,
         parsers = { "sql" },
         groups = { { key = "k", label = "Clients" } },
-        keys = function(map)
-            map("n", "<leader>kd", "<cmd>DBUIToggle<cr>", { desc = "Database UI" })
-        end,
         health = function(c)
             for _, tool in ipairs({ "psql", "mysql", "sqlite3" }) do
                 if has(tool) then
@@ -75,13 +66,10 @@ M.registry = {
         plugins = false,
         parsers = { "http" },
         groups = { { key = "k", label = "Clients" } },
-        keys = function(map)
-            map("n", "<leader>kr", function() require("util.rest").run() end, { desc = "Run HTTP request under cursor" })
-        end,
         setup = function()
-            vim.api.nvim_create_user_command("EliteRest", function()
+            vim.api.nvim_create_user_command("LokiRest", function()
                 require("util.rest").run()
-            end, { desc = "Run the HTTP request under the cursor (.http file)" })
+            end, { desc = require("util.registry").command_desc("LokiRest") })
         end,
         health = function(c)
             c.check_tool("curl", c.h.warn, "The rest extra sends requests with curl.")
@@ -92,29 +80,44 @@ M.registry = {
         desc = "Debugging: breakpoints, stepping, variables UI (nvim-dap, nvim-dap-ui)",
         plugins = true,
         groups = { { key = "t", label = "Debug" } },
-        keys = function(map)
-            local function dap() return require("dap") end
-            map("n", "<leader>tb", function() dap().toggle_breakpoint() end, { desc = "Toggle breakpoint" })
-            map("n", "<leader>tc", function() dap().continue() end, { desc = "Debug: start / continue" })
-            map("n", "<leader>tu", function() require("dapui").toggle() end, { desc = "Toggle debug UI" })
-            map("n", "<leader>tx", function() dap().terminate() end, { desc = "Debug: stop" })
-            map("n", "<F5>", function() dap().continue() end, { desc = "Debug: start / continue" })
-            map("n", "<F9>", function() dap().toggle_breakpoint() end, { desc = "Toggle breakpoint" })
-            map("n", "<F10>", function() dap().step_over() end, { desc = "Debug: step over" })
-            map("n", "<F11>", function() dap().step_into() end, { desc = "Debug: step into" })
-            map("n", "<S-F11>", function() dap().step_out() end, { desc = "Debug: step out" })
-        end,
         health = function(c)
             c.check_tool("python3", c.h.warn, "debugpy (Python debugging) is installed with Python 3 and venv.")
             c.check_tool("node", c.h.warn, "js-debug-adapter (JavaScript/TypeScript debugging) needs Node.js.")
             c.h.info("Adapters (debugpy, codelldb, js-debug-adapter) are installed by Mason; see :Mason.")
         end,
     },
+
+    lint = {
+        desc = "Linting on save with nvim-lint (the language table's `linter` field)",
+        plugins = true,
+        health = function(c)
+            local langs = require("util.languages")
+            local seen = {}
+            for _, names in pairs(langs.linters_by_ft()) do
+                for _, name in ipairs(names) do
+                    if not seen[name] then
+                        seen[name] = true
+                        c.check_tool(name, c.h.warn, "Linter for the lint extra. Install it with :Mason (package names can differ).")
+                    end
+                end
+            end
+        end,
+    },
+
+    surround = {
+        desc = "Add, delete and replace surrounding quotes and brackets (mini.surround, keys gsa gsd gsr)",
+        plugins = true,
+        plugin_keys = {
+            { modes = { "n", "x" }, lhs = "gsa", desc = "Surround: add (mini.surround)" },
+            { modes = { "n" }, lhs = "gsd", desc = "Surround: delete (mini.surround)" },
+            { modes = { "n" }, lhs = "gsr", desc = "Surround: replace (mini.surround)" },
+        },
+    },
 }
 
--- Names from vim.g.elite_extras: { valid names in the order given }, { unknown names }.
+-- Names from vim.g.loki_extras: { valid names in the order given }, { unknown names }.
 function M.requested()
-    local want = vim.g.elite_extras
+    local want = vim.g.loki_extras
     if type(want) == "string" then
         want = { want }
     end
@@ -156,12 +159,19 @@ end
 -- Shipped keys of the enabled extras. Called from init.lua inside
 -- keyguard.track_shipped, so a user key on the same lhs is reported.
 function M.keymaps()
-    for _, name in ipairs(M.enabled()) do
-        local keys = M.registry[name].keys
-        if keys then
-            keys(vim.keymap.set)
-        end
+    local registry = require("util.registry")
+    for _, entry in ipairs(registry.extra_keys(M.enabled())) do
+        registry.apply(entry)
     end
+end
+
+-- Keys that enabled extras' plugins create themselves (for util/keyguard).
+function M.plugin_keys()
+    local out = {}
+    for _, name in ipairs(M.enabled()) do
+        vim.list_extend(out, vim.deepcopy(M.registry[name].plugin_keys or {}))
+    end
+    return out
 end
 
 function M.setup()
@@ -178,8 +188,8 @@ function M.warn_unknown()
     if #bad > 0 then
         vim.schedule(function()
             vim.notify(
-                "vim.g.elite_extras: unknown extra(s): " .. table.concat(bad, ", ")
-                    .. ". Available: " .. table.concat(M.order, ", ") .. " (see :EliteExtras).",
+                "vim.g.loki_extras: unknown extra(s): " .. table.concat(bad, ", ")
+                    .. ". Available: " .. table.concat(M.order, ", ") .. " (see :LokiExtras).",
                 vim.log.levels.WARN
             )
         end)
@@ -194,8 +204,8 @@ function M.lines()
     local lines = {
         "EXTRAS: opt-in features, all off by default",
         "",
-        "Enable them in lua/user/options.lua (:EliteEdit options), then restart:",
-        '  vim.g.elite_extras = { "sessions", "dashboard" }',
+        "Enable them in lua/user/options.lua (:LokiEdit options), then restart:",
+        '  vim.g.loki_extras = { "sessions", "dashboard" }',
         "",
     }
     for _, name in ipairs(M.order) do
@@ -204,9 +214,9 @@ function M.lines()
     local _, bad = M.requested()
     if #bad > 0 then
         lines[#lines + 1] = ""
-        lines[#lines + 1] = "Unknown names in vim.g.elite_extras: " .. table.concat(bad, ", ")
+        lines[#lines + 1] = "Unknown names in vim.g.loki_extras: " .. table.concat(bad, ", ")
     end
-    vim.list_extend(lines, { "", "Keys, prerequisites and details: docs/EXTRAS.md. Check tools: :checkhealth elite" })
+    vim.list_extend(lines, { "", "Keys, prerequisites and details: docs/EXTRAS.md. Check tools: :checkhealth loki" })
     return lines
 end
 
@@ -216,7 +226,7 @@ end
 local tuis = {}
 function M.tui(cmd)
     if not has(cmd) then
-        vim.notify(cmd .. " was not found in your PATH. Install it first (:checkhealth elite).", vim.log.levels.WARN)
+        vim.notify(cmd .. " was not found in your PATH. Install it first (:checkhealth loki).", vim.log.levels.WARN)
         return
     end
     local term = tuis[cmd]

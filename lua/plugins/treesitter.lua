@@ -1,8 +1,9 @@
 return {
     {
         "nvim-treesitter/nvim-treesitter",
-        -- The current main branch targets newer Neovim versions.
-        -- master remains the compatibility branch for Nvim 0.11-era setups.
+        -- Upstream's `main` branch is an incompatible rewrite that needs Neovim 0.12 and
+        -- the tree-sitter CLI; `master` is locked and kept for Neovim 0.11.
+        -- Migration plan: docs/TREESITTER_MIGRATION.md.
         branch = "master",
         lazy = false,
         build = ":TSUpdate",

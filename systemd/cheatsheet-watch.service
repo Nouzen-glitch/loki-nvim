@@ -1,9 +1,9 @@
 [Unit]
-Description=Regenerate Elite Neovim cheatsheet
+Description=Regenerate Loki Neovim cheatsheet
 
 [Service]
 Type=oneshot
 # systemd user services start with a minimal PATH; make sure nvim is found.
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 TimeoutStartSec=60
-ExecStart=%h/dotfiles/nvim/scripts/generate-cheatsheet.sh
+ExecStart=@REPO@/scripts/generate-cheatsheet.sh

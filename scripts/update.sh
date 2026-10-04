@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Update Elite Neovim from its git remote.
+# Update Loki Neovim from its git remote.
 #
 #   scripts/update.sh           show what is incoming, then pull
 #   scripts/update.sh --check   only show what is incoming; change nothing
@@ -31,7 +31,7 @@ git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
 git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 \
     || die "This branch has no upstream. Set one, e.g.: git branch --set-upstream-to=origin/main"
 
-say "== Elite Neovim update =="
+say "== Loki Neovim update =="
 say "Checking for changes..."
 git fetch --quiet || die "Could not reach the remote. Check your network connection."
 
@@ -97,8 +97,8 @@ say "Next:"
 say "  1. Restart Neovim. New plugins install automatically."
 say "  2. Run :Lazy clean to remove plugins that were dropped."
 if ((lock_changed)); then
-    say "  3. The shipped plugin versions changed. To adopt them: :EliteLockReset, restart,"
+    say "  3. The shipped plugin versions changed. To adopt them: :LokiLockReset, restart,"
     say "     then :Lazy restore. (Skip this to keep the versions you have.)"
 fi
-say "  Verify with :checkhealth elite"
-say "  Tip: :EliteHelp shows what you can do; :EliteKeys lists shipped keys your keymaps replace."
+say "  Verify with :checkhealth loki"
+say "  Tip: :LokiHelp shows what you can do; :LokiKeys lists shipped keys your keymaps replace."

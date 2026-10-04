@@ -13,8 +13,8 @@ The table feeds `plugins/lsp.lua` (servers, mason-tool-installer),
 `plugins/treesitter.lua` and `plugins/formatting.lua`. You should not need to
 edit those.
 
-Inside Neovim, `:EliteEdit languages` creates and opens an empty `languages_local.lua` for you.
-It is not in git: back it up with `:EliteBackup` (see [MIGRATING.md](MIGRATING.md)).
+Inside Neovim, `:LokiEdit languages` creates and opens an empty `languages_local.lua` for you.
+It is not in git: back it up with `:LokiBackup` (see [MIGRATING.md](MIGRATING.md)).
 
 Prefer `languages_local.lua`: your languages stay separate from the defaults.
 From inside the config folder, start from the template:
@@ -33,7 +33,7 @@ cp lua/config/languages_local.lua.example lua/config/languages_local.lua
 ## 1. Prerequisites
 
 Mason downloads or builds tools with your system toolchains. Install what
-your languages need first (`:checkhealth elite` shows what is missing):
+your languages need first (`:checkhealth loki` shows what is missing):
 
 | Needed for | Install |
 | --- | --- |

@@ -4,15 +4,15 @@ Heavier features ship as **extras**: off by default, so the config behaves
 exactly as before until you ask for more. A disabled extra loads nothing and
 defines no keys.
 
-Enable them in `lua/user/options.lua` (`:EliteEdit options`), then restart:
+Enable them in `lua/user/options.lua` (`:LokiEdit options`), then restart:
 
 ```lua
-vim.g.elite_extras = { "sessions", "dashboard", "dap" }
+vim.g.loki_extras = { "sessions", "dashboard", "dap" }
 ```
 
-`:EliteExtras` lists every extra and shows which are enabled. An unknown name
+`:LokiExtras` lists every extra and shows which are enabled. An unknown name
 gives a warning, not an error. Plugins of an enabled extra install on the next
-start (watch `:Lazy`). Run `:checkhealth elite` to see which external tools an
+start (watch `:Lazy`). Run `:checkhealth loki` to see which external tools an
 enabled extra is missing (always a warning, never an error).
 
 | Extra | What it gives you | Needs | Keys |
@@ -21,11 +21,13 @@ enabled extra is missing (always a warning, never an error).
 | `dashboard` | Start screen for a bare `nvim` | nothing | shortcut letters on the screen |
 | `docker` | lazydocker in a floating terminal | `docker`, `lazydocker` | `<leader>kk` |
 | `database` | Database UI and SQL completion | the DB's CLI client (`psql`, `mysql`, `sqlite3`) | `<leader>kd` |
-| `rest` | Run `.http` requests | `curl` | `<leader>kr`, `:EliteRest` |
+| `rest` | Run `.http` requests | `curl` | `<leader>kr`, `:LokiRest` |
 | `dap` | Debugging with a variables UI | Python 3 (debugpy), Node.js (JS); Mason installs the adapters | `<leader>t…`, F-keys |
+| `lint` | Linting on save (nvim-lint) | the linter programs (`ruff`, `shellcheck` by default; Mason installs them) | `<leader>cl` |
+| `surround` | Add / delete / replace surrounding quotes and brackets (mini.surround) | nothing | `gsa` `gsd` `gsr` |
 
 Prefixes added by extras (declared only while the extra is enabled): `s`
-Session, `k` Clients, `t` Debug.
+Session, `k` Clients, `t` Debug. `surround` uses the `gs` prefix.
 
 ## sessions
 
@@ -118,7 +120,7 @@ Some terminals intercept F-keys (and `<S-F11>`); the `<leader>t` keys always wor
 
 ```lua
 vim.api.nvim_create_autocmd("User", {
-    pattern = "EliteDapSetup",
+    pattern = "LokiDapSetup",
     callback = function()
         local dap = require("dap")
         dap.configurations.python = {
@@ -131,6 +133,41 @@ vim.api.nvim_create_autocmd("User", {
 Install extra adapters through `lua/config/languages_local.lua`'s `tools` field
 or `:Mason`. Notes: `debugpy` is installed into a venv (needs Python 3 with
 `venv`); `codelldb` expects a binary built with debug info (`gcc -g`).
+
+## lint
+
+Uses `mfussenegger/nvim-lint`. Linters come from the `linter` field of the
+language table ([ADDING_LANGUAGES.md](ADDING_LANGUAGES.md)); by default Python
+uses `ruff` and shell files use `shellcheck`. Linting runs when a file is opened,
+on save and on leaving Insert mode, and the results appear as normal diagnostics
+(`]d`, `<leader>xx`). A linter whose program is not installed is skipped
+silently; `:checkhealth loki` lists the missing ones.
+
+| Key | Action |
+| --- | --- |
+| `<leader>cl` | Lint this buffer now |
+
+Add a linter in `lua/config/languages_local.lua`, for example
+`javascript = { lsp = "ts_ls", parser = "javascript", linter = "eslint_d", tools = { "eslint_d" } },`
+(linter names are nvim-lint names, `tools` are Mason package names).
+Common failure: nothing happens, because the program is not on `PATH`
+(`:Mason`, then restart).
+
+## surround
+
+Uses `echasnovski/mini.surround` with the `gs` prefix (the default `s` prefix would
+make the plain `s` key wait). Keys that wrap or unwrap text:
+
+| Key | Action | Example |
+| --- | --- | --- |
+| `gsa` + motion + character | Add surrounding | `gsaiw)` puts parentheses around the word |
+| `gsa` (Visual) + character | Surround the selection | select, `gsa"` |
+| `gsd` + character | Delete surrounding | `gsd"` removes the quotes around the cursor |
+| `gsr` + old + new | Replace surrounding | `gsr"'` turns `"` into `'` |
+
+`gsf`, `gsF`, `gsh` and `gsn` find, highlight and change the search range
+(`:help MiniSurround`). Common failure: a delay after `gs` is the popup waiting
+for the next key.
 
 ## Persistent terminals (detach / reattach)
 
@@ -145,4 +182,5 @@ tested.
 
 - **AI assistant**: depends on the vendor you pick (`claudecode.nvim`,
   `codecompanion.nvim`, Copilot, ...). Keys would come from environment variables only.
+- **Tree-sitter text objects for function definitions** (`af`/`if`): needs `nvim-treesitter-textobjects`; see [TREESITTER_MIGRATION.md](TREESITTER_MIGRATION.md) for the branch plan first.
 - **Windows installer**: the supported route is WSL ([INSTALL.md](INSTALL.md)).

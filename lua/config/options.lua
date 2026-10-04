@@ -43,11 +43,12 @@ vim.opt.confirm = true          -- ask instead of failing on :q with unsaved cha
 vim.opt.inccommand = "split"    -- live preview for :s substitutions
 vim.opt.winborder = "rounded"   -- consistent borders on floating windows (0.11+)
 
--- Folds are manual: zf creates one, za toggles it. There is no automatic folding.
+-- Folds are manual: zf creates one, za toggles it. Automatic tree-sitter folding is
+-- opt-in: vim.g.loki_treesitter_folding = true in lua/user/options.lua.
 vim.opt.foldmethod = "manual"
 
 -- Arrow keys are disabled on purpose to learn real Vim movement.
--- Turn that off in lua/user/options.lua with:  vim.g.elite_disable_arrows = false
+-- Turn that off in lua/user/options.lua with:  vim.g.loki_disable_arrows = false
 
 -- Disable the mouse if you want a completely keyboard-only editor:
 -- vim.opt.mouse = ""

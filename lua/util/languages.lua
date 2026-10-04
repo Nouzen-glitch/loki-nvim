@@ -12,7 +12,14 @@ local function as_list(value)
     return { value }
 end
 
+-- The merged table is built once per session (a restart picks up edits), so a
+-- syntax error in languages_local.lua is reported once, not once per caller.
+local cache
+
 local function load()
+    if cache then
+        return cache
+    end
     local langs = vim.deepcopy(require("config.languages"))
 
     local ok, extra = pcall(require, "config.languages_local")
@@ -28,6 +35,7 @@ local function load()
         end)
     end
 
+    cache = langs
     return langs
 end
 
@@ -58,6 +66,23 @@ function M.servers() return collect("lsp") end
 function M.parsers() return collect("parser") end
 function M.tools() return collect("tools") end
 
+-- The merged entry of one filetype (nil when there is none).
+function M.entry(ft)
+    local cfg = load()[ft]
+    return type(cfg) == "table" and cfg or nil
+end
+
+-- nvim-lint linters per filetype (used by the "lint" extra).
+function M.linters_by_ft()
+    local out = {}
+    for ft, cfg in pairs(load()) do
+        if type(cfg) == "table" and cfg.linter then
+            out[ft] = as_list(cfg.linter)
+        end
+    end
+    return out
+end
+
 function M.formatters_by_ft()
     local out = {}
     for ft, cfg in pairs(load()) do
@@ -69,8 +94,8 @@ function M.formatters_by_ft()
 end
 
 -- Human-readable problems in the language table (typos, wrong types).
--- Shown by :checkhealth elite; startup keeps working without the bad values.
-local FIELDS = { lsp = true, parser = true, formatter = true, tools = true }
+-- Shown by :checkhealth loki; startup keeps working without the bad values.
+local FIELDS = { lsp = true, parser = true, formatter = true, linter = true, tools = true }
  
 function M.problems()
     local out = {}
@@ -80,7 +105,7 @@ function M.problems()
         else
             for key, value in pairs(cfg) do
                 if not FIELDS[key] then
-                    out[#out + 1] = string.format('%s: unknown field "%s" (use lsp, parser, formatter, tools)', ft, tostring(key))
+                    out[#out + 1] = string.format('%s: unknown field "%s" (use lsp, parser, formatter, linter, tools)', ft, tostring(key))
                 else
                     for _, item in ipairs(as_list(value)) do
                         if type(item) ~= "string" then

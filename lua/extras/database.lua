@@ -14,7 +14,7 @@ return {
             vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui"
             -- SQL completion for SQL buffers only; the shipped cmp sources stay as they are.
             vim.api.nvim_create_autocmd("FileType", {
-                group = vim.api.nvim_create_augroup("EliteDadbod", { clear = true }),
+                group = vim.api.nvim_create_augroup("LokiDadbod", { clear = true }),
                 pattern = { "sql", "mysql", "plsql" },
                 callback = function()
                     require("cmp").setup.buffer({

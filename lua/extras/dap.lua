@@ -1,7 +1,7 @@
 -- Extra "dap": nvim-dap with nvim-dap-ui. Adapters are installed by Mason
 -- (debugpy, codelldb, js-debug-adapter). To add or change an adapter or
 -- configuration without editing this file, see docs/EXTRAS.md: listen for the
--- `User EliteDapSetup` event from lua/user/options.lua.
+-- `User LokiDapSetup` event from lua/user/options.lua.
 return {
     {
         "mfussenegger/nvim-dap",
@@ -13,9 +13,9 @@ return {
             dapui.setup()
 
             -- The UI follows the session: open on start, close on exit.
-            dap.listeners.after.event_initialized["elite_dapui"] = function() dapui.open() end
-            dap.listeners.before.event_terminated["elite_dapui"] = function() dapui.close() end
-            dap.listeners.before.event_exited["elite_dapui"] = function() dapui.close() end
+            dap.listeners.after.event_initialized["loki_dapui"] = function() dapui.open() end
+            dap.listeners.before.event_terminated["loki_dapui"] = function() dapui.close() end
+            dap.listeners.before.event_exited["loki_dapui"] = function() dapui.close() end
 
             local mason = vim.fn.stdpath("data") .. "/mason"
             local function exe(path, fallback)
@@ -78,7 +78,7 @@ return {
             dap.configurations.javascript = node
             dap.configurations.typescript = node
 
-            vim.api.nvim_exec_autocmds("User", { pattern = "EliteDapSetup" })
+            vim.api.nvim_exec_autocmds("User", { pattern = "LokiDapSetup" })
         end,
     },
 

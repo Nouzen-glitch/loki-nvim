@@ -1,4 +1,8 @@
-# Elite Neovim IDE
+# Loki Neovim IDE
+
+> The repository is `loki-nvim` (https://github.com/Nouzen-glitch/loki-nvim). The project was
+> called *Elite Neovim* before; if you installed it under that name see the upgrade notes in
+> [../CHANGELOG.md](../CHANGELOG.md) (2026-10-04).
 
 A structured Neovim configuration that keeps Vim's modal editing and adds the
 parts of VS Code that matter for programming: LSP IntelliSense, diagnostics,
@@ -14,11 +18,24 @@ Targets Neovim 0.11+ (currently running 0.12.x) on Linux (developed on Fedora). 
 | [INSTALL.md](INSTALL.md) | Installing (alongside or replace), every script and flag, updating, undoing, troubleshooting |
 | [MIGRATING.md](MIGRATING.md) | Customizing without editing shipped files; bringing your own config and plugins |
 | [KEYBINDINGS.md](KEYBINDINGS.md) | Every custom key, grouped by task, plus a learning order |
+| [PLUGIN_KEYS.md](PLUGIN_KEYS.md) | Keys inside Telescope, nvim-tree, Trouble, toggleterm, gitsigns |
+| [LSP.md](LSP.md) | Go to definition, rename, diagnostics, formatting, `:LokiLsp` |
+| [COMPLETION.md](COMPLETION.md) | Completion menu and snippets |
+| [FINDING.md](FINDING.md) | Telescope pickers and the key popup |
+| [FILES.md](FILES.md) | The file explorer |
+| [GIT.md](GIT.md) | Hunks, stage, blame, diff |
+| [TERMINAL.md](TERMINAL.md) | The integrated terminal |
+| [CONCEPTS.md](CONCEPTS.md) | Buffers, windows, registers, marks, quickfix, macros, folds |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Every symptom with its cause and fix |
+| [TREESITTER_MIGRATION.md](TREESITTER_MIGRATION.md) | Plan (not done): nvim-treesitter `master` to `main` |
 | [ADDING_LANGUAGES.md](ADDING_LANGUAGES.md) | Adding a language: one line, nothing installed unless listed |
 | [COMPONENTS.md](COMPONENTS.md) | What each plugin/tool is and which file configures it |
 | [ENVIRONMENT_GUIDE.md](ENVIRONMENT_GUIDE.md) | Maintaining the config: workflow, git, cheatsheet automation, known issues |
 | [EXTRAS.md](EXTRAS.md) | Opt-in features: sessions, dashboard, docker, database, REST, debugging |
 | [../CHANGELOG.md](../CHANGELOG.md) | What changed, newest first (`scripts/update.sh` prints new entries) |
+
+In the editor the same keys and commands are available as `:LokiHelp [topic]` and offline as
+`:help loki` (generated from `lua/util/registry.lua`, see [ENVIRONMENT_GUIDE.md](ENVIRONMENT_GUIDE.md) section 4b).
 
 The live cheatsheet is **generated** from the running editor (`<leader>fC` or
 `:Cheatsheet`). It is stored in Neovim's state folder, not in this repo.
@@ -42,15 +59,15 @@ sudo pacman -S neovim git ripgrep base-devel curl unzip nodejs npm python go wl-
 ## Install
 
 ```bash
-git clone <repo> ~/dotfiles/nvim
+git clone https://github.com/Nouzen-glitch/loki-nvim ~/dotfiles/nvim
 ~/dotfiles/nvim/scripts/install.sh
 ```
 
 Always install with `scripts/install.sh` rather than cloning straight into
 `~/.config/nvim`: the script gives you undo, a backup of your old config, a
-safety copy of your personal files and the `nvim-elite` launcher. Your personal
+safety copy of your personal files and the `nvim-loki` launcher. Your personal
 files (`lua/user/`) live inside the cloned folder and are not in git, so keep
-that folder, and run `scripts/user-layer.sh export` (or `:EliteBackup`) before
+that folder, and run `scripts/user-layer.sh export` (or `:LokiBackup`) before
 deleting or re-cloning it.
 
 The installer never deletes anything. If you already have a Neovim config it
@@ -58,7 +75,7 @@ asks how to proceed:
 
 | Choice | Result |
 | --- | --- |
-| **Alongside** (default, safest) | Run this config with `nvim-elite`. Your current `nvim` and its plugins are not touched. |
+| **Alongside** (default, safest) | Run this config with `nvim-loki`. Your current `nvim` and its plugins are not touched. |
 | **Replace** | This becomes `nvim`. Your old config is moved to `~/.config/nvim.backup.<timestamp>`. |
 
 | Script | Purpose |
@@ -77,10 +94,10 @@ First launch checklist:
 ```vim
 :Lazy              " plugins installed?
 :Mason             " servers and tools from config/languages.lua
-:checkhealth elite " tools, versions, install state
-:EliteInfo         " how this config was installed, where any backup is
-:EliteHelp         " one-screen guide: what you can do and should do
-:EliteTutor        " short practice tutorial
+:checkhealth loki " tools, versions, install state
+:LokiInfo         " how this config was installed, where any backup is
+:LokiHelp         " one-screen guide: what you can do and should do
+:LokiTutor        " short practice tutorial
 ```
 
 ## Layout
@@ -97,9 +114,13 @@ First launch checklist:
 │   ├── uninstall.sh          removes the link, restores your backup
 │   ├── update.sh             pulls updates, shows what changed
 │   ├── user-layer.sh         export/import your personal files
-│   ├── smoke-test.sh         headless check that the modules load (for maintainers)
+│   ├── smoke-test.sh         headless check that the modules load; runs check-help.sh (for maintainers)
+│   ├── check-help.sh         fails when keys, commands, docs or doc/loki.txt drift apart
+│   ├── gen-help.sh           regenerates doc/loki.txt from the registry
+│   ├── install-watcher.sh    installs the optional systemd cheatsheet watcher
 │   └── generate-cheatsheet.sh  headless cheatsheet regeneration
-├── systemd/                  user units that watch the config and regenerate the cheatsheet
+├── doc/loki.txt              :help loki (generated by scripts/gen-help.sh; doc/tags is generated at startup)
+├── systemd/                  unit templates for the optional cheatsheet watcher
 └── lua/
     ├── config/
     │   ├── options.lua       editor behavior, leader = Space
@@ -113,20 +134,25 @@ First launch checklist:
     │   ├── completion.lua  formatting.lua  git.lua  lsp.lua
     │   ├── telescope.lua  terminal.lua  textobjects.lua
     │   └── treesitter.lua  ui.lua
-    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap (see docs/EXTRAS.md)
+    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap, lint, surround (see docs/EXTRAS.md)
     ├── user/                 YOUR options, keymaps and plugins (gitignored; *.example files show how)
-    ├── elite/
-    │   └── health.lua        :checkhealth elite
+    ├── loki/
+    │   └── health.lua        :checkhealth loki
     └── util/
         ├── cheatsheet.lua    cheatsheet generator (:Cheatsheet, :CheatsheetUpdate)
         ├── languages.lua     derives plugin lists from config/languages.lua
-        ├── lockfile.lua      personal plugin lockfile (:EliteLockReset)
+        ├── lockfile.lua      personal plugin lockfile (:LokiLockReset)
         ├── user.lua          loads your lua/user/ files, reports errors in them
-        ├── keyguard.lua      reports shipped keys your keymaps replace (:EliteKeys)
-        ├── guide.lua         :EliteHelp, :EliteTutor, :EliteEdit, :EliteBackup, :EliteExtras
-        ├── extras.lua        registry of opt-in extras, their keys and checks
+        ├── keyguard.lua      reports shipped keys your keymaps replace (:LokiKeys)
+        ├── guide.lua         :LokiHelp, :LokiTutor, :LokiEdit, :LokiBackup, :LokiExtras
+        ├── registry.lua      SINGLE SOURCE OF TRUTH: every key, command and help topic
+        ├── helpdoc.lua       renders :LokiHelp topics and doc/loki.txt from the registry
+        ├── lsp.lua           buffer-local LSP keys on LspAttach, :LokiLsp
+        ├── check_help.lua    the checks behind scripts/check-help.sh
+        ├── smoke.lua         the checks behind scripts/smoke-test.sh
+        ├── extras.lua        registry of opt-in extras and their checks
         ├── rest.lua          .http request runner for the rest extra
-        └── welcome.lua       first-run install window, :EliteInfo
+        └── welcome.lua       first-run install window, :LokiInfo
 ```
 
 Where to change things:
@@ -136,7 +162,7 @@ Where to change things:
 | Anything just for you | `lua/user/` (options, keymaps, plugins), see [MIGRATING.md](MIGRATING.md) |
 | Updating this config | `scripts/update.sh`, see [INSTALL.md](INSTALL.md) |
 | Editor behavior (project default) | `config/options.lua` |
-| Keybindings (project default) | `config/keymaps.lua` |
+| Keybindings (project default) | `util/registry.lua` (`config/keymaps.lua` only creates them) |
 | Automatic behavior | `config/autocmds.lua` |
 | Leader group labels | `config/leader_groups.lua` |
 | Languages (LSP, syntax, formatting) | `config/languages_local.lua` for yours, `config/languages.lua` for defaults (see ADDING_LANGUAGES.md) |
@@ -148,13 +174,14 @@ Where to change things:
 | Fuzzy finder | `plugins/telescope.lua` |
 | Syntax highlighting | `plugins/treesitter.lua` |
 | Git signs | `plugins/git.lua` |
-| Text objects, auto-pairs, which-key | `plugins/textobjects.lua` |
-| Opt-in features (sessions, dashboard, docker, database, rest, dap) | `vim.g.elite_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
+| Text objects, auto-pairs, which-key labels | `plugins/textobjects.lua` |
+| Any key's description or help text, command help, help topics | `util/registry.lua`, then `scripts/gen-help.sh` |
+| Opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround) | `vim.g.loki_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
 
 ## Day-one essentials
 
 Leader is **Space**. `jk` exits Insert mode. Arrow keys are disabled on purpose
-(`vim.g.elite_disable_arrows = false` in `lua/user/options.lua` turns that off).
+(`vim.g.loki_disable_arrows = false` in `lua/user/options.lua` turns that off).
 
 | Key | Action |
 | --- | --- |
@@ -167,14 +194,14 @@ Leader is **Space**. `jk` exits Insert mode. Arrow keys are disabled on purpose
 | `<C-\>` | Toggle terminal |
 | `<leader>?` | Show every keybinding (which-key) |
 | `<leader>fC` | Open the generated cheatsheet |
-| `<leader>fi` / `:EliteHelp` | One-screen guide: what you can do and should do |
+| `<leader>fi` / `:LokiHelp` | One-screen guide: what you can do and should do |
 
 Full list: [KEYBINDINGS.md](KEYBINDINGS.md).
 
 ## Health checks
 
 ```vim
-:checkhealth elite      :checkhealth vim.lsp     :checkhealth mason
+:checkhealth loki      :checkhealth vim.lsp     :checkhealth mason
 :checkhealth nvim-treesitter                     :ConformInfo
 :Lazy                   :Mason
 ```
@@ -184,7 +211,7 @@ Full list: [KEYBINDINGS.md](KEYBINDINGS.md).
 AI assistants (the vendor is your choice), built-in persistent terminal
 sessions (run Neovim inside tmux or zellij, see [EXTRAS.md](EXTRAS.md)) and a
 native Windows installer (use WSL, see [INSTALL.md](INSTALL.md)).
-Session restore, a dashboard, Docker, database and REST clients and DAP
-debugging exist as opt-in [extras](EXTRAS.md) (`vim.g.elite_extras`).
+Session restore, a dashboard, Docker, database and REST clients, DAP
+debugging, linting and surround exist as opt-in [extras](EXTRAS.md) (`vim.g.loki_extras`).
 Multiple numbered terminals are supported via toggleterm (`2<C-\>`, `:TermSelect`).
 Anything else can be added through `lua/user/plugins/`.

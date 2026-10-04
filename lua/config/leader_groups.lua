@@ -1,25 +1,25 @@
 local M = {}
 
 M.groups = {
-    { key = "f", label = "Find" },
+    { key = "f", label = "Find (files, text, symbols, help)" },
     { key = "w", label = "Windows" },
-    { key = "x", label = "Diagnostics" },
-    { key = "h", label = "Git Hunks" },
-    { key = "b", label = "Buffers" },
-    { key = "c", label = "Code / LSP" },
-    { key = "d", label = "Diagnostics / symbols" },
-    { key = "i", label = "Inlay Hints" },
+    { key = "x", label = "Trouble panels (problem lists)" },
+    { key = "h", label = "Git (hunks, blame, diff)" },
+    { key = "b", label = "Buffers (open files)" },
+    { key = "c", label = "Code (format, lint)" },
+    { key = "d", label = "Diagnostics and symbols" },
+    { key = "i", label = "Inlay hints" },
     { key = "r", label = "Rename" },
 }
 
 -- Shipped groups plus any you add in lua/user/options.lua:
---   vim.g.elite_leader_groups = { g = "Git", o = "Notes" }
+--   vim.g.loki_leader_groups = { g = "Git", o = "Notes" }
 -- (a list of { key = "g", label = "Git" } tables works too). Yours win.
 function M.all()
     local out = vim.deepcopy(M.groups)
     -- Groups of the enabled extras (util/extras.lua) appear only while enabled.
     vim.list_extend(out, require("util.extras").groups())
-    local extra = vim.g.elite_leader_groups
+    local extra = vim.g.loki_leader_groups
     if type(extra) ~= "table" then
         return out
     end

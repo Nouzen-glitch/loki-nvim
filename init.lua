@@ -1,4 +1,4 @@
--- Neovim "Elite IDE" configuration
+-- Neovim "Loki IDE" configuration
 -- See docs/README.md for installation, rationale, and keybinding reference.
 --
 -- Your own changes go in lua/user/ (gitignored); see docs/MIGRATING.md.
@@ -9,7 +9,7 @@ local keyguard = require("util.keyguard")
 require("config.options")
 user.load("user.options")
 -- keyguard watches vim.keymap.set while these two files load, so it can tell
--- you which shipped keys your own keymaps replace (:EliteKeys).
+-- you which shipped keys your own keymaps replace (:LokiKeys).
 keyguard.track_shipped(function()
     require("config.keymaps")
     require("util.extras").keymaps() -- keys of enabled extras, tracked like shipped keys

@@ -1,18 +1,18 @@
 # Getting Started
 
 Your first 15 minutes, and the few things that are easy to miss. Everything
-here is also available inside Neovim: `:EliteHelp` (one screen) and
-`:EliteTutor` (practice).
+here is also available inside Neovim: `:LokiHelp` (one screen) and
+`:LokiTutor` (practice).
 
 ## 1. Install it the right way
 
 ```bash
-git clone <repo> ~/dotfiles/nvim
+git clone https://github.com/Nouzen-glitch/loki-nvim ~/dotfiles/nvim
 ~/dotfiles/nvim/scripts/install.sh
 ```
 
 Use the script instead of cloning into `~/.config/nvim` yourself. It backs up
-any config you already have, can install alongside it (`nvim-elite`), gives you
+any config you already have, can install alongside it (`nvim-loki`), gives you
 an undo (`scripts/uninstall.sh`) and saves a safety copy of your personal files.
 Add `--dry-run` first to see what it would do.
 
@@ -20,18 +20,18 @@ Add `--dry-run` first to see what it would do.
 personal files live inside it.
 
 Check the requirements in [README.md](README.md) first (Neovim 0.11+, git, a C
-compiler, ripgrep, Node.js and npm, Python 3, a Nerd Font). `:checkhealth elite`
+compiler, ripgrep, Node.js and npm, Python 3, a Nerd Font). `:checkhealth loki`
 lists whatever is missing.
 
 ## 2. First launch
 
-Start Neovim (`nvim`, or `nvim-elite` for an alongside install). Plugins install
+Start Neovim (`nvim`, or `nvim-loki` for an alongside install). Plugins install
 on their own; give it a minute. A window explains what the installer did. Then:
 
 ```vim
-:checkhealth elite   " missing tools, install state, your files, key conflicts
-:EliteHelp           " one-screen guide
-:EliteTutor          " 10-minute practice tutorial
+:checkhealth loki   " missing tools, install state, your files, key conflicts
+:LokiHelp           " one-screen guide
+:LokiTutor          " 10-minute practice tutorial
 ```
 
 New to Vim itself? `:Tutor` is Neovim's own tutorial. Do it first.
@@ -44,7 +44,7 @@ New to Vim itself? `:Tutor` is Neovim's own tutorial. Do it first.
 | `<leader>fk` | Search all keymaps |
 | `<leader>fc` | Search all commands |
 | `<leader>fC` | The generated cheatsheet |
-| `<leader>fi` | The Elite guide (`:EliteHelp`) |
+| `<leader>fi` | The Loki guide (`:LokiHelp`; `:LokiHelp lsp` etc. for a topic) |
 
 ## 4. Make it yours
 
@@ -52,17 +52,17 @@ Never edit shipped files; that blocks updates. Your changes go in
 `lua/user/`, created for you by:
 
 ```vim
-:EliteEdit options     " settings, vim.g.elite_* switches
-:EliteEdit keymaps     " your keys (always add desc)
-:EliteEdit plugins     " extra plugins, tweaks to shipped ones
-:EliteEdit languages   " add a language
+:LokiEdit options     " settings, vim.g.loki_* switches
+:LokiEdit keymaps     " your keys (always add desc)
+:LokiEdit plugins     " extra plugins, tweaks to shipped ones
+:LokiEdit languages   " add a language
 ```
 
 If a key of yours replaces a shipped key, you are told once at startup;
-`:EliteKeys` lists them. See [MIGRATING.md](MIGRATING.md) for details.
+`:LokiKeys` lists them. See [MIGRATING.md](MIGRATING.md) for details.
 
 Optional features (session restore, a start screen, Docker, database and REST
-clients, debugging) are off until you enable them: `:EliteExtras` lists them,
+clients, debugging) are off until you enable them: `:LokiExtras` lists them,
 [EXTRAS.md](EXTRAS.md) explains each.
 
 ## 5. Keep your files safe (the step people forget)
@@ -71,12 +71,12 @@ clients, debugging) are off until you enable them: `:EliteExtras` lists them,
 
 | When | Do |
 | --- | --- |
-| Before deleting or re-cloning the repo, reinstalling the OS | `:EliteBackup` or `scripts/user-layer.sh export FILE` |
+| Before deleting or re-cloning the repo, reinstalling the OS | `:LokiBackup` or `scripts/user-layer.sh export FILE` |
 | On a new machine | clone, `scripts/install.sh`, then `scripts/user-layer.sh import FILE` |
 | Something vanished | `scripts/user-layer.sh backups`, then `import` the newest |
 
 `install.sh` and `update.sh` save a safety copy to
-`~/.local/state/elite-backups/` (newest 10 kept) before changing anything.
+`~/.local/state/loki-backups/` (newest 10 kept) before changing anything.
 Reinstalling the Neovim package itself never touches your files.
 
 ## 6. Keep it current
@@ -96,9 +96,16 @@ Plugins update separately: `:Lazy`, then `U`.
 | Put changes in `lua/user/` | Edit `lua/config/` or `lua/plugins/` |
 | Export before wiping anything | Run `git clean -fdx` (deletes your ignored personal files) |
 | Give every keymap a `desc` | Map a key that is the start of another key |
-| Run `:checkhealth elite` when something is off | Ignore the startup notice about replaced keys |
+| Run `:checkhealth loki` when something is off | Ignore the startup notice about replaced keys |
 
 ## 8. Where next
+
+Feature pages: [LSP.md](LSP.md), [FINDING.md](FINDING.md), [GIT.md](GIT.md),
+[FILES.md](FILES.md), [TERMINAL.md](TERMINAL.md), [COMPLETION.md](COMPLETION.md);
+[CONCEPTS.md](CONCEPTS.md) explains buffers, registers, marks and the rest;
+[TROUBLESHOOTING.md](TROUBLESHOOTING.md) lists every symptom. In the editor:
+`:LokiHelp <topic>` or `:help loki`.
+
 
 [KEYBINDINGS.md](KEYBINDINGS.md) (learning order), [INSTALL.md](INSTALL.md)
 (every flag), [MIGRATING.md](MIGRATING.md) (bring your old config),

@@ -8,3 +8,6 @@ lua/user/*
 lua/user/plugins/*
 !lua/user/plugins/.gitkeep
 !lua/user/plugins/*.example
+
+# Generated at startup from doc/loki.txt (see util/helpdoc.lua).
+doc/tags

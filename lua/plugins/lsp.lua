@@ -20,10 +20,18 @@ return {
             -- LuaLS is scoped to this Neovim configuration only.
             local nvim_config = vim.uv.fs_realpath(vim.fn.stdpath("config")) or vim.fn.stdpath("config")
 
+            -- Completion capabilities for every server (snippets, extra edits) when
+            -- nvim-cmp's source is available.
+            local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+            if ok_cmp then
+                vim.lsp.config("*", { capabilities = cmp_lsp.default_capabilities() })
+            end
+
             vim.lsp.config("lua_ls", {
                 root_dir = function(bufnr, on_dir)
                     local file = vim.uv.fs_realpath(vim.api.nvim_buf_get_name(bufnr)) or ""
-                    if file:sub(1, #nvim_config) == nvim_config then
+                    -- Compare with a trailing "/" so ~/dotfiles/nvim-old/x.lua does not match ~/dotfiles/nvim.
+                    if file:sub(1, #nvim_config + 1) == nvim_config .. "/" then
                         on_dir(nvim_config)
                     end
                 end,

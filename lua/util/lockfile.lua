@@ -5,7 +5,7 @@
 -- tracked file, so `git pull` stays clean.
 --
 -- Maintainers who want to commit the lockfile set this in lua/user/options.lua:
---   vim.g.elite_lockfile_in_repo = true
+--   vim.g.loki_lockfile_in_repo = true
 local M = {}
 
 local function shipped()
@@ -13,11 +13,11 @@ local function shipped()
 end
 
 local function personal()
-    return vim.fn.stdpath("data") .. "/elite-lazy-lock.json"
+    return vim.fn.stdpath("data") .. "/loki-lazy-lock.json"
 end
 
 function M.path()
-    if vim.g.elite_lockfile_in_repo then
+    if vim.g.loki_lockfile_in_repo then
         return shipped()
     end
     local mine = personal()
@@ -29,8 +29,8 @@ function M.path()
 end
 
 function M.setup()
-    vim.api.nvim_create_user_command("EliteLockReset", function()
-        if vim.g.elite_lockfile_in_repo then
+    vim.api.nvim_create_user_command("LokiLockReset", function()
+        if vim.g.loki_lockfile_in_repo then
             vim.notify("The lockfile is tracked in the repo, so there is nothing to reset. Use :Lazy restore.")
             return
         end
@@ -41,7 +41,7 @@ function M.setup()
         vim.uv.fs_copyfile(shipped(), personal())
         vim.notify("Plugin versions reset to the ones shipped with this config.\n"
             .. "Restart Neovim, then run :Lazy restore to apply them.")
-    end, { desc = "Adopt the plugin versions shipped with the config" })
+    end, { desc = require("util.registry").command_desc("LokiLockReset") })
 end
 
 return M

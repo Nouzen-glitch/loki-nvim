@@ -4,6 +4,8 @@
 --   lsp       lspconfig server name (installed via Mason)   e.g. "clangd"
 --   parser    Tree-sitter parser name(s)                    e.g. "c" or { "markdown", "markdown_inline" }
 --   formatter Conform formatter name(s)                     e.g. "clang_format"
+--   linter    nvim-lint linter name(s); only used while the "lint" extra is enabled
+--             e.g. "ruff"
 --   tools     Mason PACKAGE names to install (formatters/linters); names can differ
 --             from the Conform name, e.g. clang_format -> "clang-format".
 --             Skip if the tool ships elsewhere (rustfmt comes with rustup).
@@ -16,15 +18,15 @@ return {
     c   = { lsp = "clangd", parser = "c",   formatter = "clang_format", tools = { "clang-format" } },
     cpp = { lsp = "clangd", parser = "cpp", formatter = "clang_format", tools = { "clang-format" } },
 
-    python = { lsp = "basedpyright", parser = "python", formatter = "ruff_format", tools = { "ruff" } },
+    python = { lsp = "basedpyright", parser = "python", formatter = "ruff_format", linter = "ruff", tools = { "ruff" } },
 
     -- lua_ls is scoped to the Neovim config only (see plugins/lsp.lua).
     lua = { lsp = "lua_ls", parser = "lua", formatter = "stylua", tools = { "stylua" } },
 
     rust = { lsp = "rust_analyzer", parser = "rust", formatter = "rustfmt" },
 
-    sh   = { lsp = "bashls", parser = "bash", formatter = "shfmt", tools = { "shfmt" } },
-    bash = { parser = "bash", formatter = "shfmt", tools = { "shfmt" } },
+    sh   = { lsp = "bashls", parser = "bash", formatter = "shfmt", linter = "shellcheck", tools = { "shfmt", "shellcheck" } },
+    bash = { parser = "bash", formatter = "shfmt", linter = "shellcheck", tools = { "shfmt", "shellcheck" } },
 
     javascript      = { lsp = "ts_ls", parser = "javascript", formatter = "prettier", tools = { "prettier" } },
     javascriptreact = { parser = "javascript", formatter = "prettier", tools = { "prettier" } },

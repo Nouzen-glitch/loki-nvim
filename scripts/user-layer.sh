@@ -2,9 +2,9 @@
 # Carry your personal layer between machines (or keep a backup of it).
 #
 #   scripts/user-layer.sh list                  show which personal files exist
-#   scripts/user-layer.sh export [FILE]         pack them (default: ./elite-user-layer-<date>.tar.gz)
+#   scripts/user-layer.sh export [FILE]         pack them (default: ./loki-user-layer-<date>.tar.gz)
 #   scripts/user-layer.sh import FILE           unpack onto this machine
-#   scripts/user-layer.sh backup                safety copy into ~/.local/state/elite-backups (newest 10 kept)
+#   scripts/user-layer.sh backup                safety copy into ~/.local/state/loki-backups (newest 10 kept)
 #   scripts/user-layer.sh backups               list the safety copies
 #
 # "Personal layer" means lua/user/*.lua, lua/user/plugins/*.lua and
@@ -17,7 +17,7 @@ CALLER_PWD="$PWD"
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$SOURCE_DIR"
 
-BACKUP_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/elite-backups"
+BACKUP_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/loki-backups"
 KEEP=10
 
 say() { printf '%s\n' "$*"; }
@@ -42,7 +42,7 @@ case "$cmd" in
     list)
         files="$(collect)"
         if [[ -z "$files" ]]; then
-            say "No personal files yet. See docs/MIGRATING.md, or run :EliteEdit inside Neovim."
+            say "No personal files yet. See docs/MIGRATING.md, or run :LokiEdit inside Neovim."
         else
             say "Personal files:"
             printf '%s\n' "$files" | sed 's/^/  /'
@@ -52,7 +52,7 @@ case "$cmd" in
     export)
         files="$(collect)"
         [[ -n "$files" ]] || die "Nothing to export: no personal files found."
-        out="$(abspath "${1:-elite-user-layer-$(date +%Y%m%d).tar.gz}")"
+        out="$(abspath "${1:-loki-user-layer-$(date +%Y%m%d).tar.gz}")"
         printf '%s\n' "$files" | tar czf "$out" -T -
         say "Exported to: $out"
         printf '%s\n' "$files" | sed 's/^/  /'
@@ -86,7 +86,7 @@ case "$cmd" in
         say "Imported:"
         printf '%s\n' "$entries" | grep -v '/$' | sed 's/^/  /'
         say
-        say "Restart Neovim, then run :checkhealth elite."
+        say "Restart Neovim, then run :checkhealth loki."
         ;;
 
     backup)

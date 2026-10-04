@@ -1,5 +1,5 @@
--- User-facing guidance: :EliteHelp (one-screen guide), :EliteTutor (practice
--- buffer), :EliteEdit (create/open your personal files), :EliteBackup.
+-- User-facing guidance: :LokiHelp (one-screen guide), :LokiTutor (practice
+-- buffer), :LokiEdit (create/open your personal files), :LokiBackup.
 local M = {}
 
 local function cfg()
@@ -12,57 +12,61 @@ end
 
 -- Shared by every install (alongside or replace); scripts/user-layer.sh uses the same folder.
 function M.backup_dir()
-    return vim.fs.dirname(vim.fn.stdpath("state")) .. "/elite-backups"
+    return vim.fs.dirname(vim.fn.stdpath("state")) .. "/loki-backups"
 end
 
 function M.help_lines()
     local repo = vim.fn.fnamemodify(M.repo(), ":~")
     return {
-        "ELITE NEOVIM: what you can do, and what you should do",
-        "(open again any time: :EliteHelp or <leader>fi. <leader> is the Space bar.)",
+        "LOKI NEOVIM: what you can do, and what you should do",
+        "(open again any time: :LokiHelp or <leader>fi. <leader> is the Space bar.)",
         "",
         "FIND YOUR WAY",
         "  <leader>?    every key, grouped          <leader>fk   search all keys",
         "  <leader>fc   search commands             <leader>fC   generated cheatsheet",
-        "  <leader>fh   Neovim's built-in help      :EliteTutor  short practice tutorial",
+        "  <leader>fh   Neovim's built-in help      :LokiTutor  short practice tutorial",
         "  New to Vim? :Tutor is Neovim's own 30-minute tutorial.",
         "  Press a key and wait: a popup lists what can follow (try <leader>, g, z, [, ], d, y).",
         "  Type the next key to go deeper or run it. <BS> goes up one level, <Esc> closes the popup.",
         "",
         "MAKE IT YOURS (never edit shipped files: updates would stop)",
-        "  :EliteEdit options     your options and vim.g.elite_* switches",
-        "  :EliteEdit keymaps     your keys (always give each a desc = \"...\")",
-        "  :EliteEdit plugins     your plugins, or tweaks to shipped ones",
-        "  :EliteEdit languages   add a language (server, parser, formatter)",
-        "  :EliteKeys             shipped keys your keymaps replaced or delayed",
-        "  :EliteFormat on|off    turn format on save on or off for this session",
-        "  :EliteExtras           opt-in features (sessions, dashboard, docker, database, rest, dap)",
+        "  :LokiEdit options     your options and vim.g.loki_* switches",
+        "  :LokiEdit keymaps     your keys (always give each a desc = \"...\")",
+        "  :LokiEdit plugins     your plugins, or tweaks to shipped ones",
+        "  :LokiEdit languages   add a language (server, parser, formatter)",
+        "  :LokiKeys             shipped keys your keymaps replaced or delayed",
+        "  :LokiFormat on|off    turn format on save on or off for this session",
+        "  :LokiExtras           opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround)",
         "",
         "KEEP YOUR FILES SAFE (lua/user/ is yours and is NOT in git)",
-        "  Save them:  :EliteBackup   or   scripts/user-layer.sh export FILE",
-        "  Install/update scripts also save a safety copy first (see :checkhealth elite).",
+        "  Save them:  :LokiBackup   or   scripts/user-layer.sh export FILE",
+        "  Install/update scripts also save a safety copy first (see :checkhealth loki).",
         "  New machine: git clone, run scripts/install.sh, then",
         "               scripts/user-layer.sh import FILE",
         "  Never delete or re-clone the repo folder without exporting first:",
         "  " .. repo,
         "  Install with scripts/install.sh, not by cloning into ~/.config/nvim:",
-        "  you get undo, a backup of your old config and the nvim-elite launcher.",
+        "  you get undo, a backup of your old config and the nvim-loki launcher.",
         "",
         "KEEP IT CURRENT",
         "  Config:  scripts/update.sh (run from the repo)     Plugins: :Lazy, then U",
-        "  Undo:    scripts/uninstall.sh                      How installed: :EliteInfo",
+        "  Undo:    scripts/uninstall.sh                      How installed: :LokiInfo",
         "",
         "WHEN SOMETHING IS WRONG",
-        "  :checkhealth elite   tools, install state, your files, key conflicts",
+        "  :checkhealth loki   tools, install state, your files, key conflicts",
+        "  :LokiLsp            why completion / go-to-definition does not work in this file",
         "  Icons show as boxes: set a Nerd Font as your terminal's font.",
-        "  Docs: docs/GETTING_STARTED.md, INSTALL.md, MIGRATING.md, KEYBINDINGS.md",
+        "  Docs: :LokiDocs browses docs/ (GETTING_STARTED, KEYBINDINGS, TROUBLESHOOTING, ...)",
+        "",
+        "TOPICS (details, keys, fixes):  :LokiHelp <topic>   or   :help loki",
+        "  " .. table.concat(require("util.registry").topic_order, "   "),
     }
 end
 
 function M.tutor_lines()
     local rule = string.rep("-", 70)
     return {
-        "ELITE NEOVIM TUTORIAL (about 10 minutes)",
+        "LOKI NEOVIM TUTORIAL (about 10 minutes)",
         "This is a scratch buffer: type in it freely, nothing is saved. Close with :q",
         "<leader> is the Space bar. <C-s> means Ctrl+s. Arrow keys are off on purpose.",
         "Never used Vim? Run :Tutor first (Neovim's own tutorial), then come back.",
@@ -84,7 +88,7 @@ function M.tutor_lines()
         "  <leader>fr  recent files             <leader>fb  open buffers",
         "  H / L       previous / next buffer (open files are shown along the top)",
         "Try: press <leader>ff, type part of a file name, press Enter.",
-        "(<leader>fg needs ripgrep: :checkhealth elite tells you if it is missing.)",
+        "(<leader>fg needs ripgrep: :checkhealth loki tells you if it is missing.)",
         "",
         rule,
         "3. CODE INTELLIGENCE (open a real file in a supported language)",
@@ -114,11 +118,11 @@ function M.tutor_lines()
         rule,
         "6. MAKE IT YOURS, AND KEEP IT",
         rule,
-        "  :EliteEdit keymaps / options / plugins / languages   creates and opens your file",
-        "  :EliteKeys      shows shipped keys your keymaps replaced",
-        "  :EliteBackup    saves your personal files (they are not in git!)",
-        "  :EliteHelp      the one-screen guide",
-        "Try: :EliteEdit options, read the comments, then :EliteBackup.",
+        "  :LokiEdit keymaps / options / plugins / languages   creates and opens your file",
+        "  :LokiKeys      shows shipped keys your keymaps replaced",
+        "  :LokiBackup    saves your personal files (they are not in git!)",
+        "  :LokiHelp      the one-screen guide",
+        "Try: :LokiEdit options, read the comments, then :LokiBackup.",
         "",
         "Done. Learning order and every key: docs/KEYBINDINGS.md",
     }
@@ -141,7 +145,7 @@ local TARGETS = {
 local function edit(which)
     local t = TARGETS[which]
     if not t then
-        vim.notify("Usage: :EliteEdit options|keymaps|plugins|languages", vim.log.levels.WARN)
+        vim.notify("Usage: :LokiEdit options|keymaps|plugins|languages", vim.log.levels.WARN)
         return
     end
     local root = cfg()
@@ -166,7 +170,7 @@ local function backup(opts)
         return
     end
     local out = opts.args ~= "" and vim.fn.expand(opts.args)
-        or vim.fn.expand("~/elite-user-layer-" .. os.date("%Y%m%d") .. ".tar.gz")
+        or vim.fn.expand("~/loki-user-layer-" .. os.date("%Y%m%d") .. ".tar.gz")
     vim.system({ script, "export", out }, { text = true }, function(res)
         vim.schedule(function()
             if res.code == 0 then
@@ -187,23 +191,59 @@ local function tutor()
     vim.bo[buf].bufhidden = "wipe"
     vim.bo[buf].swapfile = false
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, M.tutor_lines())
-    pcall(vim.api.nvim_buf_set_name, buf, "Elite tutorial")
+    pcall(vim.api.nvim_buf_set_name, buf, "Loki tutorial")
     vim.bo[buf].filetype = "markdown"
     vim.cmd("normal! gg")
 end
 
 function M.setup()
-    vim.api.nvim_create_user_command("EliteHelp", function()
-        require("util.welcome").show(M.help_lines(), "Elite guide")
-    end, { desc = "One-screen guide: what you can do and should do" })
+    local registry = require("util.registry")
+    local function desc(name) return registry.command_desc(name) end
 
-    vim.api.nvim_create_user_command("EliteTutor", tutor, { desc = "Short practice tutorial for this config" })
+    vim.api.nvim_create_user_command("LokiHelp", function(o)
+        local topic = vim.trim(o.args)
+        if topic == "" then
+            require("util.welcome").show(M.help_lines(), "Loki guide")
+        elseif registry.topics[topic] then
+            require("util.welcome").show(require("util.helpdoc").topic_lines(topic), "Loki help: " .. topic)
+        else
+            vim.notify("Unknown help topic '" .. topic .. "'. Topics: " .. table.concat(registry.topic_order, ", "),
+                vim.log.levels.WARN)
+        end
+    end, {
+        nargs = "?",
+        desc = desc("LokiHelp"),
+        complete = function(lead)
+            return vim.tbl_filter(function(name)
+                return vim.startswith(name, lead)
+            end, registry.topic_order)
+        end,
+    })
 
-    vim.api.nvim_create_user_command("EliteEdit", function(o)
+    vim.api.nvim_create_user_command("LokiTutor", tutor, { desc = desc("LokiTutor") })
+
+    vim.api.nvim_create_user_command("LokiDocs", function()
+        local dir = M.repo() .. "/docs"
+        local ok, builtin = pcall(require, "telescope.builtin")
+        if ok then
+            builtin.find_files({ cwd = dir, prompt_title = "Loki docs", find_command = { "find", ".", "-name", "*.md", "-type", "f" } })
+        else
+            vim.cmd("edit " .. vim.fn.fnameescape(dir))
+        end
+    end, { desc = desc("LokiDocs") })
+
+    vim.api.nvim_create_user_command("LokiLsp", function()
+        require("util.welcome").show(require("util.lsp").report(vim.api.nvim_get_current_buf()), "Loki: language support")
+    end, { desc = desc("LokiLsp") })
+
+    -- Make :help loki work on a fresh install (doc/tags is gitignored).
+    require("util.helpdoc").ensure_tags()
+
+    vim.api.nvim_create_user_command("LokiEdit", function(o)
         edit(o.args)
     end, {
         nargs = 1,
-        desc = "Create/open your personal file: options, keymaps, plugins, languages",
+        desc = desc("LokiEdit"),
         complete = function(lead)
             return vim.tbl_filter(function(name)
                 return vim.startswith(name, lead)
@@ -211,24 +251,24 @@ function M.setup()
         end,
     })
 
-    vim.api.nvim_create_user_command("EliteExtras", function()
+    vim.api.nvim_create_user_command("LokiExtras", function()
         require("util.welcome").show(require("util.extras").lines(), "Extras")
-    end, { desc = "List opt-in extras and which are enabled" })
+    end, { desc = desc("LokiExtras") })
 
-    vim.api.nvim_create_user_command("EliteFormat", function(o)
+    vim.api.nvim_create_user_command("LokiFormat", function(o)
         if o.args == "on" then
-            vim.g.elite_format_on_save = true
+            vim.g.loki_format_on_save = true
         elseif o.args == "off" then
-            vim.g.elite_format_on_save = false
+            vim.g.loki_format_on_save = false
         elseif o.args ~= "" and o.args ~= "status" then
-            vim.notify("Usage: :EliteFormat on|off|status", vim.log.levels.WARN)
+            vim.notify("Usage: :LokiFormat on|off|status", vim.log.levels.WARN)
             return
         end
-        vim.notify("Format on save: " .. (vim.g.elite_format_on_save == false and "off" or "on")
+        vim.notify("Format on save: " .. (vim.g.loki_format_on_save == false and "off" or "on")
             .. " (this session only; <leader>cf always formats)")
     end, {
         nargs = "?",
-        desc = "Turn format on save on or off for this session",
+        desc = desc("LokiFormat"),
         complete = function(lead)
             return vim.tbl_filter(function(name)
                 return vim.startswith(name, lead)
@@ -236,10 +276,10 @@ function M.setup()
         end,
     })
  
-    vim.api.nvim_create_user_command("EliteBackup", backup, {
+    vim.api.nvim_create_user_command("LokiBackup", backup, {
         nargs = "?",
         complete = "file",
-        desc = "Export your personal files to an archive (default: ~/elite-user-layer-<date>.tar.gz)",
+        desc = desc("LokiBackup"),
     })
 end
 

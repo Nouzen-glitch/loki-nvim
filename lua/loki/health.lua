@@ -1,4 +1,4 @@
--- :checkhealth elite
+-- :checkhealth loki
 local M = {}
 local h = vim.health
 
@@ -15,7 +15,7 @@ local function check_tool(name, level, advice)
 end
 
 function M.check()
-    h.start("Elite: Neovim")
+    h.start("Loki: Neovim")
     local v = vim.version()
     local vs = string.format("%d.%d.%d", v.major, v.minor, v.patch)
     if vim.version.ge(v, { 0, 11, 0 }) then
@@ -24,7 +24,7 @@ function M.check()
         h.error("Neovim " .. vs .. " is too old", "This config needs Neovim 0.11 or newer.")
     end
 
-    h.start("Elite: install")
+    h.start("Loki: install")
     local cfg = vim.fn.stdpath("config")
     local app = vim.env.NVIM_APPNAME
     h.info("Config folder: " .. cfg)
@@ -38,8 +38,8 @@ function M.check()
         h.error("Config folder not found")
     end
     local state = vim.fn.stdpath("state")
-    if vim.fn.filereadable(state .. "/elite-install-info") == 1
-        or vim.fn.filereadable(state .. "/elite-install-info.shown") == 1 then
+    if vim.fn.filereadable(state .. "/loki-install-info") == 1
+        or vim.fn.filereadable(state .. "/loki-install-info.shown") == 1 then
         h.ok("Installed with scripts/install.sh")
     else
         h.warn("No install record: this config was not set up with scripts/install.sh", {
@@ -47,11 +47,11 @@ function M.check()
             "For the safest setup run scripts/install.sh from the repo folder.",
         })
     end
-    h.info("Run :EliteInfo to see how it was installed and where any backup went")
+    h.info("Run :LokiInfo to see how it was installed and where any backup went")
     h.info("Plugin lockfile: " .. require("util.lockfile").path()
-        .. (vim.g.elite_lockfile_in_repo and " (tracked in the repo)" or " (personal copy)"))
+        .. (vim.g.loki_lockfile_in_repo and " (tracked in the repo)" or " (personal copy)"))
 
-    h.start("Elite: required tools")
+    h.start("Loki: required tools")
     check_tool("git", h.error, "Needed by lazy.nvim to install plugins.")
     check_tool("make", h.warn, "Needed to build telescope-fzf-native and LuaSnip's jsregexp.")
     if has("cc") or has("gcc") or has("clang") then
@@ -72,7 +72,7 @@ function M.check()
         })
     end
 
-    h.start("Elite: language server toolchains (Mason)")
+    h.start("Loki: language server toolchains (Mason)")
     check_tool("node", h.warn, "Needed for ts_ls, prettier and other npm-based tools.")
     check_tool("npm", h.warn, "Needed for ts_ls, prettier and other npm-based tools.")
     check_tool("python3", h.warn, "Needed for basedpyright and ruff.")
@@ -82,11 +82,11 @@ function M.check()
         h.info("go not found (only needed if you add Go tools such as gopls)")
     end
 
-    h.start("Elite: appearance")
+    h.start("Loki: appearance")
     h.info("A Nerd Font cannot be detected from inside Neovim. If icons show as boxes,")
     h.info("set a Nerd Font as your terminal's font.")
 
-    h.start("Elite: your personal layer (lua/user/)")
+    h.start("Loki: your personal layer (lua/user/)")
     local root = cfg .. "/lua/user"
     local any = false
     for _, f in ipairs({ "options.lua", "keymaps.lua" }) do
@@ -105,11 +105,11 @@ function M.check()
         any = true
     end
     if not any then
-        h.info("Nothing here yet. :EliteEdit options|keymaps|plugins|languages creates each file,")
+        h.info("Nothing here yet. :LokiEdit options|keymaps|plugins|languages creates each file,")
         h.info("or see docs/MIGRATING.md and the *.example files in lua/user/")
     end
 
-    h.start("Elite: your keymaps vs shipped keys")
+    h.start("Loki: your keymaps vs shipped keys")
     local kg = require("util.keyguard")
     local over, removed, clashes = kg.overrides_grouped(), kg.removed_grouped(), kg.clashes_grouped()
     if not vim.uv.fs_stat(root .. "/keymaps.lua") then
@@ -134,7 +134,7 @@ function M.check()
             "Use a key that is not the start of another key, or accept the short delay.")
     end
 
-    h.start("Elite: safety copies of your personal files")
+    h.start("Loki: safety copies of your personal files")
     local dir = require("util.guide").backup_dir()
     local copies = vim.fn.glob(dir .. "/user-layer-*.tar.gz", false, true)
     table.sort(copies)
@@ -144,7 +144,7 @@ function M.check()
         h.ok(#copies .. " safety copy(ies) in " .. dir .. " (newest is " .. days .. " day(s) old)")
     elseif any then
         h.warn("Your personal files exist but no safety copy has been made yet", {
-            "Run :EliteBackup now, or scripts/user-layer.sh backup.",
+            "Run :LokiBackup now, or scripts/user-layer.sh backup.",
             "scripts/install.sh and scripts/update.sh make one automatically.",
         })
     else
@@ -153,7 +153,7 @@ function M.check()
     h.info("Another machine: scripts/user-layer.sh export FILE here, import FILE there.")
     h.info("Never delete or re-clone the repo folder before exporting: lua/user/ is not in git.")
 
-    h.start("Elite: language table")
+    h.start("Loki: language table")
     local lang_problems = require("util.languages").problems()
     if #lang_problems == 0 then
         h.ok("config/languages.lua (and languages_local.lua) look valid")
@@ -163,14 +163,14 @@ function M.check()
         end
     end
  
-    h.start("Elite: extras (opt-in)")
+    h.start("Loki: extras (opt-in)")
     local extras = require("util.extras")
     local on, unknown = extras.requested()
     if #on == 0 and #unknown == 0 then
-        h.info("No extras enabled. :EliteExtras lists them; docs/EXTRAS.md explains how to enable one.")
+        h.info("No extras enabled. :LokiExtras lists them; docs/EXTRAS.md explains how to enable one.")
     end
     for _, name in ipairs(unknown) do
-        h.warn("Unknown extra in vim.g.elite_extras: " .. name, "Available: " .. table.concat(extras.order, ", "))
+        h.warn("Unknown extra in vim.g.loki_extras: " .. name, "Available: " .. table.concat(extras.order, ", "))
     end
     for _, name in ipairs(on) do
         h.ok(name .. " enabled")

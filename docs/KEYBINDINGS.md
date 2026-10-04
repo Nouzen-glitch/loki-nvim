@@ -8,15 +8,15 @@ defaults) use `<leader>?`, `<leader>fk`, or the generated cheatsheet
 
 ## Your own keys
 
-They go in `lua/user/keymaps.lua` (`:EliteEdit keymaps` creates and opens it).
+They go in `lua/user/keymaps.lua` (`:LokiEdit keymaps` creates and opens it).
 Give every mapping a `desc`: that is what shows in `<leader>?`, `<leader>fk` and
 the generated cheatsheet (which covers normal, visual, operator-pending, insert,
 terminal and command-line maps, plus buffer-local maps). This file lists only
 the shipped keys.
 
-- **Same key, yours wins.** It replaces the shipped one; the action can still be
+- **Same key, yours wins** (this includes the LSP keys, which are attached per buffer but skip any key you set). It replaces the shipped one; the action can still be
   run as a command (`<leader>fc`) or moved to another key in the same file.
-- **You are told.** `:EliteKeys` and `:checkhealth elite` list every shipped key
+- **You are told.** `:LokiKeys` and `:checkhealth loki` list every shipped key
   you replaced, removed or shadowed, and Neovim shows a one-time notice at
   startup whenever that list changes.
 - **Prefix delay.** If one of your keys is the start of a longer shipped key
@@ -26,8 +26,8 @@ the shipped keys.
   rebind it through toggleterm's `opts` ([MIGRATING.md](MIGRATING.md), section 4).
   Likewise `jk`, `<Esc>` and `<C-h/j/k/l>` in Terminal mode are set per toggleterm
   buffer, so a global Terminal-mode map of yours on those keys is shadowed there
-  (and `:EliteKeys` does not report it). Other terminals are not affected.
-- **Your own prefix labels.** `vim.g.elite_leader_groups = { g = "Git" }` in
+  (and `:LokiKeys` does not report it). Other terminals are not affected.
+- **Your own prefix labels.** `vim.g.loki_leader_groups = { g = "Git" }` in
   `lua/user/options.lua` names a new prefix in which-key and the cheatsheet.
 
 Keys worth checking before you override them: `jk`, `<C-s>`, `<C-h/j/k/l>`,
@@ -39,8 +39,8 @@ anything starting with `<leader>f`, `<leader>w` or `<leader>c`.
 | Key | Mode | Action |
 | --- | --- | --- |
 | `jk` | i, t | Leave Insert mode; leave Terminal mode in the toggleterm terminal (other terminals keep `jk` for the program) |
-| Arrow keys | n, i, v | Disabled (`<Nop>`). Opt out: `vim.g.elite_disable_arrows = false` in `lua/user/options.lua` |
-| `j` / `k` | n | Move by display line (wrapped lines) |
+| Arrow keys | n, i, v | Disabled (`<Nop>`). Opt out: `vim.g.loki_disable_arrows = false` in `lua/user/options.lua` |
+| `j` / `k` | n | Move by display line (wrapped lines); with a count (`5j`) by real lines |
 | `n` / `N` | n | Next / previous search result, centered |
 | `<` / `>` | v | Indent and keep selection |
 | `<Esc>` | n | Clear search highlight |
@@ -61,7 +61,16 @@ anything starting with `<leader>f`, `<leader>w` or `<leader>c`.
 | `H` / `L` | Previous / next buffer (open buffers are shown along the top) |
 | `<leader>bd` | Delete buffer |
 
+`<C-h>` is also what some terminals send for Backspace. If Backspace switches
+windows in Normal mode, remap Backspace in the terminal or move the window keys
+in `lua/user/keymaps.lua`. Insert-mode `<C-h>` is deliberately not mapped.
+
 ## LSP
+
+These keys exist **only in buffers where a language server is attached** (they
+are set per buffer on `LspAttach`). Elsewhere they print a notice pointing at
+`:LokiLsp`. A key you set yourself in `lua/user/keymaps.lua` is never replaced.
+Details: [LSP.md](LSP.md).
 
 | Key | Action |
 | --- | --- |
@@ -91,6 +100,7 @@ at full speed.
 | `<leader>dq` | Send diagnostics to quickfix |
 | `<leader>xx` | Trouble: all diagnostics |
 | `<leader>xX` | Trouble: current buffer |
+| `<leader>fd` | Diagnostics in Telescope |
 
 ## Find (Telescope)
 
@@ -104,10 +114,16 @@ at full speed.
 | `<leader>fc` | Commands |
 | `<leader>fk` | Keymaps |
 | `<leader>fC` | Open generated cheatsheet |
-| `<leader>fi` | Elite guide (`:EliteHelp`) |
+| `<leader>fi` | Loki guide (`:LokiHelp`) |
+| `<leader>fs` | Symbols in this file (needs a server) |
+| `<leader>fS` | Symbols in the project (needs a server) |
+| `<leader>fd` | Diagnostics of open files |
+| `<leader>fG` | Changed files in git, with a diff preview |
 | `<leader>?` | which-key: all keybindings |
 
-## Explorer, formatting, git
+Keys inside Telescope, nvim-tree and Trouble are listed in [PLUGIN_KEYS.md](PLUGIN_KEYS.md).
+
+## Explorer, formatting, git (see [GIT.md](GIT.md), [FILES.md](FILES.md))
 
 | Key | Action |
 | --- | --- |
@@ -115,7 +131,13 @@ at full speed.
 | `<leader>E` | Reveal the current file in nvim-tree |
 | `<leader>cf` | Format file / selection (n, v); also runs on save |
 | `]h` / `[h` | Next / previous git hunk |
-| `<leader>hs` `hr` `hp` | Stage / reset / preview hunk |
+| `<leader>hs` | Stage hunk (Visual mode: only the selected lines) |
+| `<leader>hr` | Reset hunk (Visual mode: only the selected lines) |
+| `<leader>hu` | Undo the last stage |
+| `<leader>hp` | Preview hunk |
+| `<leader>hb` | Blame the cursor line |
+| `<leader>hB` | Toggle blame text at the end of the line |
+| `<leader>hd` | Diff the file against the index |
 
 ## Completion (insert mode, nvim-cmp)
 
@@ -141,8 +163,12 @@ Command-line (`:` and `/`) also has completion.
 
 ## Text objects and editing
 
-`mini.ai` extends `a`/`i` objects (arguments, function calls, quotes,
-brackets). `mini.pairs` closes brackets and quotes as you type. Built-ins used
+`mini.ai` extends the `a`/`i` objects: after an operator (`d`, `c`, `y`, `v`)
+type `i` (inside) or `a` (around) and a key: `(` `[` `{` `<` or `b` brackets,
+`"` `'` `` ` `` or `q` quotes, `t` tag, `f` function call, `a` argument (`dia`,
+`caq`, `yif`). The key popup lists them with descriptions. Function
+*definitions* (`af`/`if` in other editors) are not available: they need the
+`nvim-treesitter-textobjects` plugin. `mini.pairs` closes brackets and quotes as you type. Built-ins used
 constantly: `ciw`, `ci"`, `ci(`, `da{`, `yiw`. `gcc` toggles a comment, `gc` +
 motion/selection comments a range.
 
@@ -162,12 +188,28 @@ what can follow, with a short description of each key.
  
 ## Leader namespaces
 
-`f` Find, `w` Windows, `x` Diagnostics list, `h` Git hunks,
-`b` Buffers, `c` Code (actions, format), `d` Diagnostic details (and `<leader>ds` document symbols),
-`i` Inlay hints, `r` Rename. Press `<leader>` and wait for which-key.
-Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients (`kk` docker, `kd` database,
-`kr` REST) and `t` Debug (`tb` `tc` `tu` `tx`, plus `<F5>` `<F9>` `<F10>` `<F11>` `<S-F11>`).
-They exist only while the extra is enabled in `vim.g.elite_extras`.
+`f` Find (files, text, symbols, help), `w` Windows, `x` Trouble panels,
+`h` Git (hunks, blame, diff), `b` Buffers, `c` Code (format, lint),
+`d` Diagnostics and symbols, `i` Inlay hints, `r` Rename. Press `<leader>` and
+wait for which-key.
+
+Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients and `t` Debug. They
+exist only while the extra is enabled in `vim.g.loki_extras`.
+
+## Extras keys
+
+Declared only while the extra is enabled; see [EXTRAS.md](EXTRAS.md).
+
+| Extra | Keys |
+| --- | --- |
+| sessions | `<leader>ss` restore this folder, `<leader>sl` restore the last session, `<leader>sd` do not save |
+| dashboard | shortcut letters on the start screen (no global keys) |
+| docker | `<leader>kk` lazydocker |
+| database | `<leader>kd` database UI |
+| rest | `<leader>kr` run the HTTP request under the cursor |
+| dap | `<leader>tb` `<leader>tc` `<leader>tu` `<leader>tx`, `<F5>` `<F9>` `<F10>` `<F11>` `<S-F11>` |
+| lint | `<leader>cl` lint now |
+| surround | `gsa` add, `gsd` delete, `gsr` replace |
 
 ## Learning order
 

@@ -2,6 +2,39 @@
 
 Newest first. `scripts/update.sh` prints the new entries when you update.
 
+## 2026-10-04
+
+### Changed (rename)
+- **Elite Neovim is now Loki Neovim** (repository `loki-nvim`). Commands `:Elite*` are now `:Loki*`, `vim.g.elite_*` is now `vim.g.loki_*`, `:checkhealth elite` is `:checkhealth loki`, the alongside app name is `loki` (launcher `nvim-loki`, folders `~/.config/loki` etc.), `lua/elite/` is `lua/loki/`, and the state files are `loki-*`. Entries below this one keep the old names as history.
+
+### Added
+- **One source of truth**: `lua/util/registry.lua` declares every shipped key, command and help topic (short `desc`, `long` text, example, doc link). Keys, which-key labels, `:LokiHelp`, `doc/loki.txt` and the cheatsheet table are all produced from it.
+- `scripts/check-help.sh` fails when a mapping or command lacks a description, a `<leader>` prefix lacks a group label, a registry entry lacks `long` or a resolvable doc link, a key is missing from `docs/KEYBINDINGS.md`, a command is missing from the Environment Guide, an extra is undocumented, or `doc/loki.txt` is stale. `scripts/smoke-test.sh` runs it.
+- `scripts/gen-help.sh` regenerates `doc/loki.txt`; `:help loki` (tags `loki-keys`, `loki-lsp`, `loki-git`, `loki-files`, `loki-languages`, `loki-extras`, `loki-terminal`, `loki-troubleshooting`, `loki-commands`).
+- `:LokiHelp [topic]` with completion (keys, lsp, git, files, languages, extras, terminal, troubleshooting); `:LokiDocs` (Telescope over `docs/`); `:LokiLsp` (attached servers, root, formatter, parser, and what to do when one is missing). Help windows have headings and highlighting.
+- LSP keys (`K gd gD gi gr <leader>rn <leader>ca <leader>D <leader>ds <leader>ih`) are buffer-local on `LspAttach`. In buffers without a server they print a notice that points at `:LokiLsp`. A key you set yourself is never shadowed.
+- which-key: labels for `]`/`[`, mini.ai objects after `d`/`c`/`y` then `i`/`a`, Neovim's `gr*`/`gO` defaults; clearer group names.
+- Keys: `<leader>fs` `fS` (symbols), `fd` (diagnostics), `fG` (git status), `<leader>hb` `hB` `hd` `hu` (blame, line blame, diff, undo stage); `<leader>hs`/`hr` work on a Visual selection.
+- Extras `lint` (nvim-lint, `linter` field in the language table; `<leader>cl`) and `surround` (mini.surround: `gsa` `gsd` `gsr`). Opt-in tree-sitter folding: `vim.g.loki_treesitter_folding = true`.
+- Docs: `LSP.md`, `COMPLETION.md`, `FINDING.md`, `FILES.md`, `GIT.md`, `TERMINAL.md`, `PLUGIN_KEYS.md`, `CONCEPTS.md`, `TROUBLESHOOTING.md`, `TREESITTER_MIGRATION.md` (a plan only).
+- `scripts/install-watcher.sh`; the `systemd/` files are templates, so nothing is hardcoded to `~/dotfiles/nvim`.
+
+### Fixed
+- `scripts/smoke-test.sh` could never fail (`+lua assert` exits 0). It now exits non-zero on any failure.
+- `nvim <folder>` showed an empty buffer; it now opens the file explorer.
+- `lua_ls` root check also matched sibling folders such as `nvim-old`.
+- A syntax error in `languages_local.lua` produced one error toast per caller; the table is now merged once.
+- nvim-cmp capabilities are passed to every language server.
+- `uninstall.sh` also finds installs made under the old `elite` name.
+- Docs: stale tree-sitter comment, clone URL, command tables, `j`/`k` count behaviour.
+
+### Upgrade notes
+- **Renamed install (alongside, app name `elite`)**: run `scripts/install.sh --alongside` (creates `loki`), then `scripts/uninstall.sh --appname elite`. Plugins reinstall under the new app name. Your `lua/user/` files stay in the repo folder; rename any `vim.g.elite_*` setting in them to `vim.g.loki_*`, and any `:Elite*` mapping to `:Loki*`.
+- **Replace install (`nvim`)**: nothing moves; just rename `vim.g.elite_*` to `vim.g.loki_*` in `lua/user/options.lua`. Old safety copies stay in `~/.local/state/elite-backups/`; new ones go to `loki-backups`.
+- Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for `nvim-lint` and `mini.surround`.
+- `shellcheck` is now installed by Mason for shell files (used only when the `lint` extra is on).
+- `doc/tags` is generated on start; `:help loki` works after the first launch.
+
 ## 2026-10-03
  
 ### Added

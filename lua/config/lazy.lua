@@ -23,7 +23,7 @@ vim.opt.rtp:prepend(lazypath)
 -- contains a plugin file.
 local spec = { { import = "plugins" } }
 
--- Opt-in extras (vim.g.elite_extras, set in lua/user/options.lua). Each extra
+-- Opt-in extras (vim.g.loki_extras, set in lua/user/options.lua). Each extra
 -- that ships a plugin spec is imported only when enabled; see util/extras.lua.
 local extras = require("util.extras")
 for _, name in ipairs(extras.enabled()) do

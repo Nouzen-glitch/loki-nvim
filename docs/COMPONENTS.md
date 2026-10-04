@@ -27,7 +27,7 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | nvim-web-devicons | Icons | `plugins/ui.lua` |
 | toggleterm.nvim | Integrated terminal | `plugins/terminal.lua` |
 
-### Extras (off by default, `vim.g.elite_extras`, see [EXTRAS.md](EXTRAS.md))
+### Extras (off by default, `vim.g.loki_extras`, see [EXTRAS.md](EXTRAS.md))
 
 | Extra | Components | Configured in |
 | --- | --- | --- |
@@ -37,19 +37,22 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | database | vim-dadbod, vim-dadbod-ui, vim-dadbod-completion | `extras/database.lua` |
 | rest | built-in curl runner (no plugin) | `util/rest.lua` |
 | dap | nvim-dap, nvim-dap-ui, nvim-nio; adapters via mason-tool-installer | `extras/dap.lua` |
+| lint | nvim-lint (linters from the language table) | `extras/lint.lua` |
+| surround | mini.surround (`gs` prefix) | `extras/surround.lua` |
 
 
-Non-plugin code: `config/languages.lua` (language table) with
+Non-plugin code: `util/registry.lua` (every key, command and help topic: the single source of truth), `util/helpdoc.lua` (renders `:LokiHelp` and `doc/loki.txt`), `util/lsp.lua` (buffer-local LSP keys, `:LokiLsp`), `util/extras.lua` (extras registry), `util/rest.lua` (REST runner), `util/check_help.lua` and `util/smoke.lua` (the checks), `config/languages.lua` (language table) with
 `util/languages.lua` (derives plugin lists), `util/cheatsheet.lua`
 (generator, started from `init.lua`), `config/leader_groups.lua` (namespace
 labels), `util/user.lua` (loads your `lua/user/` files), `util/welcome.lua`
-(first-run install window, `:EliteInfo`), `util/lockfile.lua` (personal plugin
-lockfile, `:EliteLockReset`), `elite/health.lua` (`:checkhealth elite`).
-`util/keyguard.lua` (reports shipped keys your keymaps replace, `:EliteKeys`),
-`util/guide.lua` (`:EliteHelp`, `:EliteTutor`, `:EliteEdit`, `:EliteBackup`).
+(first-run install window, `:LokiInfo`), `util/lockfile.lua` (personal plugin
+lockfile, `:LokiLockReset`), `loki/health.lua` (`:checkhealth loki`).
+`util/keyguard.lua` (reports shipped keys your keymaps replace, `:LokiKeys`),
+`util/guide.lua` (`:LokiHelp [topic]`, `:LokiTutor`, `:LokiEdit`, `:LokiBackup`, `:LokiDocs`).
 
 Scripts (`scripts/`): `install.sh`, `uninstall.sh`, `update.sh`,
-`user-layer.sh`, `generate-cheatsheet.sh`, `smoke-test.sh`. `systemd/` holds optional
+`user-layer.sh`, `generate-cheatsheet.sh`, `smoke-test.sh`, `check-help.sh`,
+`gen-help.sh`, `install-watcher.sh`. `systemd/` holds optional
 cheatsheet watcher units (ENVIRONMENT_GUIDE.md, section 7). See [INSTALL.md](INSTALL.md).
 
 ## Language support
@@ -60,10 +63,10 @@ The source of truth is `lua/config/languages.lua` (defaults) plus your own
 | Language | LSP | Formatter | Tree-sitter |
 | --- | --- | --- | --- |
 | C / C++ | clangd | clang-format | c, cpp |
-| Python | basedpyright | ruff | python |
+| Python | basedpyright | ruff (linter: ruff, `lint` extra) | python |
 | Lua | lua_ls | stylua | lua, vim, vimdoc |
 | Rust | rust_analyzer | rustfmt | rust |
-| Bash / sh | bashls | shfmt | bash |
+| Bash / sh | bashls | shfmt (linter: shellcheck, `lint` extra) | bash |
 | JS / TS / React | ts_ls | prettier | javascript, typescript, tsx |
 | JSON / YAML | none | prettier | json, yaml |
 | Markdown | none | prettier | markdown, markdown_inline |
