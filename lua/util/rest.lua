@@ -70,11 +70,14 @@ function M.parse(lines)
     if #missing > 0 then
         return nil, "Environment variable(s) not set: " .. table.concat(missing, ", ")
     end
+    if not url:match("^https?://") then
+        return nil, "Only http:// and https:// URLs are supported (got: " .. url .. ")"
+    end
     return { method = method, url = url, headers = headers, body = body ~= "" and body or nil, used = used }
 end
 
 function M.command(req)
-    local cmd = { "curl", "-sS", "-i", "--max-time", "30", "-X", req.method }
+    local cmd = { "curl", "-sS", "-i", "--max-time", "30", "--proto", "=http,https", "-X", req.method }
     for _, h in ipairs(req.headers) do
         vim.list_extend(cmd, { "-H", h })
     end

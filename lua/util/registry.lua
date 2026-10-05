@@ -282,7 +282,8 @@ M.keys = {
       rhs = function()
           local gs = require("gitsigns")
           if vim.fn.mode():match("[vV\22]") then
-              gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+              local a, b = vim.fn.line("."), vim.fn.line("v")
+              gs.stage_hunk({ math.min(a, b), math.max(a, b) })
           else
               gs.stage_hunk()
           end
@@ -294,7 +295,8 @@ M.keys = {
       rhs = function()
           local gs = require("gitsigns")
           if vim.fn.mode():match("[vV\22]") then
-              gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+              local a, b = vim.fn.line("."), vim.fn.line("v")
+              gs.reset_hunk({ math.min(a, b), math.max(a, b) })
           else
               gs.reset_hunk()
           end

@@ -5,6 +5,11 @@
 -- so you can tweak a shipped plugin without editing its file.
 
 return {
+    -- Keeps this file a valid spec even when everything below stays commented
+    -- out (lazy.nvim errors on an imported file with no specs). Harmless: it
+    -- only merges an empty `opts` into the shipped trouble.nvim spec.
+    { "folke/trouble.nvim", opts = {} },
+
     -- Add a plugin of your own:
     -- { "ThePrimeagen/harpoon", branch = "harpoon2", dependencies = { "nvim-lua/plenary.nvim" } },
 

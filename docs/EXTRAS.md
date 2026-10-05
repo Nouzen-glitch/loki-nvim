@@ -95,7 +95,7 @@ Blocks are separated by `###`. `{{NAME}}` is replaced by the environment
 variable `NAME`; an unset variable stops the request with a message. Before a request that
 uses variables is sent, you are asked to confirm the host that will receive them. Keep
 tokens in the environment, never in the file. Not supported: scripting, request
-chaining, `.env` files. Prefer a full client? Add one from `lua/user/plugins/`.
+chaining, `.env` files, URLs other than http(s). Prefer a full client? Add one from `lua/user/plugins/`.
 
 ## dap
 

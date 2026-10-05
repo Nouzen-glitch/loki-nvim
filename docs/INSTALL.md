@@ -112,7 +112,7 @@ scripts/uninstall.sh [--appname NAME] [--dry-run] [--yes] [--help]
 
 | Flag | What it does |
 | --- | --- |
-| `--appname NAME` | Undo the install with that name. Without it the script looks for `loki`, then `nvim`. |
+| `--appname NAME` | Undo the install with that name. Without it the script looks for `loki`, then the old name `elite`, then `nvim`. |
 | `--dry-run` | Show what would happen; change nothing; no questions. |
 | `-y`, `--yes` | Do not ask for confirmation. Without it (and without `--dry-run`) it asks, and refuses to run when there is no terminal. |
 | `-h`, `--help` | Show usage. |
@@ -131,7 +131,7 @@ What it does:
 
 It handles **one install per run**. With both an alongside and a replace install
 (scenario D), run it once with `--appname loki` and once with `--appname nvim`;
-without `--appname` it stops at the first one it finds (`loki`, then `nvim`).
+without `--appname` it stops at the first one it finds (`loki`, `elite`, then `nvim`).
 
 It does **not** delete plugin data. For an alongside install it lists the
 `loki` data, state and cache folders so you can remove them for a clean
