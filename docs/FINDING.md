@@ -17,6 +17,9 @@ memorise keys: `<leader>?` lists them, `<leader>fk` searches them.
 | `<leader>fs` / `<leader>fS` | Symbols in this file / in the project (needs a server) |
 | `<leader>fd` | Diagnostics of open files |
 | `<leader>fG` | Changed files in git |
+| `<leader>fR` | Resume the last picker |
+| `<leader>fw` | Search the word under the cursor in the project (needs `ripgrep`) |
+| `<leader>f/` | Fuzzy search lines in this file |
 | `<leader>fh` | Neovim help (type `loki` for these pages) |
 | `<leader>fc` | Commands |
 | `<leader>fk` | Keymaps |

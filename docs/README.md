@@ -27,6 +27,7 @@ Targets Neovim 0.11+ (currently running 0.12.x) on Linux (developed on Fedora). 
 | [TERMINAL.md](TERMINAL.md) | The integrated terminal |
 | [CONCEPTS.md](CONCEPTS.md) | Buffers, windows, registers, marks, quickfix, macros, folds |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Every symptom with its cause and fix |
+| [VSCODE_GAP.md](VSCODE_GAP.md) | Honest comparison with VS Code: what is covered, what was added, what is still missing |
 | [TREESITTER_MIGRATION.md](TREESITTER_MIGRATION.md) | Plan (not done): nvim-treesitter `master` to `main` |
 | [ADDING_LANGUAGES.md](ADDING_LANGUAGES.md) | Adding a language: one line, nothing installed unless listed |
 | [COMPONENTS.md](COMPONENTS.md) | What each plugin/tool is and which file configures it |
@@ -134,7 +135,7 @@ First launch checklist:
     │   ├── completion.lua  formatting.lua  git.lua  lsp.lua
     │   ├── telescope.lua  terminal.lua  textobjects.lua
     │   └── treesitter.lua  ui.lua
-    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap, lint, surround (see docs/EXTRAS.md)
+    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history (see docs/EXTRAS.md)
     ├── user/                 YOUR options, keymaps and plugins (gitignored; *.example files show how)
     ├── loki/
     │   └── health.lua        :checkhealth loki
@@ -176,7 +177,7 @@ Where to change things:
 | Git signs | `plugins/git.lua` |
 | Text objects, auto-pairs, which-key labels | `plugins/textobjects.lua` |
 | Any key's description or help text, command help, help topics | `util/registry.lua`, then `scripts/gen-help.sh` |
-| Opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround) | `vim.g.loki_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
+| Opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history) | `vim.g.loki_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
 
 ## Day-one essentials
 

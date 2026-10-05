@@ -81,6 +81,7 @@ Details: [LSP.md](LSP.md).
 | `<leader>rn` | Rename symbol |
 | `<leader>ca` | Code action (n, v) |
 | `<leader>ih` | Toggle inlay hints |
+| `<leader>ci` / `<leader>co` | Call hierarchy: who calls this function / what it calls |
 | `<C-s>` (insert) | Signature help (Neovim built-in) |
 
 Neovim 0.11+ also provides defaults: `grn` rename, `gra` code action, `grr`
@@ -119,6 +120,9 @@ at full speed.
 | `<leader>fS` | Symbols in the project (needs a server) |
 | `<leader>fd` | Diagnostics of open files |
 | `<leader>fG` | Changed files in git, with a diff preview |
+| `<leader>fR` | Resume the last picker |
+| `<leader>fw` | Search the word under the cursor in the project |
+| `<leader>f/` | Fuzzy search lines in this file |
 | `<leader>?` | which-key: all keybindings |
 
 Keys inside Telescope, nvim-tree and Trouble are listed in [PLUGIN_KEYS.md](PLUGIN_KEYS.md).
@@ -193,7 +197,7 @@ what can follow, with a short description of each key.
 `d` Diagnostics and symbols, `i` Inlay hints, `r` Rename. Press `<leader>` and
 wait for which-key.
 
-Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients and `t` Debug. They
+Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks and `n` Tests. They
 exist only while the extra is enabled in `vim.g.loki_extras`.
 
 ## Extras keys
@@ -210,6 +214,13 @@ Declared only while the extra is enabled; see [EXTRAS.md](EXTRAS.md).
 | dap | `<leader>tb` `<leader>tc` `<leader>tu` `<leader>tx`, `<F5>` `<F9>` `<F10>` `<F11>` `<S-F11>` |
 | lint | `<leader>cl` lint now |
 | surround | `gsa` add, `gsd` delete, `gsr` replace |
+| diffview | `<leader>gd` diff view of all changes, `<leader>gh` history of this file, `<leader>gq` close |
+| replace | `<leader>R` search and replace in the project |
+| outline | `<leader>o` symbol outline |
+| tasks | `<leader>mr` run a task, `<leader>mt` task list |
+| test | `<leader>nn` nearest, `<leader>nf` file, `<leader>ns` explorer, `<leader>no` output, `<leader>nx` stop |
+| ui | indent guides and sticky scroll (no keys) |
+| history | `<leader>u` undo tree |
 
 ## Learning order
 

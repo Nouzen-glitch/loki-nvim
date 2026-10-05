@@ -2,6 +2,22 @@
 
 Newest first. `scripts/update.sh` prints the new entries when you update.
 
+## 2026-10-05
+
+Closes the gaps with VS Code that mattered most for daily programming. The full
+analysis, including what is still missing on purpose, is in
+[docs/VSCODE_GAP.md](docs/VSCODE_GAP.md).
+
+### Added
+- **Seven new opt-in extras** (off by default, enable in `vim.g.loki_extras`): `diffview` (diff of all changes, file history, 3-way merge: `<leader>gd` `gh` `gq`), `replace` (project-wide search and replace: `<leader>R`), `outline` (symbol sidebar: `<leader>o`), `tasks` (make / npm / cargo / `tasks.json`: `<leader>mr` `mt`), `test` (test explorer for pytest and jest: `<leader>nn` `nf` `ns` `no` `nx`), `ui` (indent guides and sticky scroll), `history` (undo tree: `<leader>u`).
+- JSON and YAML now have language servers (`jsonls`, `yamlls`) with schema validation from SchemaStore (`package.json`, `tsconfig.json`, GitHub workflows, docker-compose, ...). HTML, CSS, TOML and Dockerfile are default languages too.
+- Keys: `<leader>ci` / `<leader>co` (call hierarchy), `<leader>fR` (resume the last picker), `<leader>fw` (search the word under the cursor), `<leader>f/` (fuzzy search lines in this file).
+- `.github/workflows/ci.yml` runs `scripts/check-help.sh` and `scripts/smoke-test.sh` on Neovim 0.11 and stable.
+
+### Upgrade notes
+- Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for the new plugins (`SchemaStore.nvim` is installed for everyone; the extras' plugins only when enabled).
+- Mason installs `json-lsp`, `yaml-language-server`, `html-lsp`, `css-lsp`, `taplo` and `dockerfile-language-server` on the next start (needs Node.js). To keep the old behaviour for a language, put `json = { parser = "json", formatter = "prettier", tools = { "prettier" } },` (or `html = false`, `css = false`, ...) in `lua/config/languages_local.lua`.
+
 ## 2026-10-04
 
 ### Changed (rename)

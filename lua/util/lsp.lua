@@ -15,6 +15,8 @@ M.actions = {
     code_action = function() vim.lsp.buf.code_action() end,
     type_definition = function() vim.lsp.buf.type_definition() end,
     document_symbol = function() vim.lsp.buf.document_symbol() end,
+    incoming_calls = function() vim.lsp.buf.incoming_calls() end,
+    outgoing_calls = function() vim.lsp.buf.outgoing_calls() end,
     inlay_hints = function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
     end,

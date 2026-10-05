@@ -25,9 +25,17 @@ enabled extra is missing (always a warning, never an error).
 | `dap` | Debugging with a variables UI | Python 3 (debugpy), Node.js (JS); Mason installs the adapters | `<leader>t…`, F-keys |
 | `lint` | Linting on save (nvim-lint) | the linter programs (`ruff`, `shellcheck` by default; Mason installs them) | `<leader>cl` |
 | `surround` | Add / delete / replace surrounding quotes and brackets (mini.surround) | nothing | `gsa` `gsd` `gsr` |
+| `diffview` | Diff view of all changes, file history, 3-way merge (diffview.nvim) | `git` | `<leader>gd` `gh` `gq` |
+| `replace` | Search and replace across the project (grug-far.nvim) | `ripgrep` | `<leader>R` |
+| `outline` | Symbol outline sidebar (aerial.nvim) | nothing (better with a language server) | `<leader>o` |
+| `tasks` | Run make / npm / cargo / just / `tasks.json` tasks (overseer.nvim) | the task runner itself | `<leader>mr` `mt` |
+| `test` | Test explorer for Python and JavaScript (neotest) | `pytest` or `jest` in the project | `<leader>n…` |
+| `ui` | Indent guides and sticky scroll (indent-blankline, treesitter-context) | nothing | none |
+| `history` | Visual undo tree (undotree) | nothing | `<leader>u` |
 
 Prefixes added by extras (declared only while the extra is enabled): `s`
-Session, `k` Clients, `t` Debug. `surround` uses the `gs` prefix.
+Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests.
+`surround` uses the `gs` prefix.
 
 ## sessions
 
@@ -168,6 +176,94 @@ make the plain `s` key wait). Keys that wrap or unwrap text:
 `gsf`, `gsF`, `gsh` and `gsn` find, highlight and change the search range
 (`:help MiniSurround`). Common failure: a delay after `gs` is the popup waiting
 for the next key.
+
+## diffview
+
+Uses `sindrets/diffview.nvim`. The closest thing to VS Code's Source Control
+panel and Timeline: `gitsigns` (always on) handles single hunks, Diffview shows
+the whole change set.
+
+| Key | Action |
+| --- | --- |
+| `<leader>gd` | Diff view of every changed file, with a file list |
+| `<leader>gh` | History of this file: each commit that touched it |
+| `<leader>gq` | Close the Diffview tab |
+
+Inside the file list `-` stages or unstages a file, `<Tab>` / `<S-Tab>` move
+between files and `g?` lists every key. Files with merge conflicts open a 3-way
+view (`:help diffview-merge-tool`). Committing is still done in a terminal (`<C-\>`).
+
+## replace
+
+Uses `MagicDuck/grug-far.nvim`. `<leader>R` opens a buffer with a search
+field, a replacement field and a live list of matches across the project. Edit
+the replacement, then press `<localleader>r` inside that buffer (the local
+leader is Space too, so Space then `r`) to apply it; `g?` lists its keys. In Visual mode the selection
+becomes the search text. Needs `ripgrep`. `:GrugFar` is the same as the key.
+
+## outline
+
+Uses `stevearc/aerial.nvim`. `<leader>o` toggles a sidebar of the functions,
+classes and headings of the file (from the language server, then tree-sitter,
+then Markdown headings). `<CR>` jumps, `{` / `}` move between symbols, `?`
+lists its keys, `q` closes it.
+
+## tasks
+
+Uses `stevearc/overseer.nvim`. It finds tasks in `Makefile`, `package.json`,
+`Cargo.toml`, `justfile`, `.vscode/tasks.json` and more.
+
+| Key | Action |
+| --- | --- |
+| `<leader>mr` | Pick a task and run it |
+| `<leader>mt` | Toggle the task list and output |
+
+Add your own task templates from `lua/user/plugins/` with an overseer `opts`
+table (`:help overseer-templates`).
+
+## test
+
+Uses `nvim-neotest/neotest` with the `neotest-python` and `neotest-jest`
+adapters (pytest / unittest and jest). The sign column marks each test passed
+or failed.
+
+| Key | Action |
+| --- | --- |
+| `<leader>nn` | Run the test nearest the cursor |
+| `<leader>nf` | Run every test in this file |
+| `<leader>ns` | Toggle the test explorer |
+| `<leader>no` | Show the output of the nearest test |
+| `<leader>nx` | Stop the running tests |
+
+**Add or change an adapter** without editing shipped files, in
+`lua/user/options.lua`. Install the adapter plugin from `lua/user/plugins/`,
+then:
+
+```lua
+vim.api.nvim_create_autocmd("User", {
+    pattern = "LokiNeotestSetup",
+    callback = function()
+        -- call require("neotest").setup({ adapters = { ... } }) again with the full list
+    end,
+})
+```
+
+Common failure: nothing runs because `pytest` / `jest` is not installed in the
+project (activate the virtualenv, or run `npm install`, before starting Neovim).
+
+## ui
+
+Uses `lukas-reineke/indent-blankline.nvim` and
+`nvim-treesitter/nvim-treesitter-context`. No keys. Indent guides are drawn as
+thin vertical lines; sticky scroll pins up to three lines (the function or class
+you are inside) at the top of the window. `:IBLToggle` and `:TSContextToggle`
+switch them for the session. Sticky scroll needs a parser for the filetype.
+
+## history
+
+Uses `mbbill/undotree`. `<leader>u` shows every state of the file as a tree
+with a diff of the selected state; `<CR>` restores it. Persistent undo is on
+(`undofile`), so the history survives restarts.
 
 ## Persistent terminals (detach / reattach)
 

@@ -21,9 +21,58 @@ local function has(name)
     return vim.fn.executable(name) == 1
 end
 
-M.order = { "sessions", "dashboard", "docker", "database", "rest", "dap", "lint", "surround" }
+M.order = { "sessions", "dashboard", "docker", "database", "rest", "dap", "lint", "surround",
+    "diffview", "replace", "outline", "tasks", "test", "ui", "history" }
 
 M.registry = {
+    diffview = {
+        desc = "Diff view of all changes, file history and a 3-way merge tool (diffview.nvim)",
+        plugins = true,
+        groups = { { key = "g", label = "Git views (diff, history)" } },
+        health = function(c)
+            c.check_tool("git", c.h.error, "Needed by the diffview extra.")
+        end,
+    },
+
+    replace = {
+        desc = "Search and replace across the project with a live preview (grug-far.nvim)",
+        plugins = true,
+        health = function(c)
+            c.check_tool("rg", c.h.warn, "The replace extra searches with ripgrep.")
+        end,
+    },
+
+    outline = {
+        desc = "Symbol outline sidebar: functions, classes, headings (aerial.nvim)",
+        plugins = true,
+    },
+
+    tasks = {
+        desc = "Run and watch tasks: make, npm, cargo, just, tasks.json (overseer.nvim)",
+        plugins = true,
+        groups = { { key = "m", label = "Make / tasks" } },
+    },
+
+    test = {
+        desc = "Test explorer for Python (pytest) and JavaScript (jest) (neotest)",
+        plugins = true,
+        groups = { { key = "n", label = "Tests" } },
+        health = function(c)
+            c.check_tool("python3", c.h.info, "The Python adapter runs pytest or unittest with it.")
+            c.check_tool("node", c.h.info, "The jest adapter runs tests with Node.js (npx jest).")
+        end,
+    },
+
+    ui = {
+        desc = "Indent guides and sticky scroll: the current function stays pinned at the top",
+        plugins = true,
+    },
+
+    history = {
+        desc = "Visual undo tree, like a per-file timeline (undotree)",
+        plugins = true,
+    },
+
     sessions = {
         desc = "Restore the files and splits you had open in a folder (persistence.nvim)",
         plugins = true,

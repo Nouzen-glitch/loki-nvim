@@ -4,8 +4,7 @@
 
 return {
     go   = { lsp = "gopls", parser = "go", formatter = "gofumpt", tools = { "gofumpt" } },
-    html = { lsp = "html", parser = "html", formatter = "prettier", tools = { "prettier" } },
-    css  = { lsp = "cssls", parser = "css", formatter = "prettier" },
+    zig  = { lsp = "zls", parser = "zig", formatter = "zigfmt" },
 
     -- Turn a default language off entirely:
     -- rust = false,

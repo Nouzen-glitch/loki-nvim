@@ -25,6 +25,7 @@ print a short notice that points at `:LokiLsp`, instead of an error.
 | `<leader>ds` | Symbols of this file (location list) |
 | `<leader>fs` / `<leader>fS` | Symbols of this file / the project, in Telescope |
 | `<leader>ih` | Toggle inlay hints |
+| `<leader>ci` / `<leader>co` | Call hierarchy: who calls this function / what it calls (quickfix list) |
 | `<C-s>` (Insert) | Signature help |
 
 Example: put the cursor on a function call, `gd` jumps to its definition, `<C-o>`

@@ -174,6 +174,14 @@ M.keys = {
           .. "Not every server provides them.",
       see = "docs/LSP.md" },
 
+    { group = "LSP", mode = "n", lhs = "<leader>ci", lsp = "incoming_calls", desc = "Call hierarchy: who calls this function",
+      long = "Lists every function that calls the one under the cursor, in the quickfix window. Move with j/k and press Enter to jump. "
+          .. "It is the call-hierarchy view of VS Code.",
+      see = "docs/LSP.md" },
+    { group = "LSP", mode = "n", lhs = "<leader>co", lsp = "outgoing_calls", desc = "Call hierarchy: what this function calls",
+      long = "Lists every function that the function under the cursor calls, in the quickfix window. Not every server supports call hierarchy.",
+      see = "docs/LSP.md" },
+
     -- ===================================================================
     -- Diagnostics
     -- ===================================================================
@@ -254,6 +262,16 @@ M.keys = {
     { group = "Find", mode = "n", lhs = "<leader>?", rhs = function() require("which-key").show({ global = true }) end,
       desc = "Show all keybindings",
       long = "Opens the which-key popup with every global key, grouped by prefix.",
+      see = "docs/FINDING.md" },
+
+    { group = "Find", mode = "n", lhs = "<leader>fR", rhs = "<cmd>Telescope resume<cr>", desc = "Resume the last picker",
+      long = "Reopens the previous Telescope picker with its query and selection, so you can step back out of a file you opened from a long result list.",
+      see = "docs/FINDING.md" },
+    { group = "Find", mode = "n", lhs = "<leader>fw", rhs = "<cmd>Telescope grep_string<cr>", desc = "Search the word under the cursor in the project",
+      long = "Searches every file for the word under the cursor and lists the matches. It needs ripgrep (rg), like <leader>fg.",
+      see = "docs/FINDING.md" },
+    { group = "Find", mode = "n", lhs = "<leader>f/", rhs = "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Fuzzy search lines in this file",
+      long = "Fuzzy-searches the lines of the current file and jumps to the one you pick, like VS Code's Ctrl+F with a result list.",
       see = "docs/FINDING.md" },
 
     -- ===================================================================
@@ -440,6 +458,70 @@ M.keys = {
       long = "gsd followed by the character removes it: gsd\" removes the quotes around the cursor.", see = "docs/EXTRAS.md#surround" },
     { extra = "surround", group = "Surround", set = false, mode = "n", lhs = "gsr", desc = "Surround: replace the surrounding character",
       long = "gsr followed by the old and the new character: gsr\"' changes double quotes to single quotes.", see = "docs/EXTRAS.md#surround" },
+    { extra = "diffview", group = "Git views", mode = "n", lhs = "<leader>gd", rhs = "<cmd>DiffviewOpen<cr>",
+      desc = "Diff view: every changed file, side by side",
+      long = "Opens a two-pane diff of all uncommitted changes with a file list, like the VS Code Source Control panel. "
+          .. "Stage files with - in the list; conflicted files open a 3-way merge view.",
+      see = "docs/EXTRAS.md#diffview" },
+    { extra = "diffview", group = "Git views", mode = "n", lhs = "<leader>gh", rhs = "<cmd>DiffviewFileHistory %<cr>",
+      desc = "History of this file (every commit that touched it)",
+      long = "Lists the commits that changed the current file and shows each diff, like the VS Code Timeline view.",
+      see = "docs/EXTRAS.md#diffview" },
+    { extra = "diffview", group = "Git views", mode = "n", lhs = "<leader>gq", rhs = "<cmd>DiffviewClose<cr>",
+      desc = "Close the diff view",
+      long = "Closes the Diffview tab opened by <leader>gd or <leader>gh and returns to your files.",
+      see = "docs/EXTRAS.md#diffview" },
+    { extra = "replace", group = "Replace", mode = { "n", "v" }, lhs = "<leader>R",
+      rhs = function()
+          local gf = require("grug-far")
+          if vim.fn.mode():match("[vV\22]") then
+              gf.with_visual_selection()
+          else
+              gf.open()
+          end
+      end,
+      desc = "Search and replace in the whole project",
+      long = "Opens an editable results buffer: type a search and a replacement, see every match across the project live, and apply them all or per line. "
+          .. "In Visual mode the selection is the search text. It needs ripgrep (rg).",
+      see = "docs/EXTRAS.md#replace" },
+    { extra = "outline", group = "Outline", mode = "n", lhs = "<leader>o", rhs = "<cmd>AerialToggle!<cr>",
+      desc = "Toggle the symbol outline (functions, classes)",
+      long = "Opens or closes a sidebar listing the functions, classes and headings of this file, like the VS Code Outline. "
+          .. "Enter jumps to a symbol; the cursor position is followed as you move.",
+      see = "docs/EXTRAS.md#outline" },
+    { extra = "tasks", group = "Tasks", mode = "n", lhs = "<leader>mr", rhs = "<cmd>OverseerRun<cr>",
+      desc = "Run a task (make, npm, cargo, just, tasks.json)",
+      long = "Lists the tasks found in this project (Makefile, package.json scripts, cargo, just, .vscode/tasks.json) and runs the one you pick.",
+      see = "docs/EXTRAS.md#tasks" },
+    { extra = "tasks", group = "Tasks", mode = "n", lhs = "<leader>mt", rhs = "<cmd>OverseerToggle<cr>",
+      desc = "Toggle the task list and its output",
+      long = "Shows or hides the list of running and finished tasks. Press <CR> on a task for actions, and ? inside the list for its keys.",
+      see = "docs/EXTRAS.md#tasks" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>nn", rhs = function() require("neotest").run.run() end,
+      desc = "Test: run the test nearest the cursor",
+      long = "Runs the single test the cursor is inside, using the adapter for the filetype (pytest or jest by default).",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>nf", rhs = function() require("neotest").run.run(vim.fn.expand("%")) end,
+      desc = "Test: run every test in this file",
+      long = "Runs all the tests of the current file and marks each one passed or failed in the sign column.",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>ns", rhs = function() require("neotest").summary.toggle() end,
+      desc = "Test: toggle the test explorer",
+      long = "Shows or hides the tree of every test in the project with its last result, like the VS Code Testing view. Enter runs the one under the cursor.",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>no", rhs = function() require("neotest").output.open({ enter = true }) end,
+      desc = "Test: show the output of the nearest test",
+      long = "Opens a float with the full output and error message of the test nearest the cursor.",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>nx", rhs = function() require("neotest").run.stop() end,
+      desc = "Test: stop the running tests",
+      long = "Stops the tests that are running right now.",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "history", group = "History", mode = "n", lhs = "<leader>u", rhs = "<cmd>UndotreeToggle<cr>",
+      desc = "Toggle the undo tree (every edit of this file)",
+      long = "Shows every state of the file as a tree, including branches that plain undo cannot reach, with a diff of the selected state. "
+          .. "Enter on a state restores it. Undo history survives restarts.",
+      see = "docs/EXTRAS.md#history" },
 }
 
 -- Which :LokiHelp topic and docs section each key group belongs to.
@@ -449,6 +531,7 @@ M.group_topic = {
     Find = "files", Explorer = "files",
     Git = "git", Terminal = "terminal",
     Sessions = "extras", Clients = "extras", Debug = "extras", Code = "extras", Surround = "extras",
+    ["Git views"] = "extras", Replace = "extras", Outline = "extras", Tasks = "extras", Tests = "extras", History = "extras",
 }
 
 -- ===========================================================================
@@ -582,10 +665,10 @@ M.topics = {
         intro = {
             "Heavier features are off until you enable them in lua/user/options.lua, then restart:",
             "  vim.g.loki_extras = { \"sessions\", \"dashboard\", \"dap\" }",
-            ":LokiExtras lists them: sessions, dashboard, docker, database, rest, dap, lint, surround.",
+            ":LokiExtras lists them: sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history.",
             "Keys below exist only while their extra is enabled.",
         },
-        groups = { "Sessions", "Clients", "Debug", "Code", "Surround" },
+        groups = { "Sessions", "Clients", "Debug", "Code", "Surround", "Git views", "Replace", "Outline", "Tasks", "Tests", "History" },
         commands = { "LokiExtras", "LokiRest" },
         see = "docs/EXTRAS.md",
         fail = {

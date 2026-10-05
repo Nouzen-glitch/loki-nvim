@@ -6,6 +6,7 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 
 | Component | Purpose | Configured in |
 | --- | --- | --- |
+| SchemaStore.nvim | JSON / YAML schemas for jsonls and yamlls | `plugins/lsp.lua` |
 | lazy.nvim | Plugin manager (quiet update checker on; personal lockfile) | `config/lazy.lua`, `util/lockfile.lua` |
 | nvim-lspconfig | LSP server definitions | `plugins/lsp.lua` |
 | mason.nvim | Installs LSPs and tools | `plugins/lsp.lua` |
@@ -39,6 +40,13 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | dap | nvim-dap, nvim-dap-ui, nvim-nio; adapters via mason-tool-installer | `extras/dap.lua` |
 | lint | nvim-lint (linters from the language table) | `extras/lint.lua` |
 | surround | mini.surround (`gs` prefix) | `extras/surround.lua` |
+| diffview | diffview.nvim | `extras/diffview.lua` |
+| replace | grug-far.nvim | `extras/replace.lua` |
+| outline | aerial.nvim | `extras/outline.lua` |
+| tasks | overseer.nvim | `extras/tasks.lua` |
+| test | neotest, neotest-python, neotest-jest | `extras/test.lua` |
+| ui | indent-blankline.nvim, nvim-treesitter-context | `extras/ui.lua` |
+| history | undotree | `extras/history.lua` |
 
 
 Non-plugin code: `util/registry.lua` (every key, command and help topic: the single source of truth), `util/helpdoc.lua` (renders `:LokiHelp` and `doc/loki.txt`), `util/lsp.lua` (buffer-local LSP keys, `:LokiLsp`), `util/extras.lua` (extras registry), `util/rest.lua` (REST runner), `util/check_help.lua` and `util/smoke.lua` (the checks), `config/languages.lua` (language table) with
@@ -68,10 +76,13 @@ The source of truth is `lua/config/languages.lua` (defaults) plus your own
 | Rust | rust_analyzer | rustfmt | rust |
 | Bash / sh | bashls | shfmt (linter: shellcheck, `lint` extra) | bash |
 | JS / TS / React | ts_ls | prettier | javascript, typescript, tsx |
-| JSON / YAML | none | prettier | json, yaml |
+| JSON / YAML | jsonls / yamlls (schemas from SchemaStore) | prettier | json, yaml |
+| HTML / CSS | html / cssls | prettier | html, css |
+| TOML | taplo | taplo | toml |
+| Dockerfile | dockerls | none | dockerfile |
 | Markdown | none | prettier | markdown, markdown_inline |
 
-Anything else (Go, HTML/CSS, TOML, Java, ...) is opt-in through
+Anything else (Go, Java, ...) is opt-in through
 `config/languages_local.lua`.
 
 `auto_install` fetches other parsers on demand. Formatter tools install via

@@ -232,6 +232,15 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
         Shows or hides the small hints that servers draw inside the code, such
         as parameter names. Not every server provides them.
 
+    `<leader>ci` [n] Call hierarchy: who calls this function
+        Lists every function that calls the one under the cursor, in the
+        quickfix window. Move with j/k and press Enter to jump. It is the
+        call-hierarchy view of VS Code.
+
+    `<leader>co` [n] Call hierarchy: what this function calls
+        Lists every function that the function under the cursor calls, in the
+        quickfix window. Not every server supports call hierarchy.
+
 
     Diagnostics
     `[d` [n] Previous diagnostic (opens its message)
@@ -427,6 +436,18 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     `<leader>?` [n] Show all keybindings
         Opens the which-key popup with every global key, grouped by prefix.
 
+    `<leader>fR` [n] Resume the last picker
+        Reopens the previous Telescope picker with its query and selection, so
+        you can step back out of a file you opened from a long result list.
+
+    `<leader>fw` [n] Search the word under the cursor in the project
+        Searches every file for the word under the cursor and lists the
+        matches. It needs ripgrep (rg), like <leader>fg.
+
+    `<leader>f/` [n] Fuzzy search lines in this file
+        Fuzzy-searches the lines of the current file and jumps to the one you
+        pick, like VS Code's Ctrl+F with a result list.
+
 
     Explorer
     `<leader>e` [n] Toggle file explorer
@@ -494,7 +515,7 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     restart:
   vim.g.loki_extras = { "sessions", "dashboard", "dap" }
     :LokiExtras lists them: sessions, dashboard, docker, database, rest, dap,
-    lint, surround.
+    lint, surround, diffview, replace, outline, tasks, test, ui, history.
     Keys below exist only while their extra is enabled.
 
     Sessions
@@ -574,6 +595,75 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     `gsr` [n] Surround: replace the surrounding character
         gsr followed by the old and the new character: gsr"' changes double
         quotes to single quotes.
+
+
+    Git views
+    `<leader>gd` [n] Diff view: every changed file, side by side
+        Opens a two-pane diff of all uncommitted changes with a file list,
+        like the VS Code Source Control panel. Stage files with - in the list;
+        conflicted files open a 3-way merge view.
+
+    `<leader>gh` [n] History of this file (every commit that touched it)
+        Lists the commits that changed the current file and shows each diff,
+        like the VS Code Timeline view.
+
+    `<leader>gq` [n] Close the diff view
+        Closes the Diffview tab opened by <leader>gd or <leader>gh and returns
+        to your files.
+
+
+    Replace
+    `<leader>R` [n,v] Search and replace in the whole project
+        Opens an editable results buffer: type a search and a replacement, see
+        every match across the project live, and apply them all or per line.
+        In Visual mode the selection is the search text. It needs ripgrep
+        (rg).
+
+
+    Outline
+    `<leader>o` [n] Toggle the symbol outline (functions, classes)
+        Opens or closes a sidebar listing the functions, classes and headings
+        of this file, like the VS Code Outline. Enter jumps to a symbol; the
+        cursor position is followed as you move.
+
+
+    Tasks
+    `<leader>mr` [n] Run a task (make, npm, cargo, just, tasks.json)
+        Lists the tasks found in this project (Makefile, package.json scripts,
+        cargo, just, .vscode/tasks.json) and runs the one you pick.
+
+    `<leader>mt` [n] Toggle the task list and its output
+        Shows or hides the list of running and finished tasks. Press <CR> on a
+        task for actions, and ? inside the list for its keys.
+
+
+    Tests
+    `<leader>nn` [n] Test: run the test nearest the cursor
+        Runs the single test the cursor is inside, using the adapter for the
+        filetype (pytest or jest by default).
+
+    `<leader>nf` [n] Test: run every test in this file
+        Runs all the tests of the current file and marks each one passed or
+        failed in the sign column.
+
+    `<leader>ns` [n] Test: toggle the test explorer
+        Shows or hides the tree of every test in the project with its last
+        result, like the VS Code Testing view. Enter runs the one under the
+        cursor.
+
+    `<leader>no` [n] Test: show the output of the nearest test
+        Opens a float with the full output and error message of the test
+        nearest the cursor.
+
+    `<leader>nx` [n] Test: stop the running tests
+        Stops the tests that are running right now.
+
+
+    History
+    `<leader>u` [n] Toggle the undo tree (every edit of this file)
+        Shows every state of the file as a tree, including branches that plain
+        undo cannot reach, with a diff of the selected state. Enter on a state
+        restores it. Undo history survives restarts.
 
 
     Commands

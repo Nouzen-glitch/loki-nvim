@@ -33,9 +33,16 @@ return {
     typescript      = { lsp = "ts_ls", parser = "typescript", formatter = "prettier", tools = { "prettier" } },
     typescriptreact = { parser = "tsx", formatter = "prettier", tools = { "prettier" } },
 
-    json     = { parser = "json", formatter = "prettier", tools = { "prettier" } },
-    yaml     = { parser = "yaml", formatter = "prettier", tools = { "prettier" } },
+    -- jsonls and yamlls validate against schemas from SchemaStore (see plugins/lsp.lua).
+    json     = { lsp = "jsonls", parser = "json", formatter = "prettier", tools = { "prettier" } },
+    yaml     = { lsp = "yamlls", parser = "yaml", formatter = "prettier", tools = { "prettier" } },
     markdown = { parser = { "markdown", "markdown_inline" }, formatter = "prettier", tools = { "prettier" } },
+
+    html = { lsp = "html", parser = "html", formatter = "prettier", tools = { "prettier" } },
+    css  = { lsp = "cssls", parser = "css", formatter = "prettier", tools = { "prettier" } },
+    toml = { lsp = "taplo", parser = "toml", formatter = "taplo", tools = { "taplo" } },
+
+    dockerfile = { lsp = "dockerls", parser = "dockerfile" },
 
     vim = { parser = { "vim", "vimdoc" } },
 }

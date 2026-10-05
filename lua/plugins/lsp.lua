@@ -7,6 +7,7 @@ return {
         dependencies = {
             "mason-org/mason.nvim",
             "mason-org/mason-lspconfig.nvim",
+            "b0o/SchemaStore.nvim",
         },
         config = function()
             -- Servers come from config/languages.lua (+ languages_local.lua).
@@ -25,6 +26,23 @@ return {
             local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
             if ok_cmp then
                 vim.lsp.config("*", { capabilities = cmp_lsp.default_capabilities() })
+            end
+
+            -- JSON and YAML get validation and completion from SchemaStore
+            -- (package.json, tsconfig, GitHub workflows, docker-compose, ...).
+            local ok_ss, schemastore = pcall(require, "schemastore")
+            if ok_ss then
+                vim.lsp.config("jsonls", {
+                    settings = { json = { schemas = schemastore.json.schemas(), validate = { enable = true } } },
+                })
+                vim.lsp.config("yamlls", {
+                    settings = {
+                        yaml = {
+                            schemaStore = { enable = false, url = "" },
+                            schemas = schemastore.yaml.schemas(),
+                        },
+                    },
+                })
             end
 
             vim.lsp.config("lua_ls", {

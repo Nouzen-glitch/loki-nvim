@@ -25,6 +25,6 @@ if [[ -z "${NVIM_APPNAME:-}" ]]; then
 fi
 
 nvim --headless \
-    --cmd "lua vim.g.loki_extras = { 'sessions', 'dashboard', 'docker', 'database', 'rest', 'dap', 'lint', 'surround' }" \
+    --cmd "lua vim.g.loki_extras = { 'sessions', 'dashboard', 'docker', 'database', 'rest', 'dap', 'lint', 'surround', 'diffview', 'replace', 'outline', 'tasks', 'test', 'ui', 'history' }" \
     "+lua require('util.check_help').run()" \
     "+qa" 2>&1
