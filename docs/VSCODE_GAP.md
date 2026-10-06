@@ -31,13 +31,22 @@ editor ones.
 | Call hierarchy | None | `<leader>ci` / `<leader>co` |
 | Search in file, word under cursor, reopen last search | Missing | `<leader>f/`, `<leader>fw`, `<leader>fR` |
 | CI that keeps keys, docs and help in sync | Manual scripts only | `.github/workflows/ci.yml` (Neovim 0.11 and stable) |
+| launch.json, conditional breakpoints, logpoints, Go debugging | Not read / missing | `dap` extra (extended) |
+| Commit and push UI | Hunks only | `git-ui` extra (lazygit): `<leader>gg` |
+| GitHub pull requests and issues | None | `github` extra: `<leader>Gp` `Gi` `Gr` |
+| Tests for Go, Rust, C++ (GoogleTest), Vitest | Python and Jest only | `test` extra (extended) |
+| Language setup for Go, PHP, C#, Ruby, Zig; Java | One table line each; Java not possible | `vim.g.loki_language_presets`; `java` extra |
+| Task output in problems, rerun last task | Output only | `tasks` extra (extended) |
+| Markdown preview, images | None | `preview` extra |
+| AI assistant | Not shipped | Documented route and `ai` extra ([AI.md](AI.md)) |
+| Remote development | Not shipped | Documented ([REMOTE.md](REMOTE.md)); no remote-workspace feature |
 
 ## Still missing (not changed in this pass)
 
 | Gap | Why it was left |
 | --- | --- |
-| AI assistant and inline completions (Copilot-style) | Needs a vendor decision, and keys must come from the environment; see the note in [EXTRAS.md](EXTRAS.md) |
-| Remote development (SSH, containers, WSL as a workspace) | No equivalent plugin worth shipping; running Neovim inside `tmux` over SSH is the usual answer |
+| Inline completions (Copilot-style) | Needs a vendor decision; an assistant CLI is documented ([AI.md](AI.md)) and the `ai` extra opens it |
+| Remote workspaces (VS Code Remote) | Documented only ([REMOTE.md](REMOTE.md)): run Neovim on the remote host inside `tmux` |
 | Native Windows installer, tested macOS support | WSL 2 is the supported Windows route; macOS is untested and the scripts use GNU tools |
 | Function text objects (`af` / `if`) | Open item 1 in `HANDOFF.md`; needs `nvim-treesitter-textobjects` and ties into the tree-sitter `main` migration |
 | Multi-cursor (Ctrl+D) | Vim covers it with `*` then `cgn`, `:s` and Visual-block; a plugin would fight the key scheme |
@@ -65,5 +74,6 @@ installed from GitHub:
 - Anything interactive (the look of the diff view, outline, indent guides) and
   Neovim 0.12.
 - The CI workflow itself, which only runs on GitHub.
+- Everything added by the roadmap (phases 1 to 7) was written, not run: launch.json loading, delve, octo, lazygit, the neotest adapters, overseer's tasks.json components and `restart` action, `java`, `preview` and image rendering, and the Mason names of the language presets. PDF display was left out.
 
 Adopt the new plugin versions with `:LokiLockReset`, restart, then `:Lazy restore`.

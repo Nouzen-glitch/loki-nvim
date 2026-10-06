@@ -515,7 +515,8 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     restart:
   vim.g.loki_extras = { "sessions", "dashboard", "dap" }
     :LokiExtras lists them: sessions, dashboard, docker, database, rest, dap,
-    lint, surround, diffview, replace, outline, tasks, test, ui, history.
+    lint, surround, diffview, replace, outline, tasks, test, ui, history, git-ui,
+    github, preview, java, ai.
     Keys below exist only while their extra is enabled.
 
     Sessions
@@ -574,6 +575,27 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
 
     `<S-F11>` [n] Debug: step out
         Runs until the current function returns.
+
+    `<leader>tB` [n] Debug: conditional breakpoint
+        Asks for an expression and sets a breakpoint on the cursor line that
+        only stops when the expression is true.
+
+    `<leader>tl` [n] Debug: logpoint (print a message, do not stop)
+        Asks for a message and sets a logpoint on the cursor line. The message
+        is printed in the debug console and execution does not stop. Use
+        {name} to include a variable.
+
+    `<leader>te` [n,v] Debug: evaluate the expression under the cursor
+        Evaluates the word under the cursor, or the Visual selection, in the
+        running debug session and shows the result in a float.
+
+    `<leader>tr` [n] Debug: run to the cursor line
+        Continues the session and stops at the cursor line, without setting a
+        permanent breakpoint.
+
+    `<leader>tR` [n] Debug: restart the session
+        Restarts the running debug session with the same configuration, if the
+        adapter supports it.
 
 
     Code
@@ -664,6 +686,62 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
         Shows every state of the file as a tree, including branches that plain
         undo cannot reach, with a diff of the selected state. Enter on a state
         restores it. Undo history survives restarts.
+
+
+    Git views
+    `<leader>gg` [n] Git UI: lazygit in a floating terminal
+        Opens lazygit: stage lines or files, commit, push, pull, switch
+        branches and resolve conflicts. It needs lazygit installed; otherwise
+        you get a message. Close it with q.
+
+
+    GitHub
+    `<leader>Gp` [n] GitHub: list pull requests
+        Lists the pull requests of this repository in a picker. Enter opens
+        one in an editable buffer. Needs the gh CLI, logged in with gh auth
+        login.
+
+    `<leader>Gi` [n] GitHub: list issues
+        Lists the open issues of this repository in a picker. Enter opens one
+        in an editable buffer. Needs the gh CLI, logged in.
+
+    `<leader>Gr` [n] GitHub: start a review of this pull request
+        Run it in a pull request buffer (open one with <leader>Gp). Starts a
+        review: add comments on lines, then submit from the review panel.
+
+
+    Preview
+    `<leader>pm` [n] Preview this Markdown file in the browser (toggle)
+        Opens a live preview of the current Markdown file in your browser and
+        closes it on the second press. It follows the cursor as you type.
+
+
+    AI
+    `<leader>aa` [n] AI assistant: toggle its terminal on the right
+        Opens or hides the command named in vim.g.loki_ai_cmd in a terminal on
+        the right. It keeps running while hidden. Leave the terminal with
+        <C-h>; jk and <Esc> go to the program.
+
+
+    Tests
+    `<leader>nd` [n] Test: debug the nearest test
+        Runs the nearest test under the debugger. It exists only when the dap
+        extra is enabled too, and the adapter must support debugging (Go also
+        needs nvim-dap-go).
+
+    `<leader>nl` [n] Test: run the last test again
+        Repeats the previous test run (nearest, file or other) without moving
+        the cursor back.
+
+
+    Tasks
+    `<leader>ml` [n] Run the last task again
+        Restarts the most recent task from the task list, so you can repeat a
+        build without picking it again.
+
+    `<leader>mq` [n] Show task errors (quickfix list)
+        Opens the quickfix list, where the output of tasks that report errors
+        lands. Walk it with ]q and [q or :cnext and :cprev.
 
 
     Commands

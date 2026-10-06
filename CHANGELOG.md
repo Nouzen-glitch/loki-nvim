@@ -2,6 +2,24 @@
 
 Newest first. `scripts/update.sh` prints the new entries when you update.
 
+## Unreleased
+
+### Added
+- **Five opt-in extras:** `git-ui` (lazygit: `<leader>gg`), `github` (octo.nvim: `<leader>Gp` `Gi` `Gr`), `preview` (Markdown in the browser `<leader>pm`; terminal images on kitty-graphics terminals), `java` (jdtls through nvim-jdtls), `ai` (an assistant CLI in a side terminal: `<leader>aa`, set `vim.g.loki_ai_cmd`).
+- `dap`: reads `.vscode/launch.json`, Go (delve), argument prompts, attach configurations, conditional breakpoint `<leader>tB`, logpoint `<leader>tl`, evaluate `<leader>te`, run to cursor `<leader>tr`, restart `<leader>tR`.
+- `test`: Go, Rust (cargo-nextest), C/C++ (GoogleTest) and Vitest adapters, each loaded safely; `<leader>nl` (run last), `<leader>nd` (debug nearest, with `dap`); adapters can be added with `User LokiNeotestAdapters`.
+- `tasks`: tasks.json output goes to quickfix and diagnostics; `<leader>ml` (run last task), `<leader>mq` (quickfix list).
+- Language presets: `vim.g.loki_language_presets = { "go", "php", "csharp", "ruby", "zig" }`.
+- Docs: `AI.md`, `REMOTE.md`.
+
+### Changed
+- `util.extras.tui` takes options (direction, size) and accepts commands with arguments.
+
+### Upgrade notes
+- Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for the new plugins (installed only for the extras you enable).
+- With `dap` enabled, Mason installs `delve` (needs Go). With `java` enabled, Mason installs `jdtls` (needs a JDK).
+- External tools by extra: `lazygit` (git-ui), `gh` + `gh auth login` (github), ImageMagick (terminal images), `cargo-nextest` (Rust tests).
+
 ## 2026-10-05
 
 Closes the gaps with VS Code that mattered most for daily programming. The full

@@ -22,6 +22,29 @@ local function load()
     end
     local langs = vim.deepcopy(require("config.languages"))
 
+    -- Opt-in presets (config/presets.lua): between the defaults and languages_local.lua.
+    local want = vim.g.loki_language_presets
+    if type(want) == "string" then
+        want = { want }
+    end
+    local presets = require("config.presets")
+    M.unknown_presets = {}
+    for _, name in ipairs(type(want) == "table" and want or {}) do
+        if presets[name] then
+            for ft, cfg in pairs(presets[name]) do
+                langs[ft] = vim.deepcopy(cfg)
+            end
+        else
+            M.unknown_presets[#M.unknown_presets + 1] = tostring(name)
+        end
+    end
+    if #M.unknown_presets > 0 then
+        vim.schedule(function()
+            vim.notify("vim.g.loki_language_presets: unknown preset(s): " .. table.concat(M.unknown_presets, ", ")
+                .. ". Available: " .. table.concat(M.preset_names(), ", "), vim.log.levels.WARN)
+        end)
+    end
+
     local ok, extra = pcall(require, "config.languages_local")
     if ok then
         if type(extra) == "table" then
@@ -93,6 +116,12 @@ function M.formatters_by_ft()
     return out
 end
 
+function M.preset_names()
+    local names = vim.tbl_keys(require("config.presets"))
+    table.sort(names)
+    return names
+end
+
 -- Human-readable problems in the language table (typos, wrong types).
 -- Shown by :checkhealth loki; startup keeps working without the bad values.
 local FIELDS = { lsp = true, parser = true, formatter = true, linter = true, tools = true }
@@ -116,6 +145,10 @@ function M.problems()
                 end
             end
         end
+    end
+    for _, name in ipairs(M.unknown_presets or {}) do
+        out[#out + 1] = 'vim.g.loki_language_presets: unknown preset "' .. name .. '" (available: '
+            .. table.concat(M.preset_names(), ", ") .. ")"
     end
     table.sort(out)
     return out

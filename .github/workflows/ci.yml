@@ -1,0 +1,39 @@
+name: ci
+
+# Runs the same checks a maintainer runs by hand (docs/ENVIRONMENT_GUIDE.md, section 3):
+#   scripts/check-help.sh   keys, commands, docs and doc/loki.txt agree
+#   scripts/smoke-test.sh   every Loki module loads headless
+# on the oldest supported Neovim (0.11) and on the newest stable release.
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        neovim: [v0.11.4, stable]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim }}
+
+      - name: Install tools the config expects
+        run: sudo apt-get update && sudo apt-get install -y ripgrep make gcc unzip curl
+
+      - name: Link the repo as the Neovim config
+        run: |
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      - name: Help system is consistent
+        run: scripts/check-help.sh
+
+      - name: Smoke test
+        run: scripts/smoke-test.sh

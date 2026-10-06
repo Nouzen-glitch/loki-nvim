@@ -22,7 +22,8 @@ local function has(name)
 end
 
 M.order = { "sessions", "dashboard", "docker", "database", "rest", "dap", "lint", "surround",
-    "diffview", "replace", "outline", "tasks", "test", "ui", "history" }
+    "diffview", "replace", "outline", "tasks", "test", "ui", "history",
+    "git-ui", "github", "preview", "java", "ai" }
 
 M.registry = {
     diffview = {
@@ -60,6 +61,9 @@ M.registry = {
         health = function(c)
             c.check_tool("python3", c.h.info, "The Python adapter runs pytest or unittest with it.")
             c.check_tool("node", c.h.info, "The jest adapter runs tests with Node.js (npx jest).")
+            c.check_tool("go", c.h.info, "The Go adapter runs `go test`.")
+            c.check_tool("cargo", c.h.info, "The Rust adapter needs cargo and cargo-nextest (cargo install cargo-nextest).")
+            c.check_tool("ctest", c.h.info, "The C/C++ adapter runs Google Test binaries built with CMake.")
         end,
     },
 
@@ -132,6 +136,7 @@ M.registry = {
         health = function(c)
             c.check_tool("python3", c.h.warn, "debugpy (Python debugging) is installed with Python 3 and venv.")
             c.check_tool("node", c.h.warn, "js-debug-adapter (JavaScript/TypeScript debugging) needs Node.js.")
+            c.check_tool("go", c.h.info, "Go debugging uses delve (Mason package `delve`); it needs the Go toolchain.")
             c.h.info("Adapters (debugpy, codelldb, js-debug-adapter) are installed by Mason; see :Mason.")
         end,
     },
@@ -161,6 +166,83 @@ M.registry = {
             { modes = { "n" }, lhs = "gsd", desc = "Surround: delete (mini.surround)" },
             { modes = { "n" }, lhs = "gsr", desc = "Surround: replace (mini.surround)" },
         },
+    },
+
+    ["git-ui"] = {
+        desc = "lazygit in a floating terminal: stage, commit, push, branches (no plugin; needs lazygit)",
+        plugins = false,
+        groups = { { key = "g", label = "Git views (diff, history)" } },
+        health = function(c)
+            c.check_tool("git", c.h.error, "Needed by the git-ui extra.")
+            c.check_tool("lazygit", c.h.warn, "The git-ui extra opens it. Install: https://github.com/jesseduffield/lazygit")
+        end,
+    },
+
+    github = {
+        desc = "GitHub pull requests and issues (octo.nvim; needs the gh CLI)",
+        plugins = true,
+        groups = { { key = "G", label = "GitHub (PRs, issues)" } },
+        health = function(c)
+            c.check_tool("gh", c.h.warn, "Needed by the github extra. Install: https://cli.github.com, then run: gh auth login")
+            if has("gh") then
+                vim.fn.system({ "gh", "auth", "status" })
+                if vim.v.shell_error == 0 then
+                    c.h.ok("gh is authenticated")
+                else
+                    c.h.warn("gh is not authenticated", "Run: gh auth login")
+                end
+            end
+        end,
+    },
+
+    preview = {
+        desc = "Markdown preview in the browser; images in the terminal (kitty, WezTerm, Ghostty + ImageMagick)",
+        plugins = true,
+        groups = { { key = "p", label = "Preview" } },
+        health = function(c)
+            c.check_tool("node", c.h.warn, "markdown-preview.nvim installs its server with npm.")
+            local browser = false
+            for _, b in ipairs({ "xdg-open", "firefox", "chromium", "google-chrome" }) do
+                browser = browser or has(b)
+            end
+            if browser then
+                c.h.ok("A browser launcher was found")
+            else
+                c.h.warn("No browser launcher found", "Install a browser or xdg-utils: Markdown preview opens one.")
+            end
+            if M.can_render_images() then
+                c.h.ok("This terminal looks able to draw images (kitty graphics)")
+                if not (has("magick") or has("convert")) then
+                    c.h.warn("ImageMagick not found", "Install ImageMagick: image.nvim needs it.")
+                end
+            else
+                c.h.info("This terminal does not look like kitty, WezTerm or Ghostty: images are off (Markdown preview still works).")
+            end
+        end,
+    },
+
+    java = {
+        desc = "Java: jdtls through nvim-jdtls (Mason installs jdtls; needs a JDK)",
+        plugins = true,
+        parsers = { "java" },
+        health = function(c)
+            c.check_tool("java", c.h.warn, "jdtls needs a recent JDK (check the jdtls package page in :Mason for the minimum).")
+            c.check_tool("javac", c.h.info, "A full JDK (not only a JRE) is needed to build projects.")
+        end,
+    },
+
+    ai = {
+        desc = "An AI assistant CLI in a side terminal (no plugin; set vim.g.loki_ai_cmd)",
+        plugins = false,
+        groups = { { key = "a", label = "AI assistant" } },
+        health = function(c)
+            local cmd = vim.g.loki_ai_cmd
+            if type(cmd) ~= "string" or cmd == "" then
+                c.h.warn("vim.g.loki_ai_cmd is not set", 'Put vim.g.loki_ai_cmd = "<your assistant command>" in lua/user/options.lua.')
+            else
+                c.check_tool(vim.split(cmd, "%s+", { trimempty = true })[1], c.h.warn, "The ai extra opens this command.")
+            end
+        end,
     },
 }
 
@@ -273,21 +355,27 @@ end
 -- Hidden, so it stays out of <C-\> and :TermSelect; toggleterm's Terminal-mode
 -- key overrides (jk, <Esc>, <C-h/j/k/l>) are removed so the program keeps them.
 local tuis = {}
-function M.tui(cmd)
-    if not has(cmd) then
-        vim.notify(cmd .. " was not found in your PATH. Install it first (:checkhealth loki).", vim.log.levels.WARN)
+-- opts: direction ("float" default), size (for vertical/horizontal),
+--       keep_nav (keep <C-h/j/k/l>, drop only jk and <Esc>)
+function M.tui(cmd, opts)
+    opts = opts or {}
+    local bin = vim.split(cmd, "%s+", { trimempty = true })[1]
+    if not has(bin) then
+        vim.notify(bin .. " was not found in your PATH. Install it first (:checkhealth loki).", vim.log.levels.WARN)
         return
     end
     local term = tuis[cmd]
     if not term then
         local Terminal = require("toggleterm.terminal").Terminal
+        local drop = opts.keep_nav and { "jk", "<Esc>" } or { "jk", "<Esc>", "<C-h>", "<C-j>", "<C-k>", "<C-l>" }
         term = Terminal:new({
             cmd = cmd,
-            direction = "float",
+            direction = opts.direction or "float",
+            size = opts.size,
             hidden = true,
             close_on_exit = true,
             on_open = function(t)
-                for _, lhs in ipairs({ "jk", "<Esc>", "<C-h>", "<C-j>", "<C-k>", "<C-l>" }) do
+                for _, lhs in ipairs(drop) do
                     pcall(vim.keymap.del, "t", lhs, { buffer = t.bufnr })
                 end
                 vim.cmd("startinsert")
@@ -299,6 +387,26 @@ function M.tui(cmd)
         tuis[cmd] = term
     end
     term:toggle()
+end
+
+-- The assistant of vim.g.loki_ai_cmd in a terminal on the right (the "ai" extra).
+function M.ai()
+    local cmd = vim.g.loki_ai_cmd
+    if type(cmd) ~= "string" or cmd == "" then
+        vim.notify('Set vim.g.loki_ai_cmd = "<your assistant command>" in lua/user/options.lua (:LokiEdit options).',
+            vim.log.levels.WARN)
+        return
+    end
+    M.tui(cmd, { direction = "vertical", size = math.floor(vim.o.columns * 0.4), keep_nav = true })
+end
+
+-- True when the terminal speaks the kitty graphics protocol (kitty, WezTerm, Ghostty).
+function M.can_render_images()
+    local e = vim.env
+    if e.KITTY_WINDOW_ID or e.WEZTERM_PANE or e.GHOSTTY_RESOURCES_DIR then
+        return true
+    end
+    return (e.TERM or ""):find("kitty", 1, true) ~= nil or e.TERM_PROGRAM == "ghostty"
 end
 
 return M
