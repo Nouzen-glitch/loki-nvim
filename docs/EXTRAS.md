@@ -15,28 +15,28 @@ gives a warning, not an error. Plugins of an enabled extra install on the next
 start (watch `:Lazy`). Run `:checkhealth loki` to see which external tools an
 enabled extra is missing (always a warning, never an error).
 
-| Extra | What it gives you | Needs | Keys |
-| --- | --- | --- | --- |
-| `sessions` | Restore the files and splits of a folder | nothing | `<leader>ss` `sl` `sd` |
-| `dashboard` | Start screen for a bare `nvim` | nothing | shortcut letters on the screen |
-| `docker` | lazydocker in a floating terminal | `docker`, `lazydocker` | `<leader>kk` |
-| `database` | Database UI and SQL completion | the DB's CLI client (`psql`, `mysql`, `sqlite3`) | `<leader>kd` |
-| `rest` | Run `.http` requests | `curl` | `<leader>kr`, `:LokiRest` |
-| `dap` | Debugging with a variables UI, reads `.vscode/launch.json` | Python 3 (debugpy), Node.js (JS), Go (delve); Mason installs the adapters | `<leader>t…`, F-keys |
-| `lint` | Linting on save (nvim-lint) | the linter programs (`ruff`, `shellcheck` by default; Mason installs them) | `<leader>cl` |
-| `surround` | Add / delete / replace surrounding quotes and brackets (mini.surround) | nothing | `gsa` `gsd` `gsr` |
-| `diffview` | Diff view of all changes, file history, 3-way merge (diffview.nvim) | `git` | `<leader>gd` `gh` `gq` |
-| `replace` | Search and replace across the project (grug-far.nvim) | `ripgrep` | `<leader>R` |
-| `outline` | Symbol outline sidebar (aerial.nvim) | nothing (better with a language server) | `<leader>o` |
-| `tasks` | Run make / npm / cargo / just / `tasks.json` tasks (overseer.nvim) | the task runner itself | `<leader>mr` `mt` `ml` `mq` |
-| `test` | Test explorer: Python, JS (jest, vitest), Go, Rust, C++ (GoogleTest) (neotest) | the test tool in the project (`pytest`, `jest`, `go`, `cargo-nextest`, ...) | `<leader>n…` |
-| `ui` | Indent guides and sticky scroll (indent-blankline, treesitter-context) | nothing | none |
-| `history` | Visual undo tree (undotree) | nothing | `<leader>u` |
-| `git-ui` | lazygit in a floating terminal | `lazygit`, `git` | `<leader>gg` |
-| `github` | GitHub pull requests and issues (octo.nvim) | `gh` CLI, logged in | `<leader>Gp` `Gi` `Gr` |
-| `preview` | Markdown in the browser; images in the terminal | `node`; for images a kitty-graphics terminal and ImageMagick | `<leader>pm` |
-| `java` | Java through jdtls (nvim-jdtls) | a JDK; Mason installs jdtls | none (the LSP keys) |
-| `ai` | An AI assistant CLI in a side terminal | the command in `vim.g.loki_ai_cmd` | `<leader>aa` |
+| Extra       | What it gives you                                                              | Needs                                                                       | Keys                           |
+| ----------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------ |
+| `sessions`  | Restore the files and splits of a folder                                       | nothing                                                                     | `<leader>ss` `sl` `sd`         |
+| `dashboard` | Start screen for a bare `nvim`                                                 | nothing                                                                     | shortcut letters on the screen |
+| `docker`    | lazydocker in a floating terminal                                              | `docker`, `lazydocker`                                                      | `<leader>kk`                   |
+| `database`  | Database UI and SQL completion                                                 | the DB's CLI client (`psql`, `mysql`, `sqlite3`)                            | `<leader>kd`                   |
+| `rest`      | Run `.http` requests                                                           | `curl`                                                                      | `<leader>kr`, `:LokiRest`      |
+| `dap`       | Debugging with a variables UI, reads `.vscode/launch.json`                     | Python 3 (debugpy), Node.js (JS), Go (delve); Mason installs the adapters   | `<leader>t…`, F-keys           |
+| `lint`      | Linting on save (nvim-lint)                                                    | the linter programs (`ruff`, `shellcheck` by default; Mason installs them)  | `<leader>cl`                   |
+| `surround`  | Add / delete / replace surrounding quotes and brackets (mini.surround)         | nothing                                                                     | `gsa` `gsd` `gsr`              |
+| `diffview`  | Diff view of all changes, file history, 3-way merge (diffview.nvim)            | `git`                                                                       | `<leader>gd` `gh` `gq`         |
+| `replace`   | Search and replace across the project (grug-far.nvim)                          | `ripgrep`                                                                   | `<leader>R`                    |
+| `outline`   | Symbol outline sidebar (aerial.nvim)                                           | nothing (better with a language server)                                     | `<leader>o`                    |
+| `tasks`     | Run make / npm / cargo / just / `tasks.json` tasks (overseer.nvim)             | the task runner itself                                                      | `<leader>mr` `mt` `ml` `mq`    |
+| `test`      | Test explorer: Python, JS (jest, vitest), Go, Rust, C++ (GoogleTest) (neotest) | the test tool in the project (`pytest`, `jest`, `go`, `cargo-nextest`, ...) | `<leader>n…`                   |
+| `ui`        | Indent guides and sticky scroll (indent-blankline, treesitter-context)         | nothing                                                                     | none                           |
+| `history`   | Visual undo tree (undotree)                                                    | nothing                                                                     | `<leader>u`                    |
+| `git-ui`    | lazygit in a floating terminal                                                 | `lazygit`, `git`                                                            | `<leader>gg`                   |
+| `github`    | GitHub pull requests and issues (octo.nvim)                                    | `gh` CLI, logged in                                                         | `<leader>Gp` `Gi` `Gr`         |
+| `preview`   | Markdown in the browser; images in the terminal                                | `node`; for images a kitty-graphics terminal and ImageMagick                | `<leader>pm`                   |
+| `java`      | Java through jdtls (nvim-jdtls)                                                | a JDK; Mason installs jdtls                                                 | none (the LSP keys)            |
+| `ai`        | An AI assistant CLI in a side terminal                                         | the command in `vim.g.loki_ai_cmd`                                          | `<leader>aa`                   |
 
 Prefixes added by extras (declared only while the extra is enabled): `s`
 Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests, `G` GitHub, `p` Preview, `a` AI assistant.
@@ -47,11 +47,11 @@ Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests, `G`
 Uses `folke/persistence.nvim`. The session of the current folder (and git
 branch) is saved when you quit. It is **never** restored automatically:
 
-| Key | Action |
-| --- | --- |
+| Key          | Action                             |
+| ------------ | ---------------------------------- |
 | `<leader>ss` | Restore the session of this folder |
-| `<leader>sl` | Restore the last session |
-| `<leader>sd` | Do not save this session |
+| `<leader>sl` | Restore the last session           |
+| `<leader>sd` | Do not save this session           |
 
 Saved in `stdpath("state")/sessions/`. Terminal and nvim-tree windows are left
 out (they do not restore well). Nothing is saved from headless runs. Starting
@@ -121,22 +121,23 @@ it ends.
 
 **`.vscode/launch.json`** in the current folder is read when the debugger first
 loads and again whenever the working directory changes. Its entries appear in
-the `<leader>tc` picker. Supported `type` values: `python`, `debugpy`,
-`codelldb`, `cppdbg`, `pwa-node`, `node`, `delve`, `go`. Other types are ignored.
-Go needs the Go toolchain for delve to install.
+the `<leader>tc` picker. Supported `type` values: `python`, `debugpy`, `codelldb`, `cppdbg`, `pwa-node`, `node`, `delve`, `go`.
+Other types are ignored. `cppdbg` runs through codelldb, so gdb-specific fields
+(`miDebuggerPath`, `setupCommands`, `MIMode`) are ignored. For `go`, use
+`"mode": "debug"` or `"test"`; `"auto"` is not understood by delve.
 
-| Key | Action |
-| --- | --- |
-| `<leader>tb` / `<F9>` | Toggle breakpoint |
-| `<leader>tB` | Conditional breakpoint (asks for an expression) |
-| `<leader>tl` | Logpoint (prints a message, does not stop) |
-| `<leader>tc` / `<F5>` | Start / continue |
-| `<leader>tr` | Run to the cursor line |
-| `<leader>tR` | Restart the session |
-| `<F10>` `<F11>` `<S-F11>` | Step over / into / out |
-| `<leader>te` | Evaluate under the cursor (Visual: the selection) |
-| `<leader>tu` | Toggle the debug UI |
-| `<leader>tx` | Stop |
+| Key                       | Action                                            |
+| ------------------------- | ------------------------------------------------- |
+| `<leader>tb` / `<F9>`     | Toggle breakpoint                                 |
+| `<leader>tB`              | Conditional breakpoint (asks for an expression)   |
+| `<leader>tl`              | Logpoint (prints a message, does not stop)        |
+| `<leader>tc` / `<F5>`     | Start / continue                                  |
+| `<leader>tr`              | Run to the cursor line                            |
+| `<leader>tR`              | Restart the session                               |
+| `<F10>` `<F11>` `<S-F11>` | Step over / into / out                            |
+| `<leader>te`              | Evaluate under the cursor (Visual: the selection) |
+| `<leader>tu`              | Toggle the debug UI                               |
+| `<leader>tx`              | Stop                                              |
 
 Some terminals intercept F-keys (and `<S-F11>`); the `<leader>t` keys always work.
 `<leader>d…` (diagnostics) is unchanged.
@@ -169,8 +170,8 @@ on save and on leaving Insert mode, and the results appear as normal diagnostics
 (`]d`, `<leader>xx`). A linter whose program is not installed is skipped
 silently; `:checkhealth loki` lists the missing ones.
 
-| Key | Action |
-| --- | --- |
+| Key          | Action               |
+| ------------ | -------------------- |
 | `<leader>cl` | Lint this buffer now |
 
 Add a linter in `lua/config/languages_local.lua`, for example
@@ -184,12 +185,12 @@ Common failure: nothing happens, because the program is not on `PATH`
 Uses `echasnovski/mini.surround` with the `gs` prefix (the default `s` prefix would
 make the plain `s` key wait). Keys that wrap or unwrap text:
 
-| Key | Action | Example |
-| --- | --- | --- |
-| `gsa` + motion + character | Add surrounding | `gsaiw)` puts parentheses around the word |
-| `gsa` (Visual) + character | Surround the selection | select, `gsa"` |
-| `gsd` + character | Delete surrounding | `gsd"` removes the quotes around the cursor |
-| `gsr` + old + new | Replace surrounding | `gsr"'` turns `"` into `'` |
+| Key                        | Action                 | Example                                     |
+| -------------------------- | ---------------------- | ------------------------------------------- |
+| `gsa` + motion + character | Add surrounding        | `gsaiw)` puts parentheses around the word   |
+| `gsa` (Visual) + character | Surround the selection | select, `gsa"`                              |
+| `gsd` + character          | Delete surrounding     | `gsd"` removes the quotes around the cursor |
+| `gsr` + old + new          | Replace surrounding    | `gsr"'` turns `"` into `'`                  |
 
 `gsf`, `gsF`, `gsh` and `gsn` find, highlight and change the search range
 (`:help MiniSurround`). Common failure: a delay after `gs` is the popup waiting
@@ -201,11 +202,11 @@ Uses `sindrets/diffview.nvim`. The closest thing to VS Code's Source Control
 panel and Timeline: `gitsigns` (always on) handles single hunks, Diffview shows
 the whole change set.
 
-| Key | Action |
-| --- | --- |
+| Key          | Action                                            |
+| ------------ | ------------------------------------------------- |
 | `<leader>gd` | Diff view of every changed file, with a file list |
 | `<leader>gh` | History of this file: each commit that touched it |
-| `<leader>gq` | Close the Diffview tab |
+| `<leader>gq` | Close the Diffview tab                            |
 
 Inside the file list `-` stages or unstages a file, `<Tab>` / `<S-Tab>` move
 between files and `g?` lists every key. Files with merge conflicts open a 3-way
@@ -231,11 +232,11 @@ lists its keys, `q` closes it.
 Uses `stevearc/overseer.nvim`. It finds tasks in `Makefile`, `package.json`,
 `Cargo.toml`, `justfile`, `.vscode/tasks.json` and more.
 
-| Key | Action |
-| --- | --- |
-| `<leader>mr` | Pick a task and run it |
-| `<leader>mt` | Toggle the task list and output |
-| `<leader>ml` | Run the last task again |
+| Key          | Action                           |
+| ------------ | -------------------------------- |
+| `<leader>mr` | Pick a task and run it           |
+| `<leader>mt` | Toggle the task list and output  |
+| `<leader>ml` | Run the last task again          |
 | `<leader>mq` | Show task errors (quickfix list) |
 
 Add your own task templates from `lua/user/plugins/` with an overseer `opts`
@@ -257,14 +258,14 @@ Uses `nvim-neotest/neotest`. Adapters: `neotest-python` (pytest / unittest),
 `neotest-gtest`. Each is loaded with `pcall`, so a broken one only prints a
 warning. The sign column marks each test passed or failed.
 
-| Key | Action |
-| --- | --- |
-| `<leader>nn` | Run the test nearest the cursor |
-| `<leader>nf` | Run every test in this file |
-| `<leader>ns` | Toggle the test explorer |
-| `<leader>no` | Show the output of the nearest test |
-| `<leader>nx` | Stop the running tests |
-| `<leader>nl` | Run the last test again |
+| Key          | Action                                                             |
+| ------------ | ------------------------------------------------------------------ |
+| `<leader>nn` | Run the test nearest the cursor                                    |
+| `<leader>nf` | Run every test in this file                                        |
+| `<leader>ns` | Toggle the test explorer                                           |
+| `<leader>no` | Show the output of the nearest test                                |
+| `<leader>nx` | Stop the running tests                                             |
+| `<leader>nl` | Run the last test again                                            |
 | `<leader>nd` | Debug the nearest test (only when the `dap` extra is also enabled) |
 
 Rust needs `cargo-nextest` (`cargo install cargo-nextest`). Go debugging also
@@ -316,10 +317,10 @@ Uses `pwntester/octo.nvim` with Telescope. Needs the GitHub CLI: install `gh`,
 run `gh auth login`; `:checkhealth loki` reports both. The token stays in
 `gh`'s own store, never in `lua/user/`.
 
-| Key | Action |
-| --- | --- |
-| `<leader>Gp` | List pull requests |
-| `<leader>Gi` | List issues |
+| Key          | Action                                        |
+| ------------ | --------------------------------------------- |
+| `<leader>Gp` | List pull requests                            |
+| `<leader>Gi` | List issues                                   |
 | `<leader>Gr` | Start a review (inside a pull request buffer) |
 
 `:Octo` has many more actions (`:Octo pr create`, `:Octo issue create`, ...);
@@ -365,7 +366,8 @@ tested.
 
 ## Not shipped (needs a decision)
 
-- **AI assistant**: depends on the vendor you pick (`claudecode.nvim`,
-  `codecompanion.nvim`, Copilot, ...). Keys would come from environment variables only.
+- **In-editor AI assistant** (inline edits, chat buffers): depends on the vendor you pick (`claudecode.nvim`,
+  `codecompanion.nvim`, Copilot, ...). The `ai` extra only opens an assistant CLI in a side terminal
+  ([AI.md](AI.md)). Keys would come from environment variables only.
 - **Tree-sitter text objects for function definitions** (`af`/`if`): needs `nvim-treesitter-textobjects`; see [TREESITTER_MIGRATION.md](TREESITTER_MIGRATION.md) for the branch plan first.
 - **Windows installer**: the supported route is WSL ([INSTALL.md](INSTALL.md)).

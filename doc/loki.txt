@@ -662,7 +662,7 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     Tests
     `<leader>nn` [n] Test: run the test nearest the cursor
         Runs the single test the cursor is inside, using the adapter for the
-        filetype (pytest or jest by default).
+        filetype (pytest, jest, vitest, go test, cargo nextest or GoogleTest).
 
     `<leader>nf` [n] Test: run every test in this file
         Runs all the tests of the current file and marks each one passed or
