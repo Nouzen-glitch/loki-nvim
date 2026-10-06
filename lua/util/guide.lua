@@ -36,7 +36,7 @@ function M.help_lines()
         "  :LokiEdit languages   add a language (server, parser, formatter)",
         "  :LokiKeys             shipped keys your keymaps replaced or delayed",
         "  :LokiFormat on|off    turn format on save on or off for this session",
-        "  :LokiExtras           opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history)",
+        "  :LokiExtras           opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history, git-ui, github, preview, java, ai)",
         "",
         "KEEP YOUR FILES SAFE (lua/user/ is yours and is NOT in git)",
         "  Save them:  :LokiBackup   or   scripts/user-layer.sh export FILE",

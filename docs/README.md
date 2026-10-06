@@ -32,7 +32,9 @@ Targets Neovim 0.11+ (currently running 0.12.x) on Linux (developed on Fedora). 
 | [ADDING_LANGUAGES.md](ADDING_LANGUAGES.md) | Adding a language: one line, nothing installed unless listed |
 | [COMPONENTS.md](COMPONENTS.md) | What each plugin/tool is and which file configures it |
 | [ENVIRONMENT_GUIDE.md](ENVIRONMENT_GUIDE.md) | Maintaining the config: workflow, git, cheatsheet automation, known issues |
-| [EXTRAS.md](EXTRAS.md) | Opt-in features: sessions, dashboard, docker, database, REST, debugging |
+| [EXTRAS.md](EXTRAS.md) | Opt-in features: sessions, dashboard, docker, database, REST, debugging, tests, tasks, GitHub, Java, previews |
+| [AI.md](AI.md) | Using an AI assistant: terminal route, the `ai` extra, plugins |
+| [REMOTE.md](REMOTE.md) | Working over SSH, in containers and WSL; clipboard over SSH |
 | [../CHANGELOG.md](../CHANGELOG.md) | What changed, newest first (`scripts/update.sh` prints new entries) |
 
 In the editor the same keys and commands are available as `:LokiHelp [topic]` and offline as
@@ -128,6 +130,7 @@ First launch checklist:
     │   ├── keymaps.lua       custom keybindings
     │   ├── autocmds.lua      yank highlight, cursor restore, diagnostic display
     │   ├── languages.lua     default languages: LSP, parser, formatter, tools
+    │   ├── presets.lua       opt-in language presets (vim.g.loki_language_presets)
     │   ├── languages_local.lua  YOUR additions (optional, you create it, gitignored)
     │   ├── lazy.lua          lazy.nvim bootstrap
     │   └── leader_groups.lua leader namespaces (feeds which-key and the cheatsheet)
@@ -135,7 +138,7 @@ First launch checklist:
     │   ├── completion.lua  formatting.lua  git.lua  lsp.lua
     │   ├── telescope.lua  terminal.lua  textobjects.lua
     │   └── treesitter.lua  ui.lua
-    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history (see docs/EXTRAS.md)
+    ├── extras/               opt-in feature specs: sessions, dashboard, database, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history, git-ui, github, preview, java, ai (see docs/EXTRAS.md)
     ├── user/                 YOUR options, keymaps and plugins (gitignored; *.example files show how)
     ├── loki/
     │   └── health.lua        :checkhealth loki
@@ -177,7 +180,7 @@ Where to change things:
 | Git signs | `plugins/git.lua` |
 | Text objects, auto-pairs, which-key labels | `plugins/textobjects.lua` |
 | Any key's description or help text, command help, help topics | `util/registry.lua`, then `scripts/gen-help.sh` |
-| Opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history) | `vim.g.loki_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
+| Opt-in features (sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history, git-ui, github, preview, java, ai) | `vim.g.loki_extras` in `lua/user/options.lua`; specs in `extras/`, registry in `util/extras.lua` |
 
 ## Day-one essentials
 
@@ -216,3 +219,4 @@ Session restore, a dashboard, Docker, database and REST clients, DAP
 debugging, linting and surround exist as opt-in [extras](EXTRAS.md) (`vim.g.loki_extras`).
 Multiple numbered terminals are supported via toggleterm (`2<C-\>`, `:TermSelect`).
 Anything else can be added through `lua/user/plugins/`.
+AI assistants and remote development are documented, not built in: [AI.md](AI.md), [REMOTE.md](REMOTE.md).

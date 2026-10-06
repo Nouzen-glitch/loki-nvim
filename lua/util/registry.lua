@@ -447,6 +447,31 @@ M.keys = {
     { extra = "dap", group = "Debug", mode = "n", lhs = "<S-F11>", rhs = function() require("dap").step_out() end,
       desc = "Debug: step out",
       long = "Runs until the current function returns.", see = "docs/EXTRAS.md#dap" },
+    { extra = "dap", group = "Debug", mode = "n", lhs = "<leader>tB",
+      rhs = function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end,
+      desc = "Debug: conditional breakpoint",
+      long = "Asks for an expression and sets a breakpoint on the cursor line that only stops when the expression is true.",
+      see = "docs/EXTRAS.md#dap" },
+    { extra = "dap", group = "Debug", mode = "n", lhs = "<leader>tl",
+      rhs = function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log message: ")) end,
+      desc = "Debug: logpoint (print a message, do not stop)",
+      long = "Asks for a message and sets a logpoint on the cursor line. The message is printed in the debug console and execution does not stop. Use {name} to include a variable.",
+      see = "docs/EXTRAS.md#dap" },
+    { extra = "dap", group = "Debug", mode = { "n", "v" }, lhs = "<leader>te",
+      rhs = function() require("dapui").eval() end,
+      desc = "Debug: evaluate the expression under the cursor",
+      long = "Evaluates the word under the cursor, or the Visual selection, in the running debug session and shows the result in a float.",
+      see = "docs/EXTRAS.md#dap" },
+    { extra = "dap", group = "Debug", mode = "n", lhs = "<leader>tr",
+      rhs = function() require("dap").run_to_cursor() end,
+      desc = "Debug: run to the cursor line",
+      long = "Continues the session and stops at the cursor line, without setting a permanent breakpoint.",
+      see = "docs/EXTRAS.md#dap" },
+    { extra = "dap", group = "Debug", mode = "n", lhs = "<leader>tR",
+      rhs = function() require("dap").restart() end,
+      desc = "Debug: restart the session",
+      long = "Restarts the running debug session with the same configuration, if the adapter supports it.",
+      see = "docs/EXTRAS.md#dap" },
     { extra = "lint", group = "Code", mode = "n", lhs = "<leader>cl", rhs = function() require("lint").try_lint() end,
       desc = "Lint this buffer now",
       long = "Runs the linters configured for this filetype and shows the result as diagnostics. Linting also runs on save.",
@@ -522,6 +547,68 @@ M.keys = {
       long = "Shows every state of the file as a tree, including branches that plain undo cannot reach, with a diff of the selected state. "
           .. "Enter on a state restores it. Undo history survives restarts.",
       see = "docs/EXTRAS.md#history" },
+
+    { extra = "git-ui", group = "Git views", mode = "n", lhs = "<leader>gg",
+      rhs = function() require("util.extras").tui("lazygit") end,
+      desc = "Git UI: lazygit in a floating terminal",
+      long = "Opens lazygit: stage lines or files, commit, push, pull, switch branches and resolve conflicts. "
+          .. "It needs lazygit installed; otherwise you get a message. Close it with q.",
+      see = "docs/EXTRAS.md#git-ui" },
+    { extra = "github", group = "GitHub", mode = "n", lhs = "<leader>Gp", rhs = "<cmd>Octo pr list<cr>",
+      desc = "GitHub: list pull requests",
+      long = "Lists the pull requests of this repository in a picker. Enter opens one in an editable buffer. Needs the gh CLI, logged in with gh auth login.",
+      see = "docs/EXTRAS.md#github" },
+    { extra = "github", group = "GitHub", mode = "n", lhs = "<leader>Gi", rhs = "<cmd>Octo issue list<cr>",
+      desc = "GitHub: list issues",
+      long = "Lists the open issues of this repository in a picker. Enter opens one in an editable buffer. Needs the gh CLI, logged in.",
+      see = "docs/EXTRAS.md#github" },
+    { extra = "github", group = "GitHub", mode = "n", lhs = "<leader>Gr", rhs = "<cmd>Octo review<cr>",
+      desc = "GitHub: start a review of this pull request",
+      long = "Run it in a pull request buffer (open one with <leader>Gp). Starts a review: add comments on lines, then submit from the review panel.",
+      see = "docs/EXTRAS.md#github" },
+    { extra = "preview", group = "Preview", mode = "n", lhs = "<leader>pm",
+      rhs = function()
+          if vim.bo.filetype ~= "markdown" then
+              vim.notify("Markdown preview works in Markdown buffers.", vim.log.levels.WARN)
+              return
+          end
+          vim.cmd("MarkdownPreviewToggle")
+      end,
+      desc = "Preview this Markdown file in the browser (toggle)",
+      long = "Opens a live preview of the current Markdown file in your browser and closes it on the second press. It follows the cursor as you type.",
+      see = "docs/EXTRAS.md#preview" },
+    { extra = "ai", group = "AI", mode = "n", lhs = "<leader>aa", rhs = function() require("util.extras").ai() end,
+      desc = "AI assistant: toggle its terminal on the right",
+      long = "Opens or hides the command named in vim.g.loki_ai_cmd in a terminal on the right. It keeps running while hidden. "
+          .. "Leave the terminal with <C-h>; jk and <Esc> go to the program.",
+      see = "docs/EXTRAS.md#ai" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>nd",
+      rhs = function() require("neotest").run.run({ strategy = "dap" }) end,
+      when = function() return require("util.extras").is_enabled("dap") end,
+      desc = "Test: debug the nearest test",
+      long = "Runs the nearest test under the debugger. It exists only when the dap extra is enabled too, and the adapter must support debugging (Go also needs nvim-dap-go).",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "test", group = "Tests", mode = "n", lhs = "<leader>nl", rhs = function() require("neotest").run.run_last() end,
+      desc = "Test: run the last test again",
+      long = "Repeats the previous test run (nearest, file or other) without moving the cursor back.",
+      see = "docs/EXTRAS.md#test" },
+    { extra = "tasks", group = "Tasks", mode = "n", lhs = "<leader>ml",
+      rhs = function()
+          local overseer = require("overseer")
+          local tasks = overseer.list_tasks({ recent_first = true })
+          if vim.tbl_isempty(tasks) then
+              vim.notify("No task has run yet: <leader>mr runs one.", vim.log.levels.INFO)
+          else
+              overseer.run_action(tasks[1], "restart")
+          end
+      end,
+      desc = "Run the last task again",
+      long = "Restarts the most recent task from the task list, so you can repeat a build without picking it again.",
+      see = "docs/EXTRAS.md#tasks" },
+    { extra = "tasks", group = "Tasks", mode = "n", lhs = "<leader>mq", rhs = "<cmd>copen<cr>",
+      desc = "Show task errors (quickfix list)",
+      long = "Opens the quickfix list, where the output of tasks that report errors lands. Walk it with ]q and [q or :cnext and :cprev.",
+      see = "docs/EXTRAS.md#tasks" },
 }
 
 -- Which :LokiHelp topic and docs section each key group belongs to.
@@ -532,6 +619,7 @@ M.group_topic = {
     Git = "git", Terminal = "terminal",
     Sessions = "extras", Clients = "extras", Debug = "extras", Code = "extras", Surround = "extras",
     ["Git views"] = "extras", Replace = "extras", Outline = "extras", Tasks = "extras", Tests = "extras", History = "extras",
+    GitHub = "extras", Preview = "extras", AI = "extras",
 }
 
 -- ===========================================================================
@@ -665,10 +753,10 @@ M.topics = {
         intro = {
             "Heavier features are off until you enable them in lua/user/options.lua, then restart:",
             "  vim.g.loki_extras = { \"sessions\", \"dashboard\", \"dap\" }",
-            ":LokiExtras lists them: sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history.",
+            ":LokiExtras lists them: sessions, dashboard, docker, database, rest, dap, lint, surround, diffview, replace, outline, tasks, test, ui, history, git-ui, github, preview, java, ai.",
             "Keys below exist only while their extra is enabled.",
         },
-        groups = { "Sessions", "Clients", "Debug", "Code", "Surround", "Git views", "Replace", "Outline", "Tasks", "Tests", "History" },
+        groups = { "Sessions", "Clients", "Debug", "Code", "Surround", "Git views", "Replace", "Outline", "Tasks", "Tests", "History", "GitHub", "Preview", "AI" },
         commands = { "LokiExtras", "LokiRest" },
         see = "docs/EXTRAS.md",
         fail = {

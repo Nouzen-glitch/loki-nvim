@@ -1,4 +1,12 @@
 {
+  "image.nvim": { "branch": "master", "commit": "365e2ace0f619164ae6fd2f6f1d2807775dd6849" },
+  "markdown-preview.nvim": { "branch": "master", "commit": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee" },
+  "neotest-golang": { "branch": "main", "commit": "65b2be63c3de00e6f15c05388ebdc8d603dbd727" },
+  "neotest-gtest": { "branch": "main", "commit": "bdffb45731ed2a6f40ca94ed662cadb8add73b30" },
+  "neotest-rust": { "branch": "main", "commit": "2c9941d4a358839918fac21d20fc8fef0e1ad05f" },
+  "neotest-vitest": { "branch": "main", "commit": "b0c265743c877058068dbc40d104ea5d40e6b257" },
+  "nvim-jdtls": { "branch": "master", "commit": "6e9d953f0b82bccdb834cfde0e893f3119c22592" },
+  "octo.nvim": { "branch": "master", "commit": "af2411604b51cb4a0f3e2de50b1b7cacc2581c48" },
   "aerial.nvim": { "branch": "nvim-0.11", "commit": "c5e56945d9703f7079ccff484b35d0e4c231dd6c" },
   "alpha-nvim": { "branch": "main", "commit": "4ba26e41990c11620c96c0e1cff20eab65efde4a" },
   "cmp-buffer": { "branch": "main", "commit": "b74fab3656eea9de20a9b8116afa3cfc4ec09657" },

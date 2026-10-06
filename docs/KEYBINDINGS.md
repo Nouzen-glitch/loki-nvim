@@ -197,7 +197,7 @@ what can follow, with a short description of each key.
 `d` Diagnostics and symbols, `i` Inlay hints, `r` Rename. Press `<leader>` and
 wait for which-key.
 
-Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks and `n` Tests. They
+Enabled [extras](EXTRAS.md) add `s` Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests, `G` GitHub, `p` Preview and `a` AI assistant. They
 exist only while the extra is enabled in `vim.g.loki_extras`.
 
 ## Extras keys
@@ -211,16 +211,21 @@ Declared only while the extra is enabled; see [EXTRAS.md](EXTRAS.md).
 | docker | `<leader>kk` lazydocker |
 | database | `<leader>kd` database UI |
 | rest | `<leader>kr` run the HTTP request under the cursor |
-| dap | `<leader>tb` `<leader>tc` `<leader>tu` `<leader>tx`, `<F5>` `<F9>` `<F10>` `<F11>` `<S-F11>` |
+| dap | `<leader>tb` `<leader>tc` `<leader>tu` `<leader>tx`, `<leader>tB` conditional, `<leader>tl` logpoint, `<leader>te` evaluate, `<leader>tr` run to cursor, `<leader>tR` restart, `<F5>` `<F9>` `<F10>` `<F11>` `<S-F11>` |
 | lint | `<leader>cl` lint now |
 | surround | `gsa` add, `gsd` delete, `gsr` replace |
 | diffview | `<leader>gd` diff view of all changes, `<leader>gh` history of this file, `<leader>gq` close |
 | replace | `<leader>R` search and replace in the project |
 | outline | `<leader>o` symbol outline |
-| tasks | `<leader>mr` run a task, `<leader>mt` task list |
-| test | `<leader>nn` nearest, `<leader>nf` file, `<leader>ns` explorer, `<leader>no` output, `<leader>nx` stop |
+| tasks | `<leader>mr` run a task, `<leader>mt` task list, `<leader>ml` run the last task, `<leader>mq` quickfix list |
+| test | `<leader>nn` nearest, `<leader>nf` file, `<leader>ns` explorer, `<leader>no` output, `<leader>nx` stop, `<leader>nl` run last, `<leader>nd` debug nearest (with `dap`) |
 | ui | indent guides and sticky scroll (no keys) |
 | history | `<leader>u` undo tree |
+| git-ui | `<leader>gg` lazygit |
+| github | `<leader>Gp` pull requests, `<leader>Gi` issues, `<leader>Gr` review |
+| preview | `<leader>pm` Markdown preview in the browser |
+| java | no global keys (the normal LSP keys) |
+| ai | `<leader>aa` assistant terminal |
 
 ## Learning order
 

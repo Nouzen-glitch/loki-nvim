@@ -22,19 +22,24 @@ enabled extra is missing (always a warning, never an error).
 | `docker` | lazydocker in a floating terminal | `docker`, `lazydocker` | `<leader>kk` |
 | `database` | Database UI and SQL completion | the DB's CLI client (`psql`, `mysql`, `sqlite3`) | `<leader>kd` |
 | `rest` | Run `.http` requests | `curl` | `<leader>kr`, `:LokiRest` |
-| `dap` | Debugging with a variables UI | Python 3 (debugpy), Node.js (JS); Mason installs the adapters | `<leader>t…`, F-keys |
+| `dap` | Debugging with a variables UI, reads `.vscode/launch.json` | Python 3 (debugpy), Node.js (JS), Go (delve); Mason installs the adapters | `<leader>t…`, F-keys |
 | `lint` | Linting on save (nvim-lint) | the linter programs (`ruff`, `shellcheck` by default; Mason installs them) | `<leader>cl` |
 | `surround` | Add / delete / replace surrounding quotes and brackets (mini.surround) | nothing | `gsa` `gsd` `gsr` |
 | `diffview` | Diff view of all changes, file history, 3-way merge (diffview.nvim) | `git` | `<leader>gd` `gh` `gq` |
 | `replace` | Search and replace across the project (grug-far.nvim) | `ripgrep` | `<leader>R` |
 | `outline` | Symbol outline sidebar (aerial.nvim) | nothing (better with a language server) | `<leader>o` |
-| `tasks` | Run make / npm / cargo / just / `tasks.json` tasks (overseer.nvim) | the task runner itself | `<leader>mr` `mt` |
-| `test` | Test explorer for Python and JavaScript (neotest) | `pytest` or `jest` in the project | `<leader>n…` |
+| `tasks` | Run make / npm / cargo / just / `tasks.json` tasks (overseer.nvim) | the task runner itself | `<leader>mr` `mt` `ml` `mq` |
+| `test` | Test explorer: Python, JS (jest, vitest), Go, Rust, C++ (GoogleTest) (neotest) | the test tool in the project (`pytest`, `jest`, `go`, `cargo-nextest`, ...) | `<leader>n…` |
 | `ui` | Indent guides and sticky scroll (indent-blankline, treesitter-context) | nothing | none |
 | `history` | Visual undo tree (undotree) | nothing | `<leader>u` |
+| `git-ui` | lazygit in a floating terminal | `lazygit`, `git` | `<leader>gg` |
+| `github` | GitHub pull requests and issues (octo.nvim) | `gh` CLI, logged in | `<leader>Gp` `Gi` `Gr` |
+| `preview` | Markdown in the browser; images in the terminal | `node`; for images a kitty-graphics terminal and ImageMagick | `<leader>pm` |
+| `java` | Java through jdtls (nvim-jdtls) | a JDK; Mason installs jdtls | none (the LSP keys) |
+| `ai` | An AI assistant CLI in a side terminal | the command in `vim.g.loki_ai_cmd` | `<leader>aa` |
 
 Prefixes added by extras (declared only while the extra is enabled): `s`
-Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests.
+Session, `k` Clients, `t` Debug, `g` Git views, `m` Make / tasks, `n` Tests, `G` GitHub, `p` Preview, `a` AI assistant.
 `surround` uses the `gs` prefix.
 
 ## sessions
@@ -108,15 +113,28 @@ chaining, `.env` files, URLs other than http(s). Prefer a full client? Add one f
 ## dap
 
 Uses `nvim-dap`, `nvim-dap-ui` and `nvim-nio`. Mason installs the adapters
-`debugpy`, `codelldb` and `js-debug-adapter`. Adapters and a "launch" setup are
-built in for Python, C, C++, Rust, JavaScript and TypeScript. The UI opens when
-a session starts and closes when it ends.
+`debugpy`, `codelldb`, `js-debug-adapter` and `delve`. Launch setups are built in
+for Python, C, C++, Rust, JavaScript, TypeScript and Go; there are also
+"with arguments" variants (Python, C, C++, Rust), attach to debugpy (Python) and
+attach to port 9229 (Node). The UI opens when a session starts and closes when
+it ends.
+
+**`.vscode/launch.json`** in the current folder is read when the debugger first
+loads and again whenever the working directory changes. Its entries appear in
+the `<leader>tc` picker. Supported `type` values: `python`, `debugpy`,
+`codelldb`, `cppdbg`, `pwa-node`, `node`, `delve`, `go`. Other types are ignored.
+Go needs the Go toolchain for delve to install.
 
 | Key | Action |
 | --- | --- |
 | `<leader>tb` / `<F9>` | Toggle breakpoint |
+| `<leader>tB` | Conditional breakpoint (asks for an expression) |
+| `<leader>tl` | Logpoint (prints a message, does not stop) |
 | `<leader>tc` / `<F5>` | Start / continue |
+| `<leader>tr` | Run to the cursor line |
+| `<leader>tR` | Restart the session |
 | `<F10>` `<F11>` `<S-F11>` | Step over / into / out |
+| `<leader>te` | Evaluate under the cursor (Visual: the selection) |
 | `<leader>tu` | Toggle the debug UI |
 | `<leader>tx` | Stop |
 
@@ -217,15 +235,27 @@ Uses `stevearc/overseer.nvim`. It finds tasks in `Makefile`, `package.json`,
 | --- | --- |
 | `<leader>mr` | Pick a task and run it |
 | `<leader>mt` | Toggle the task list and output |
+| `<leader>ml` | Run the last task again |
+| `<leader>mq` | Show task errors (quickfix list) |
 
 Add your own task templates from `lua/user/plugins/` with an overseer `opts`
 table (`:help overseer-templates`).
 
+`<leader>ml` runs the last task again; `<leader>mq` opens the quickfix list, where
+task output lands. Tasks from `.vscode/tasks.json` are given components that
+send their output to the quickfix list (parsed with `errorformat`) and show
+errors as diagnostics, so `]d` and `:cnext` walk them.
+
+**What `tasks.json` support covers** was not checked against overseer's guide.
+Before you rely on `dependsOn`, `problemMatcher` or `${input:...}` variables,
+test a small `tasks.json` and read `:help overseer-guides`.
+
 ## test
 
-Uses `nvim-neotest/neotest` with the `neotest-python` and `neotest-jest`
-adapters (pytest / unittest and jest). The sign column marks each test passed
-or failed.
+Uses `nvim-neotest/neotest`. Adapters: `neotest-python` (pytest / unittest),
+`neotest-jest`, `neotest-vitest`, `neotest-golang`, `neotest-rust` and
+`neotest-gtest`. Each is loaded with `pcall`, so a broken one only prints a
+warning. The sign column marks each test passed or failed.
 
 | Key | Action |
 | --- | --- |
@@ -234,22 +264,28 @@ or failed.
 | `<leader>ns` | Toggle the test explorer |
 | `<leader>no` | Show the output of the nearest test |
 | `<leader>nx` | Stop the running tests |
+| `<leader>nl` | Run the last test again |
+| `<leader>nd` | Debug the nearest test (only when the `dap` extra is also enabled) |
 
-**Add or change an adapter** without editing shipped files, in
-`lua/user/options.lua`. Install the adapter plugin from `lua/user/plugins/`,
-then:
+Rust needs `cargo-nextest` (`cargo install cargo-nextest`). Go debugging also
+needs `nvim-dap-go`; check each adapter's README for its debug support.
+
+**Add an adapter** without editing shipped files. Install its plugin from
+`lua/user/plugins/`, then in `lua/user/options.lua`:
 
 ```lua
 vim.api.nvim_create_autocmd("User", {
-    pattern = "LokiNeotestSetup",
+    pattern = "LokiNeotestAdapters",
     callback = function()
-        -- call require("neotest").setup({ adapters = { ... } }) again with the full list
+        table.insert(require("util.extras").neotest_adapters, require("neotest-rspec"))
     end,
 })
 ```
 
-Common failure: nothing runs because `pytest` / `jest` is not installed in the
-project (activate the virtualenv, or run `npm install`, before starting Neovim).
+`User LokiNeotestSetup` still fires after `neotest.setup`. Common failure:
+nothing runs because the test tool (`pytest`, `jest`, `go`, `cargo nextest`) is
+not available in the project (activate the virtualenv, or run `npm install`,
+before starting Neovim).
 
 ## ui
 
@@ -264,6 +300,59 @@ switch them for the session. Sticky scroll needs a parser for the filetype.
 Uses `mbbill/undotree`. `<leader>u` shows every state of the file as a tree
 with a diff of the selected state; `<CR>` restores it. Persistent undo is on
 (`undofile`), so the history survives restarts.
+
+## git-ui
+
+No plugin: `<leader>gg` runs `lazygit` in a floating terminal (the same helper
+as `docker`). `jk`, `<Esc>` and `<C-h/j/k/l>` go to lazygit; quit it with `q`.
+It is not an in-editor buffer. If you prefer one (Neogit), add it from
+`lua/user/plugins/`. Committing and pushing happen inside lazygit, so no more
+`<leader>g` keys are shipped. For merge conflicts use the `diffview` extra's
+3-way view (`<leader>gd`, then open a conflicted file).
+
+## github
+
+Uses `pwntester/octo.nvim` with Telescope. Needs the GitHub CLI: install `gh`,
+run `gh auth login`; `:checkhealth loki` reports both. The token stays in
+`gh`'s own store, never in `lua/user/`.
+
+| Key | Action |
+| --- | --- |
+| `<leader>Gp` | List pull requests |
+| `<leader>Gi` | List issues |
+| `<leader>Gr` | Start a review (inside a pull request buffer) |
+
+`:Octo` has many more actions (`:Octo pr create`, `:Octo issue create`, ...);
+type `:Octo ` and press `<Tab>`. `:checkhealth octo` verifies the plugin.
+Octo's buffer-local keys use `<localleader>`, which is Space here too, so inside
+its buffers they shadow your `<leader>` keys.
+
+## preview
+
+Two parts. `<leader>pm` toggles a live Markdown preview in your browser
+(`iamcco/markdown-preview.nvim`; installs with npm on first load; works in any
+terminal that has a browser). Images are drawn inside the terminal by
+`3rd/image.nvim`, only when the terminal looks like kitty, WezTerm or Ghostty
+(`KITTY_WINDOW_ID`, `WEZTERM_PANE`, `GHOSTTY_RESOURCES_DIR` or `TERM`) and
+ImageMagick is installed; in any other terminal that plugin is not loaded at
+all. Inside `tmux` images need passthrough to be enabled. PDF display is not
+provided. `:checkhealth loki` reports what the current terminal can do.
+
+## java
+
+Not a language-table line: jdtls is started per buffer by `nvim-jdtls`, with one
+workspace folder per project under `stdpath("cache")/jdtls/`. Mason installs the
+`jdtls` package; you need a JDK. The normal LSP keys (`gd`, `gr`, `K`,
+`<leader>rn`, ...) attach as usual and `<leader>cf` formats through the server.
+Settings, extra bundles (debug, test) and Lombok are not configured: add them in
+`lua/user/plugins/` by extending the `nvim-jdtls` spec. Java debugging and
+tests need those bundles and are not covered by the `dap` or `test` extras.
+
+## ai
+
+No plugin: `<leader>aa` toggles the command in `vim.g.loki_ai_cmd` in a terminal
+on the right ([AI.md](AI.md)). It keeps running while hidden; leave it with
+`<C-h>`.
 
 ## Persistent terminals (detach / reattach)
 

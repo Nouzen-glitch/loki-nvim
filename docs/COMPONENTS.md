@@ -44,13 +44,18 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | replace | grug-far.nvim | `extras/replace.lua` |
 | outline | aerial.nvim | `extras/outline.lua` |
 | tasks | overseer.nvim | `extras/tasks.lua` |
-| test | neotest, neotest-python, neotest-jest | `extras/test.lua` |
+| test | neotest, neotest-python, neotest-jest, neotest-vitest, neotest-golang, neotest-rust, neotest-gtest | `extras/test.lua` |
 | ui | indent-blankline.nvim, nvim-treesitter-context | `extras/ui.lua` |
 | history | undotree | `extras/history.lua` |
+| git-ui | toggleterm + lazygit (no new plugin) | `util/extras.lua` |
+| github | octo.nvim | `extras/github.lua` |
+| preview | markdown-preview.nvim, image.nvim | `extras/preview.lua` |
+| java | nvim-jdtls (jdtls via Mason) | `extras/java.lua` |
+| ai | toggleterm + your assistant CLI (no new plugin) | `util/extras.lua` |
 
 
 Non-plugin code: `util/registry.lua` (every key, command and help topic: the single source of truth), `util/helpdoc.lua` (renders `:LokiHelp` and `doc/loki.txt`), `util/lsp.lua` (buffer-local LSP keys, `:LokiLsp`), `util/extras.lua` (extras registry), `util/rest.lua` (REST runner), `util/check_help.lua` and `util/smoke.lua` (the checks), `config/languages.lua` (language table) with
-`util/languages.lua` (derives plugin lists), `util/cheatsheet.lua`
+`util/languages.lua` (derives plugin lists), `config/presets.lua` (opt-in language presets), `util/cheatsheet.lua`
 (generator, started from `init.lua`), `config/leader_groups.lua` (namespace
 labels), `util/user.lua` (loads your `lua/user/` files), `util/welcome.lua`
 (first-run install window, `:LokiInfo`), `util/lockfile.lua` (personal plugin

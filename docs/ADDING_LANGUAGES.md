@@ -85,6 +85,22 @@ php = { lsp = "intelephense", parser = "php", formatter = "php_cs_fixer", tools 
 Unsure of a name? Add only what you know (for example just `parser`), confirm
 that works, then add the rest.
 
+## 3b. Presets
+
+Common languages ship as presets you switch on instead of writing the line:
+
+```lua
+-- lua/user/options.lua
+vim.g.loki_language_presets = { "go", "php" }
+```
+
+Available: `go` (with `gomod`), `php`, `csharp` (filetype `cs`), `ruby`, `zig`.
+They sit between `languages.lua` and your `languages_local.lua`, so a line of
+yours for the same filetype wins, and `go = false` there turns one off. An
+unknown name gives a warning and `:checkhealth loki` lists it. **Java is not a
+preset**: it needs the `java` extra ([EXTRAS.md](EXTRAS.md#java)). The names
+were not verified against Mason: check `:Mason` after a restart.
+
 ## 4. Common names (verify in `:Mason`)
 
 | Language | Filetype | `lsp` | `parser` | `formatter` (`tools`) |
