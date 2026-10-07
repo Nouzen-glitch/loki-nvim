@@ -50,17 +50,19 @@ function M.parse(lines)
 
     local missing, used = {}, {}
     local function expand(text)
-        return (text:gsub("{{%s*([%w_]+)%s*}}", function(name)
-            local value = vim.env[name]
-            if not value then
-                table.insert(missing, name)
-                return ""
-            end
-            if not vim.tbl_contains(used, name) then
-                table.insert(used, name)
-            end
-            return value
-        end))
+        return (
+            text:gsub("{{%s*([%w_]+)%s*}}", function(name)
+                local value = vim.env[name]
+                if not value then
+                    table.insert(missing, name)
+                    return ""
+                end
+                if not vim.tbl_contains(used, name) then
+                    table.insert(used, name)
+                end
+                return value
+            end)
+        )
     end
     url = expand(url)
     for n, h in ipairs(headers) do
@@ -124,8 +126,11 @@ function M.run()
     -- ({{AWS_SECRET_ACCESS_KEY}}), so say where they are about to be sent.
     if #req.used > 0 then
         local host = req.url:match("^%a+://[^/?#]+") or req.url
-        local msg = string.format("Send this request to %s\nusing environment variable(s): %s?",
-            host, table.concat(req.used, ", "))
+        local msg = string.format(
+            "Send this request to %s\nusing environment variable(s): %s?",
+            host,
+            table.concat(req.used, ", ")
+        )
         if vim.fn.confirm(msg, "&Send\n&Cancel", 2) ~= 1 then
             return
         end

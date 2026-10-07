@@ -16,8 +16,17 @@ function M.run()
     end)
 
     for _, m in ipairs({
-        "util.keyguard", "util.guide", "util.welcome", "util.cheatsheet", "config.leader_groups",
-        "util.extras", "util.registry", "util.helpdoc", "util.lsp", "util.languages", "loki.health",
+        "util.keyguard",
+        "util.guide",
+        "util.welcome",
+        "util.cheatsheet",
+        "config.leader_groups",
+        "util.extras",
+        "util.registry",
+        "util.helpdoc",
+        "util.lsp",
+        "util.languages",
+        "loki.health",
     }) do
         check("require " .. m, function()
             assert(pcall(require, m), "failed to load " .. m)
@@ -25,8 +34,12 @@ function M.run()
     end
 
     local guide = require("util.guide")
-    check("help_lines", function() assert(#guide.help_lines() > 0) end)
-    check("tutor_lines", function() assert(#guide.tutor_lines() > 0) end)
+    check("help_lines", function()
+        assert(#guide.help_lines() > 0)
+    end)
+    check("tutor_lines", function()
+        assert(#guide.tutor_lines() > 0)
+    end)
     check("help topics", function()
         local registry = require("util.registry")
         for _, name in ipairs(registry.topic_order) do

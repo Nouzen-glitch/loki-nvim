@@ -103,3 +103,14 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.wo[0][0].foldlevel = 99
     end,
 })
+
+-- Quit Neovim when the file explorer is the only window left.
+vim.api.nvim_create_autocmd("BufEnter", {
+    group = group,
+    nested = true,
+    callback = function()
+        if vim.bo.filetype == "NvimTree" and #vim.api.nvim_list_wins() == 1 then
+            pcall(vim.cmd, "quit")
+        end
+    end,
+})

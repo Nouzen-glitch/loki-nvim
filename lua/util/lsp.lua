@@ -6,17 +6,39 @@
 local M = {}
 
 M.actions = {
-    hover = function() vim.lsp.buf.hover() end,
-    definition = function() vim.lsp.buf.definition() end,
-    declaration = function() vim.lsp.buf.declaration() end,
-    implementation = function() vim.lsp.buf.implementation() end,
-    references = function() vim.lsp.buf.references() end,
-    rename = function() vim.lsp.buf.rename() end,
-    code_action = function() vim.lsp.buf.code_action() end,
-    type_definition = function() vim.lsp.buf.type_definition() end,
-    document_symbol = function() vim.lsp.buf.document_symbol() end,
-    incoming_calls = function() vim.lsp.buf.incoming_calls() end,
-    outgoing_calls = function() vim.lsp.buf.outgoing_calls() end,
+    hover = function()
+        vim.lsp.buf.hover()
+    end,
+    definition = function()
+        vim.lsp.buf.definition()
+    end,
+    declaration = function()
+        vim.lsp.buf.declaration()
+    end,
+    implementation = function()
+        vim.lsp.buf.implementation()
+    end,
+    references = function()
+        vim.lsp.buf.references()
+    end,
+    rename = function()
+        vim.lsp.buf.rename()
+    end,
+    code_action = function()
+        vim.lsp.buf.code_action()
+    end,
+    type_definition = function()
+        vim.lsp.buf.type_definition()
+    end,
+    document_symbol = function()
+        vim.lsp.buf.document_symbol()
+    end,
+    incoming_calls = function()
+        vim.lsp.buf.incoming_calls()
+    end,
+    outgoing_calls = function()
+        vim.lsp.buf.outgoing_calls()
+    end,
     inlay_hints = function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
     end,
@@ -30,7 +52,10 @@ function M.notice(entry)
         string.format(
             "%s (%s) needs a language server, and none is attached to this buffer (filetype: %s).\n"
                 .. "Run :LokiLsp to see why and what to do.",
-            entry.desc, first, ft ~= "" and ft or "none"),
+            entry.desc,
+            first,
+            ft ~= "" and ft or "none"
+        ),
         vim.log.levels.WARN
     )
 end
@@ -84,7 +109,9 @@ function M.report(bufnr)
         "  Filetype:  " .. (ft ~= "" and ft or "(none)"),
         "",
     }
-    local add = function(s) lines[#lines + 1] = s end
+    local add = function(s)
+        lines[#lines + 1] = s
+    end
 
     add("LANGUAGE SERVERS")
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
@@ -92,7 +119,13 @@ function M.report(bufnr)
         add("  None attached.")
     else
         for _, c in ipairs(clients) do
-            add(string.format("  %s   root: %s", c.name, c.root_dir and vim.fn.fnamemodify(c.root_dir, ":~") or "(single file)"))
+            add(
+                string.format(
+                    "  %s   root: %s",
+                    c.name,
+                    c.root_dir and vim.fn.fnamemodify(c.root_dir, ":~") or "(single file)"
+                )
+            )
         end
     end
     add("")
@@ -120,12 +153,20 @@ function M.report(bufnr)
 
     add("LANGUAGE TABLE ENTRY")
     if entry then
-        add("  lsp: " .. tostring(entry.lsp or "-") .. "   parser: " .. tostring(
-            type(entry.parser) == "table" and table.concat(entry.parser, ",") or entry.parser or "-"))
-        add("  formatter: " .. tostring(
-            type(entry.formatter) == "table" and table.concat(entry.formatter, ",") or entry.formatter or "-")
-            .. "   linter: " .. tostring(
-            type(entry.linter) == "table" and table.concat(entry.linter, ",") or entry.linter or "-"))
+        add(
+            "  lsp: "
+                .. tostring(entry.lsp or "-")
+                .. "   parser: "
+                .. tostring(type(entry.parser) == "table" and table.concat(entry.parser, ",") or entry.parser or "-")
+        )
+        add(
+            "  formatter: "
+                .. tostring(
+                    type(entry.formatter) == "table" and table.concat(entry.formatter, ",") or entry.formatter or "-"
+                )
+                .. "   linter: "
+                .. tostring(type(entry.linter) == "table" and table.concat(entry.linter, ",") or entry.linter or "-")
+        )
     else
         add("  No entry for filetype '" .. ft .. "'.")
     end
@@ -140,7 +181,7 @@ function M.report(bufnr)
     elseif not entry or not entry.lsp then
         add("  The language table has no server for '" .. ft .. "'. Add one:")
         add("    :LokiEdit languages   then a line such as")
-        add('    ' .. ft .. ' = { lsp = "<lspconfig name>", parser = "' .. ft .. '" },')
+        add("    " .. ft .. ' = { lsp = "<lspconfig name>", parser = "' .. ft .. '" },')
         add("  Names: :help lspconfig-all. Restart Neovim afterwards.")
     else
         local servers = type(entry.lsp) == "table" and entry.lsp or { entry.lsp }
@@ -153,7 +194,11 @@ function M.report(bufnr)
                 add("  or restart Neovim: missing servers install themselves. :MasonLog shows errors.")
                 add("  Mason needs Node.js, Python 3 or Go depending on the server (:checkhealth loki).")
             elseif vim.lsp.is_enabled and not vim.lsp.is_enabled(s) then
-                add("  Server '" .. s .. "' is installed but not enabled. Restart Neovim; it must be in the language table.")
+                add(
+                    "  Server '"
+                        .. s
+                        .. "' is installed but not enabled. Restart Neovim; it must be in the language table."
+                )
             else
                 add("  Server '" .. s .. "' is installed and enabled but did not attach. Usual causes:")
                 add("    - the file is outside a project root the server recognises (a .git folder or a project file)")

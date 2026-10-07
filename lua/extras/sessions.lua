@@ -18,7 +18,9 @@ return {
                 pattern = "PersistenceSavePre",
                 callback = function()
                     if package.loaded["nvim-tree.api"] then
-                        pcall(function() require("nvim-tree.api").tree.close() end)
+                        pcall(function()
+                            require("nvim-tree.api").tree.close()
+                        end)
                     end
                 end,
             })

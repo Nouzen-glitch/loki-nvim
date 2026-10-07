@@ -15,7 +15,7 @@
 -- Full guide: docs/ADDING_LANGUAGES.md
 
 return {
-    c   = { lsp = "clangd", parser = "c",   formatter = "clang_format", tools = { "clang-format" } },
+    c = { lsp = "clangd", parser = "c", formatter = "clang_format", tools = { "clang-format" } },
     cpp = { lsp = "clangd", parser = "cpp", formatter = "clang_format", tools = { "clang-format" } },
 
     python = { lsp = "basedpyright", parser = "python", formatter = "ruff_format", linter = "ruff", tools = { "ruff" } },
@@ -25,21 +25,27 @@ return {
 
     rust = { lsp = "rust_analyzer", parser = "rust", formatter = "rustfmt" },
 
-    sh   = { lsp = "bashls", parser = "bash", formatter = "shfmt", linter = "shellcheck", tools = { "shfmt", "shellcheck" } },
+    sh = {
+        lsp = "bashls",
+        parser = "bash",
+        formatter = "shfmt",
+        linter = "shellcheck",
+        tools = { "shfmt", "shellcheck" },
+    },
     bash = { parser = "bash", formatter = "shfmt", linter = "shellcheck", tools = { "shfmt", "shellcheck" } },
 
-    javascript      = { lsp = "ts_ls", parser = "javascript", formatter = "prettier", tools = { "prettier" } },
+    javascript = { lsp = "ts_ls", parser = "javascript", formatter = "prettier", tools = { "prettier" } },
     javascriptreact = { parser = "javascript", formatter = "prettier", tools = { "prettier" } },
-    typescript      = { lsp = "ts_ls", parser = "typescript", formatter = "prettier", tools = { "prettier" } },
+    typescript = { lsp = "ts_ls", parser = "typescript", formatter = "prettier", tools = { "prettier" } },
     typescriptreact = { parser = "tsx", formatter = "prettier", tools = { "prettier" } },
 
     -- jsonls and yamlls validate against schemas from SchemaStore (see plugins/lsp.lua).
-    json     = { lsp = "jsonls", parser = "json", formatter = "prettier", tools = { "prettier" } },
-    yaml     = { lsp = "yamlls", parser = "yaml", formatter = "prettier", tools = { "prettier" } },
+    json = { lsp = "jsonls", parser = "json", formatter = "prettier", tools = { "prettier" } },
+    yaml = { lsp = "yamlls", parser = "yaml", formatter = "prettier", tools = { "prettier" } },
     markdown = { parser = { "markdown", "markdown_inline" }, formatter = "prettier", tools = { "prettier" } },
 
     html = { lsp = "html", parser = "html", formatter = "prettier", tools = { "prettier" } },
-    css  = { lsp = "cssls", parser = "css", formatter = "prettier", tools = { "prettier" } },
+    css = { lsp = "cssls", parser = "css", formatter = "prettier", tools = { "prettier" } },
     toml = { lsp = "taplo", parser = "toml", formatter = "taplo", tools = { "taplo" } },
 
     dockerfile = { lsp = "dockerls", parser = "dockerfile" },

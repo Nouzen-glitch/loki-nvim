@@ -5,13 +5,13 @@ return {
     -- without editing this file, e.g. to rebind the toggle key:
     --   { "akinsho/toggleterm.nvim", opts = { open_mapping = [[<C-t>]] } }
     opts = {
-        size = 15,                 -- Height of the bottom terminal pane
-        open_mapping = [[<C-\>]],  -- Toggle terminal (Ctrl + \)
-        direction = "horizontal",  -- Opens at the bottom of the editor
-        shade_terminals = true,    -- Darkens the terminal background slightly
-        start_in_insert = true,    -- Enter terminal mode when opened
-        insert_mappings = true,    -- Keep open_mapping working in insert mode
-        terminal_mappings = true,  -- Keep open_mapping working in terminal mode
+        size = 15, -- Height of the bottom terminal pane
+        open_mapping = [[<C-\>]], -- Toggle terminal (Ctrl + \)
+        direction = "horizontal", -- Opens at the bottom of the editor
+        shade_terminals = true, -- Darkens the terminal background slightly
+        start_in_insert = true, -- Enter terminal mode when opened
+        insert_mappings = true, -- Keep open_mapping working in insert mode
+        terminal_mappings = true, -- Keep open_mapping working in terminal mode
     },
     config = function(_, opts)
         require("toggleterm").setup(opts)

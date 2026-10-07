@@ -40,8 +40,13 @@ local function load()
     end
     if #M.unknown_presets > 0 then
         vim.schedule(function()
-            vim.notify("vim.g.loki_language_presets: unknown preset(s): " .. table.concat(M.unknown_presets, ", ")
-                .. ". Available: " .. table.concat(M.preset_names(), ", "), vim.log.levels.WARN)
+            vim.notify(
+                "vim.g.loki_language_presets: unknown preset(s): "
+                    .. table.concat(M.unknown_presets, ", ")
+                    .. ". Available: "
+                    .. table.concat(M.preset_names(), ", "),
+                vim.log.levels.WARN
+            )
         end)
     end
 
@@ -85,9 +90,15 @@ local function collect(field)
     return out
 end
 
-function M.servers() return collect("lsp") end
-function M.parsers() return collect("parser") end
-function M.tools() return collect("tools") end
+function M.servers()
+    return collect("lsp")
+end
+function M.parsers()
+    return collect("parser")
+end
+function M.tools()
+    return collect("tools")
+end
 
 -- The merged entry of one filetype (nil when there is none).
 function M.entry(ft)
@@ -125,16 +136,21 @@ end
 -- Human-readable problems in the language table (typos, wrong types).
 -- Shown by :checkhealth loki; startup keeps working without the bad values.
 local FIELDS = { lsp = true, parser = true, formatter = true, linter = true, tools = true }
- 
+
 function M.problems()
     local out = {}
     for ft, cfg in pairs(load()) do
         if type(cfg) ~= "table" then
-            out[#out + 1] = string.format('%s: the entry must be a table (use "%s = false" to disable a language)', ft, ft)
+            out[#out + 1] =
+                string.format('%s: the entry must be a table (use "%s = false" to disable a language)', ft, ft)
         else
             for key, value in pairs(cfg) do
                 if not FIELDS[key] then
-                    out[#out + 1] = string.format('%s: unknown field "%s" (use lsp, parser, formatter, linter, tools)', ft, tostring(key))
+                    out[#out + 1] = string.format(
+                        '%s: unknown field "%s" (use lsp, parser, formatter, linter, tools)',
+                        ft,
+                        tostring(key)
+                    )
                 else
                     for _, item in ipairs(as_list(value)) do
                         if type(item) ~= "string" then
@@ -147,11 +163,14 @@ function M.problems()
         end
     end
     for _, name in ipairs(M.unknown_presets or {}) do
-        out[#out + 1] = 'vim.g.loki_language_presets: unknown preset "' .. name .. '" (available: '
-            .. table.concat(M.preset_names(), ", ") .. ")"
+        out[#out + 1] = 'vim.g.loki_language_presets: unknown preset "'
+            .. name
+            .. '" (available: '
+            .. table.concat(M.preset_names(), ", ")
+            .. ")"
     end
     table.sort(out)
     return out
 end
- 
+
 return M

@@ -15,7 +15,7 @@ local objects = {
     { "{", "curly braces { }" },
     { "<", "angle brackets < >" },
     { "b", "any brackets ( ) [ ] { }" },
-    { '"', 'double quotes' },
+    { '"', "double quotes" },
     { "'", "single quotes" },
     { "`", "backticks" },
     { "q", "any quotes" },

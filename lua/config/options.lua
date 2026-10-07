@@ -3,7 +3,7 @@
 -- To change any of this for yourself, use lua/user/options.lua (see docs/MIGRATING.md).
 
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = ","
 
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -39,9 +39,9 @@ vim.opt.showmode = false
 vim.opt.laststatus = 3
 
 -- Small comforts.
-vim.opt.confirm = true          -- ask instead of failing on :q with unsaved changes
-vim.opt.inccommand = "split"    -- live preview for :s substitutions
-vim.opt.winborder = "rounded"   -- consistent borders on floating windows (0.11+)
+vim.opt.confirm = true -- ask instead of failing on :q with unsaved changes
+vim.opt.inccommand = "split" -- live preview for :s substitutions
+vim.opt.winborder = "rounded" -- consistent borders on floating windows (0.11+)
 
 -- Folds are manual: zf creates one, za toggles it. Automatic tree-sitter folding is
 -- opt-in: vim.g.loki_treesitter_folding = true in lua/user/options.lua.

@@ -56,7 +56,8 @@ local function get_buffer_keymaps()
                 local ok, list = pcall(vim.api.nvim_buf_get_keymap, buf, mode)
                 if ok then
                     for _, map in ipairs(list) do
-                        local id = table.concat({ where, map.mode or "", map.lhsraw or map.lhs or "", map.desc or "" }, "\0")
+                        local id =
+                            table.concat({ where, map.mode or "", map.lhsraw or map.lhs or "", map.desc or "" }, "\0")
                         if not seen[id] and map.lhs and map.lhs ~= "" then
                             seen[id] = true
                             table.insert(out, { where = where, map = map })
@@ -125,15 +126,24 @@ local function generate_lines()
 
     -- Generated from util/registry.lua, so it cannot drift from the real keys and commands.
     local registry = require("util.registry")
-    for _, k in ipairs({ { "n", "<leader>?" }, { "n", "<leader>fk" }, { "n", "<leader>fc" }, { "n", "<leader>fh" },
-        { "n", "<leader>fi" }, { "n", "<leader>fC" } }) do
+    for _, k in ipairs({
+        { "n", "<leader>?" },
+        { "n", "<leader>fk" },
+        { "n", "<leader>fc" },
+        { "n", "<leader>fh" },
+        { "n", "<leader>fi" },
+        { "n", "<leader>fC" },
+    }) do
         local e = registry.key(k[1], k[2])
         if e then
             table.insert(lines, string.format("| %s | `%s` |", esc(e.desc), esc(k[2])))
         end
     end
     for _, c in ipairs(registry.commands) do
-        table.insert(lines, string.format("| %s | `:%s%s` |", esc(c.desc), esc(c.name), c.args and (" " .. esc(c.args)) or ""))
+        table.insert(
+            lines,
+            string.format("| %s | `:%s%s` |", esc(c.desc), esc(c.name), c.args and (" " .. esc(c.args)) or "")
+        )
     end
     table.insert(lines, "| Check your setup | `:checkhealth loki` |")
     table.insert(lines, "| Built-in Neovim/Vim documentation | `:help` |")
@@ -146,11 +156,7 @@ local function generate_lines()
     })
 
     for _, group in ipairs(require("config.leader_groups").all()) do
-        table.insert(lines, string.format(
-            "| `<leader>%s` | %s |",
-            esc(group.key),
-            esc(group.label)
-        ))
+        table.insert(lines, string.format("| `<leader>%s` | %s |", esc(group.key), esc(group.label)))
     end
 
     local ok_kg, kg = pcall(require, "util.keyguard")
@@ -163,8 +169,10 @@ local function generate_lines()
             table.insert(lines, "| Mode | Key | Shipped action | Now |")
             table.insert(lines, "| --- | --- | --- | --- |")
             for _, o in ipairs(overrides) do
-                table.insert(lines, string.format("| `%s` | `%s` | %s | %s |",
-                    esc(o.modes), esc(o.lhs), esc(o.was), esc(o.now)))
+                table.insert(
+                    lines,
+                    string.format("| `%s` | `%s` | %s | %s |", esc(o.modes), esc(o.lhs), esc(o.was), esc(o.now))
+                )
             end
         end
     end
@@ -180,12 +188,7 @@ local function generate_lines()
 
     for _, map in ipairs(get_keymaps()) do
         if map.lhs and map.lhs ~= "" then
-            table.insert(lines, string.format(
-                "| `%s` | `%s` | %s |",
-                esc(map.mode),
-                esc(map.lhs),
-                esc(label(map))
-            ))
+            table.insert(lines, string.format("| `%s` | `%s` | %s |", esc(map.mode), esc(map.lhs), esc(label(map))))
         end
     end
 
@@ -197,13 +200,16 @@ local function generate_lines()
         table.insert(lines, "| Buffer | Mode | Key | Description |")
         table.insert(lines, "| --- | --- | --- | --- |")
         for _, item in ipairs(buffer_maps) do
-            table.insert(lines, string.format(
-                "| `%s` | `%s` | `%s` | %s |",
-                esc(item.where),
-                esc(item.map.mode),
-                esc(item.map.lhs),
-                esc(label(item.map))
-            ))
+            table.insert(
+                lines,
+                string.format(
+                    "| `%s` | `%s` | `%s` | %s |",
+                    esc(item.where),
+                    esc(item.map.mode),
+                    esc(item.map.lhs),
+                    esc(label(item.map))
+                )
+            )
         end
     end
 
@@ -214,11 +220,7 @@ local function generate_lines()
     table.insert(lines, "| --- | --- |")
 
     for _, command in ipairs(get_commands()) do
-        table.insert(lines, string.format(
-            "| `:%s` | %s |",
-            esc(command.name),
-            esc(command.desc)
-        ))
+        table.insert(lines, string.format("| `:%s` | %s |", esc(command.name), esc(command.desc)))
     end
 
     table.insert(lines, "")
@@ -232,11 +234,10 @@ local function generate_lines()
 
     local stats = get_lazy_stats()
     if stats then
-        table.insert(lines, string.format(
-            "| Lazy plugins | `%d loaded / %d total` |",
-            stats.loaded or 0,
-            stats.count or 0
-        ))
+        table.insert(
+            lines,
+            string.format("| Lazy plugins | `%d loaded / %d total` |", stats.loaded or 0, stats.count or 0)
+        )
     end
 
     local clients = vim.lsp.get_clients()
@@ -249,21 +250,25 @@ local function generate_lines()
         table.insert(lines, "| Server | Root |")
         table.insert(lines, "| --- | --- |")
         for _, client in ipairs(clients) do
-            table.insert(lines, string.format(
-                "| `%s` | `%s` |",
-                esc(client.name),
-                esc(client.root_dir or "")
-            ))
+            table.insert(lines, string.format("| `%s` | `%s` |", esc(client.name), esc(client.root_dir or "")))
         end
     end
 
     table.insert(lines, "")
     table.insert(lines, "## Built-in documentation")
     table.insert(lines, "")
-    table.insert(lines,
-        "The complete built-in Vim/Neovim command and key documentation is intentionally not copied into this generated file.")
-    table.insert(lines, "Use `:help`, `:help index`, `:help normal-index`, `:help insert-index`, and `:help :commands`.")
-    table.insert(lines, "This keeps the generated sheet focused on what this particular environment adds and configures.")
+    table.insert(
+        lines,
+        "The complete built-in Vim/Neovim command and key documentation is intentionally not copied into this generated file."
+    )
+    table.insert(
+        lines,
+        "Use `:help`, `:help index`, `:help normal-index`, `:help insert-index`, and `:help :commands`."
+    )
+    table.insert(
+        lines,
+        "This keeps the generated sheet focused on what this particular environment adds and configures."
+    )
 
     return lines
 end
@@ -320,7 +325,9 @@ function M.setup()
             local file = vim.uv.fs_realpath(args.file) or args.file
 
             if file:sub(1, #config) == config then
-                vim.defer_fn(function() pcall(M.generate) end, 100)
+                vim.defer_fn(function()
+                    pcall(M.generate)
+                end, 100)
             end
         end,
     })
@@ -330,9 +337,11 @@ function M.setup()
     vim.api.nvim_create_autocmd("VimEnter", {
         once = true,
         callback = function()
-            vim.defer_fn(function() pcall(M.generate) end, 200)
+            vim.defer_fn(function()
+                pcall(M.generate)
+            end, 200)
         end,
     })
 end
- 
+
 return M

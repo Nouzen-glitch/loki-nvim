@@ -7,11 +7,11 @@
 -- file; raw vim.api.nvim_set_keymap calls are not tracked.
 local M = {}
 
-M.shipped = {}   -- "mode\0rawlhs" -> { mode, lhs, raw, desc, plugin }
+M.shipped = {} -- "mode\0rawlhs" -> { mode, lhs, raw, desc, plugin }
 M.overrides = {} -- user key replaced a shipped key
-M.removed = {}   -- user deleted a shipped key
-M.clashes = {}   -- user key is a prefix of / extends a shipped key
-M.user_set = {}  -- "mode\0rawlhs" -> true for every global key set in lua/user/keymaps.lua
+M.removed = {} -- user deleted a shipped key
+M.clashes = {} -- user key is a prefix of / extends a shipped key
+M.user_set = {} -- "mode\0rawlhs" -> true for every global key set in lua/user/keymaps.lua
 
 -- Keys that plugins set AFTER user keymaps load (so they win over yours).
 local PLUGIN_KEYS = {
@@ -66,7 +66,11 @@ local function on_shipped(mode, lhs, rhs, opts)
     local r = raw(lhs)
     for _, m in ipairs(expand(mode)) do
         M.shipped[m .. "\0" .. r] = {
-            mode = m, lhs = lhs, raw = r, desc = describe(rhs, opts), nodesc = not has_desc(opts),
+            mode = m,
+            lhs = lhs,
+            raw = r,
+            desc = describe(rhs, opts),
+            nodesc = not has_desc(opts),
         }
     end
 end
@@ -81,7 +85,11 @@ local function on_user_set(mode, lhs, rhs, opts)
         local hit = M.shipped[m .. "\0" .. r]
         if hit then
             table.insert(M.overrides, {
-                mode = m, lhs = lhs, was = hit.desc, now = describe(rhs, opts), plugin = hit.plugin,
+                mode = m,
+                lhs = lhs,
+                was = hit.desc,
+                now = describe(rhs, opts),
+                plugin = hit.plugin,
             })
         else
             for _, s in pairs(M.shipped) do
@@ -182,18 +190,27 @@ local function merge(list, keyfn, build)
 end
 
 function M.overrides_grouped()
-    return merge(M.overrides, function(o) return o.lhs .. "\0" .. o.was .. "\0" .. o.now end,
-        function(o) return { lhs = o.lhs, was = o.was, now = o.now, plugin = o.plugin } end)
+    return merge(M.overrides, function(o)
+        return o.lhs .. "\0" .. o.was .. "\0" .. o.now
+    end, function(o)
+        return { lhs = o.lhs, was = o.was, now = o.now, plugin = o.plugin }
+    end)
 end
 
 function M.removed_grouped()
-    return merge(M.removed, function(o) return o.lhs .. "\0" .. o.was end,
-        function(o) return { lhs = o.lhs, was = o.was } end)
+    return merge(M.removed, function(o)
+        return o.lhs .. "\0" .. o.was
+    end, function(o)
+        return { lhs = o.lhs, was = o.was }
+    end)
 end
 
 function M.clashes_grouped()
-    return merge(M.clashes, function(o) return o.short .. "\0" .. o.long end,
-        function(o) return { short = o.short, long = o.long } end)
+    return merge(M.clashes, function(o)
+        return o.short .. "\0" .. o.long
+    end, function(o)
+        return { short = o.short, long = o.long }
+    end)
 end
 
 function M.report_lines()
@@ -202,13 +219,23 @@ function M.report_lines()
         return { "None of your keymaps replace, remove or shadow a shipped key." }
     end
     local lines = {}
-    local function add(s) lines[#lines + 1] = s end
+    local function add(s)
+        lines[#lines + 1] = s
+    end
 
     if #o > 0 then
         add("Replaced (the shipped action no longer runs on that key):")
         for _, x in ipairs(o) do
-            add(string.format('  %s (%s): was "%s", now "%s"%s', x.lhs, x.modes, x.was, x.now,
-                x.plugin and "  [plugin key: the plugin may still win]" or ""))
+            add(
+                string.format(
+                    '  %s (%s): was "%s", now "%s"%s',
+                    x.lhs,
+                    x.modes,
+                    x.was,
+                    x.now,
+                    x.plugin and "  [plugin key: the plugin may still win]" or ""
+                )
+            )
         end
         add("")
     end
@@ -235,9 +262,15 @@ end
 
 local function signature()
     local parts = {}
-    for _, o in ipairs(M.overrides_grouped()) do parts[#parts + 1] = "o:" .. o.modes .. ":" .. o.lhs end
-    for _, o in ipairs(M.removed_grouped()) do parts[#parts + 1] = "r:" .. o.modes .. ":" .. o.lhs end
-    for _, o in ipairs(M.clashes_grouped()) do parts[#parts + 1] = "c:" .. o.modes .. ":" .. o.short .. ":" .. o.long end
+    for _, o in ipairs(M.overrides_grouped()) do
+        parts[#parts + 1] = "o:" .. o.modes .. ":" .. o.lhs
+    end
+    for _, o in ipairs(M.removed_grouped()) do
+        parts[#parts + 1] = "r:" .. o.modes .. ":" .. o.lhs
+    end
+    for _, o in ipairs(M.clashes_grouped()) do
+        parts[#parts + 1] = "c:" .. o.modes .. ":" .. o.short .. ":" .. o.long
+    end
     table.sort(parts)
     return table.concat(parts, "\n")
 end
@@ -272,7 +305,9 @@ function M.setup()
         local n = #M.overrides_grouped() + #M.removed_grouped()
         local msg = string.format(
             "Loki: your keymaps replace or remove %d shipped key(s)%s. Run :LokiKeys to review.",
-            n, #M.clashes_grouped() > 0 and " and delay some others" or "")
+            n,
+            #M.clashes_grouped() > 0 and " and delay some others" or ""
+        )
         vim.api.nvim_create_autocmd("VimEnter", {
             once = true,
             callback = function()
@@ -281,7 +316,9 @@ function M.setup()
                     return
                 end
                 remember()
-                vim.defer_fn(function() vim.notify(msg, vim.log.levels.WARN) end, 600)
+                vim.defer_fn(function()
+                    vim.notify(msg, vim.log.levels.WARN)
+                end, 600)
             end,
         })
     end

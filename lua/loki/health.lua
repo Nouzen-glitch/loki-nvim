@@ -38,8 +38,10 @@ function M.check()
         h.error("Config folder not found")
     end
     local state = vim.fn.stdpath("state")
-    if vim.fn.filereadable(state .. "/loki-install-info") == 1
-        or vim.fn.filereadable(state .. "/loki-install-info.shown") == 1 then
+    if
+        vim.fn.filereadable(state .. "/loki-install-info") == 1
+        or vim.fn.filereadable(state .. "/loki-install-info.shown") == 1
+    then
         h.ok("Installed with scripts/install.sh")
     else
         h.warn("No install record: this config was not set up with scripts/install.sh", {
@@ -48,8 +50,11 @@ function M.check()
         })
     end
     h.info("Run :LokiInfo to see how it was installed and where any backup went")
-    h.info("Plugin lockfile: " .. require("util.lockfile").path()
-        .. (vim.g.loki_lockfile_in_repo and " (tracked in the repo)" or " (personal copy)"))
+    h.info(
+        "Plugin lockfile: "
+            .. require("util.lockfile").path()
+            .. (vim.g.loki_lockfile_in_repo and " (tracked in the repo)" or " (personal copy)")
+    )
 
     h.start("Loki: required tools")
     check_tool("git", h.error, "Needed by lazy.nvim to install plugins.")
@@ -62,7 +67,9 @@ function M.check()
     check_tool("rg", h.warn, "Install ripgrep: needed for <leader>fg (live grep).")
     check_tool("curl", h.warn, "Needed by Mason.")
     check_tool("unzip", h.warn, "Needed by Mason.")
-    local ok_cb, cb = pcall(function() return vim.fn["provider#clipboard#Executable"]() end)
+    local ok_cb, cb = pcall(function()
+        return vim.fn["provider#clipboard#Executable"]()
+    end)
     if ok_cb and cb ~= "" then
         h.ok("Clipboard provider: " .. cb)
     else
@@ -119,19 +126,30 @@ function M.check()
     end
     for _, o in ipairs(over) do
         local advice = o.plugin
-            and { "This plugin sets the key after your keymaps load, so the plugin wins.",
-                "Change it through the plugin's opts: docs/MIGRATING.md, section 4." }
-            or { "The shipped action still exists as a command: find it with <leader>fc and give it another key,",
-                "or delete your mapping to get the shipped key back. <leader>fk shows what a key does now." }
+                and {
+                    "This plugin sets the key after your keymaps load, so the plugin wins.",
+                    "Change it through the plugin's opts: docs/MIGRATING.md, section 4.",
+                }
+            or {
+                "The shipped action still exists as a command: find it with <leader>fc and give it another key,",
+                "or delete your mapping to get the shipped key back. <leader>fk shows what a key does now.",
+            }
         h.warn(string.format('%s (%s) replaced: was "%s", now "%s"', o.lhs, o.modes, o.was, o.now), advice)
     end
     for _, o in ipairs(removed) do
         h.info(string.format('%s (%s) removed: was "%s"', o.lhs, o.modes, o.was))
     end
     for _, o in ipairs(clashes) do
-        h.warn(string.format("%s (%s) waits %d ms before firing because %s also exists",
-            o.short, o.modes, vim.o.timeoutlen, o.long),
-            "Use a key that is not the start of another key, or accept the short delay.")
+        h.warn(
+            string.format(
+                "%s (%s) waits %d ms before firing because %s also exists",
+                o.short,
+                o.modes,
+                vim.o.timeoutlen,
+                o.long
+            ),
+            "Use a key that is not the start of another key, or accept the short delay."
+        )
     end
 
     h.start("Loki: safety copies of your personal files")
@@ -162,7 +180,7 @@ function M.check()
             h.warn("Language table: " .. p)
         end
     end
- 
+
     h.start("Loki: extras (opt-in)")
     local extras = require("util.extras")
     local on, unknown = extras.requested()

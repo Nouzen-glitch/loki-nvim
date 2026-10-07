@@ -31,7 +31,7 @@ function M.help_lines()
         "",
         "MAKE IT YOURS (never edit shipped files: updates would stop)",
         "  :LokiEdit options     your options and vim.g.loki_* switches",
-        "  :LokiEdit keymaps     your keys (always give each a desc = \"...\")",
+        '  :LokiEdit keymaps     your keys (always give each a desc = "...")',
         "  :LokiEdit plugins     your plugins, or tweaks to shipped ones",
         "  :LokiEdit languages   add a language (server, parser, formatter)",
         "  :LokiKeys             shipped keys your keymaps replaced or delayed",
@@ -77,7 +77,7 @@ function M.tutor_lines()
         "  h j k l   move             i    start typing      jk   leave Insert mode",
         "  w b e     by word          0 $  line start / end  u    undo   <C-r> redo",
         "  dd yy p   cut / copy / paste a line",
-        "  ciw       change the word under the cursor   ci\"  change inside quotes",
+        '  ciw       change the word under the cursor   ci"  change inside quotes',
         "  gcc       comment or uncomment the line",
         "Try: put the cursor on this word, type ciw, type a new word, press jk.",
         "",
@@ -174,8 +174,12 @@ local function backup(opts)
     vim.system({ script, "export", out }, { text = true }, function(res)
         vim.schedule(function()
             if res.code == 0 then
-                vim.notify("Personal files exported to " .. out
-                    .. "\nRestore on any machine: scripts/user-layer.sh import " .. out)
+                vim.notify(
+                    "Personal files exported to "
+                        .. out
+                        .. "\nRestore on any machine: scripts/user-layer.sh import "
+                        .. out
+                )
             else
                 local msg = (res.stderr and res.stderr ~= "") and res.stderr or res.stdout
                 vim.notify("Backup failed:\n" .. tostring(msg), vim.log.levels.ERROR)
@@ -198,7 +202,9 @@ end
 
 function M.setup()
     local registry = require("util.registry")
-    local function desc(name) return registry.command_desc(name) end
+    local function desc(name)
+        return registry.command_desc(name)
+    end
 
     vim.api.nvim_create_user_command("LokiHelp", function(o)
         local topic = vim.trim(o.args)
@@ -207,8 +213,10 @@ function M.setup()
         elseif registry.topics[topic] then
             require("util.welcome").show(require("util.helpdoc").topic_lines(topic), "Loki help: " .. topic)
         else
-            vim.notify("Unknown help topic '" .. topic .. "'. Topics: " .. table.concat(registry.topic_order, ", "),
-                vim.log.levels.WARN)
+            vim.notify(
+                "Unknown help topic '" .. topic .. "'. Topics: " .. table.concat(registry.topic_order, ", "),
+                vim.log.levels.WARN
+            )
         end
     end, {
         nargs = "?",
@@ -226,14 +234,21 @@ function M.setup()
         local dir = M.repo() .. "/docs"
         local ok, builtin = pcall(require, "telescope.builtin")
         if ok then
-            builtin.find_files({ cwd = dir, prompt_title = "Loki docs", find_command = { "find", ".", "-name", "*.md", "-type", "f" } })
+            builtin.find_files({
+                cwd = dir,
+                prompt_title = "Loki docs",
+                find_command = { "find", ".", "-name", "*.md", "-type", "f" },
+            })
         else
             vim.cmd("edit " .. vim.fn.fnameescape(dir))
         end
     end, { desc = desc("LokiDocs") })
 
     vim.api.nvim_create_user_command("LokiLsp", function()
-        require("util.welcome").show(require("util.lsp").report(vim.api.nvim_get_current_buf()), "Loki: language support")
+        require("util.welcome").show(
+            require("util.lsp").report(vim.api.nvim_get_current_buf()),
+            "Loki: language support"
+        )
     end, { desc = desc("LokiLsp") })
 
     -- Make :help loki work on a fresh install (doc/tags is gitignored).
@@ -264,8 +279,11 @@ function M.setup()
             vim.notify("Usage: :LokiFormat on|off|status", vim.log.levels.WARN)
             return
         end
-        vim.notify("Format on save: " .. (vim.g.loki_format_on_save == false and "off" or "on")
-            .. " (this session only; <leader>cf always formats)")
+        vim.notify(
+            "Format on save: "
+                .. (vim.g.loki_format_on_save == false and "off" or "on")
+                .. " (this session only; <leader>cf always formats)"
+        )
     end, {
         nargs = "?",
         desc = desc("LokiFormat"),
@@ -275,7 +293,7 @@ function M.setup()
             end, { "on", "off", "status" })
         end,
     })
- 
+
     vim.api.nvim_create_user_command("LokiBackup", backup, {
         nargs = "?",
         complete = "file",

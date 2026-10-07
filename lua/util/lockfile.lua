@@ -39,8 +39,10 @@ function M.setup()
             return
         end
         vim.uv.fs_copyfile(shipped(), personal())
-        vim.notify("Plugin versions reset to the ones shipped with this config.\n"
-            .. "Restart Neovim, then run :Lazy restore to apply them.")
+        vim.notify(
+            "Plugin versions reset to the ones shipped with this config.\n"
+                .. "Restart Neovim, then run :Lazy restore to apply them."
+        )
     end, { desc = require("util.registry").command_desc("LokiLockReset") })
 end
 

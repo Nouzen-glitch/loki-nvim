@@ -217,7 +217,7 @@ view (`:help diffview-merge-tool`). Committing is still done in a terminal (`<C-
 Uses `MagicDuck/grug-far.nvim`. `<leader>R` opens a buffer with a search
 field, a replacement field and a live list of matches across the project. Edit
 the replacement, then press `<localleader>r` inside that buffer (the local
-leader is Space too, so Space then `r`) to apply it; `g?` lists its keys. In Visual mode the selection
+leader is `,` here, so `,` then `r`) to apply it; `g?` lists its keys. In Visual mode the selection
 becomes the search text. Needs `ripgrep`. `:GrugFar` is the same as the key.
 
 ## outline
@@ -325,8 +325,8 @@ run `gh auth login`; `:checkhealth loki` reports both. The token stays in
 
 `:Octo` has many more actions (`:Octo pr create`, `:Octo issue create`, ...);
 type `:Octo ` and press `<Tab>`. `:checkhealth octo` verifies the plugin.
-Octo's buffer-local keys use `<localleader>`, which is Space here too, so inside
-its buffers they shadow your `<leader>` keys.
+Octo's buffer-local keys use `<localleader>`, which is `,` here, so they
+never collide with your Space `<leader>` keys.
 
 ## preview
 

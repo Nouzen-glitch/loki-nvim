@@ -120,7 +120,13 @@ local function show(lines, title)
             vim.api.nvim_buf_set_extmark(buf, ns, i - 1, 0, { end_col = #l, hl_group = "Title" })
         end
     end
-    vim.fn.matchadd("Special", [[<leader>\S\+\|<[CSMA]-\S\+>\|:Loki\w\+\|:Cheatsheet\w*\|:checkhealth \w\+]], 10, -1, { window = win })
+    vim.fn.matchadd(
+        "Special",
+        [[<leader>\S\+\|<[CSMA]-\S\+>\|:Loki\w\+\|:Cheatsheet\w*\|:checkhealth \w\+]],
+        10,
+        -1,
+        { window = win }
+    )
     vim.fn.matchadd("Comment", [[^\s*Example:.*$]], 10, -1, { window = win })
 
     local function close()
@@ -142,9 +148,7 @@ function M.setup()
     local fresh, shown = paths()
 
     vim.api.nvim_create_user_command("LokiInfo", function()
-        local path = (vim.fn.filereadable(fresh) == 1 and fresh)
-            or (vim.fn.filereadable(shown) == 1 and shown)
-            or nil
+        local path = (vim.fn.filereadable(fresh) == 1 and fresh) or (vim.fn.filereadable(shown) == 1 and shown) or nil
         if not path then
             show(manual_message())
             return

@@ -29,7 +29,9 @@ end
 function M.run()
     local root = vim.uv.fs_realpath(vim.fn.stdpath("config")) or vim.fn.stdpath("config")
     local problems = {}
-    local function bad(msg) problems[#problems + 1] = msg end
+    local function bad(msg)
+        problems[#problems + 1] = msg
+    end
 
     local docs = {}
     local function doc(name)
@@ -69,7 +71,13 @@ function M.run()
         -- 2. every <leader>XY... prefix has a group label
         local rest = type(s.lhs) == "string" and s.lhs:match("^<leader>(.+)$")
         if rest and #rest >= 2 and not rest:match("^<") and not prefixes[rest:sub(1, 1)] then
-            bad(string.format("mapping %s: <leader>%s has no group label (config/leader_groups.lua)", s.lhs, rest:sub(1, 1)))
+            bad(
+                string.format(
+                    "mapping %s: <leader>%s has no group label (config/leader_groups.lua)",
+                    s.lhs,
+                    rest:sub(1, 1)
+                )
+            )
         end
     end
 
@@ -108,21 +116,36 @@ function M.run()
     end
     local lsp_actions = require("util.lsp").actions
     for _, e in ipairs(registry.keys) do
-        local id = table.concat(registry.as_list(e.lhs), " ") .. " [" .. table.concat(registry.as_list(e.mode), ",") .. "]"
-        if not e.desc or e.desc == "" then bad("registry key " .. id .. " lacks desc") end
-        if not e.long or #e.long < 30 then bad("registry key " .. id .. " lacks a `long` text") end
+        local id = table.concat(registry.as_list(e.lhs), " ")
+            .. " ["
+            .. table.concat(registry.as_list(e.mode), ",")
+            .. "]"
+        if not e.desc or e.desc == "" then
+            bad("registry key " .. id .. " lacks desc")
+        end
+        if not e.long or #e.long < 30 then
+            bad("registry key " .. id .. " lacks a `long` text")
+        end
         if not e.group then
             bad("registry key " .. id .. " lacks group")
         elseif not groups_in_topics[e.group] then
             bad("registry group '" .. e.group .. "' (key " .. id .. ") is in no help topic")
         end
-        if e.lsp and not lsp_actions[e.lsp] then bad("registry key " .. id .. ": unknown lsp action " .. e.lsp) end
-        if not e.lsp and e.set ~= false and e.rhs == nil then bad("registry key " .. id .. " has no rhs") end
+        if e.lsp and not lsp_actions[e.lsp] then
+            bad("registry key " .. id .. ": unknown lsp action " .. e.lsp)
+        end
+        if not e.lsp and e.set ~= false and e.rhs == nil then
+            bad("registry key " .. id .. " has no rhs")
+        end
         check_see("registry key " .. id, e.see)
     end
     for _, c in ipairs(registry.commands) do
-        if not c.desc or c.desc == "" then bad("registry command :" .. c.name .. " lacks desc") end
-        if not c.long or #c.long < 30 then bad("registry command :" .. c.name .. " lacks a `long` text") end
+        if not c.desc or c.desc == "" then
+            bad("registry command :" .. c.name .. " lacks desc")
+        end
+        if not c.long or #c.long < 30 then
+            bad("registry command :" .. c.name .. " lacks a `long` text")
+        end
         check_see("registry command :" .. c.name, c.see)
     end
 
@@ -155,9 +178,15 @@ function M.run()
     local extras = require("util.extras")
     local extras_md, comps = doc("EXTRAS.md") or "", doc("COMPONENTS.md") or ""
     for _, name in ipairs(extras.order) do
-        if not extras_md:find("`" .. name .. "`", 1, true) then bad("docs/EXTRAS.md does not mention extra `" .. name .. "`") end
-        if not comps:find("| " .. name .. " |", 1, true) then bad("docs/COMPONENTS.md has no row for extra " .. name) end
-        if not kb:find(name, 1, true) then bad("docs/KEYBINDINGS.md does not mention extra " .. name) end
+        if not extras_md:find("`" .. name .. "`", 1, true) then
+            bad("docs/EXTRAS.md does not mention extra `" .. name .. "`")
+        end
+        if not comps:find("| " .. name .. " |", 1, true) then
+            bad("docs/COMPONENTS.md has no row for extra " .. name)
+        end
+        if not kb:find(name, 1, true) then
+            bad("docs/KEYBINDINGS.md does not mention extra " .. name)
+        end
         if extras.registry[name].plugins and not vim.uv.fs_stat(root .. "/lua/extras/" .. name .. ".lua") then
             bad("extra " .. name .. " says plugins = true but lua/extras/" .. name .. ".lua is missing")
         end
@@ -182,7 +211,16 @@ function M.run()
     else
         helpdoc.ensure_tags()
         local tags = vim.fn.getcompletion("loki", "help")
-        for _, want in ipairs({ "loki", "loki-keys", "loki-lsp", "loki-git", "loki-languages", "loki-extras", "loki-files", "loki-troubleshooting" }) do
+        for _, want in ipairs({
+            "loki",
+            "loki-keys",
+            "loki-lsp",
+            "loki-git",
+            "loki-languages",
+            "loki-extras",
+            "loki-files",
+            "loki-troubleshooting",
+        }) do
             if not vim.tbl_contains(tags, want) then
                 bad("help tag *" .. want .. "* not found (:help " .. want .. ")")
             end

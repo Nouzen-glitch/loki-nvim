@@ -151,8 +151,9 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
         top of the screen.
 
     `<leader>bd` [n] Close this buffer (file)
-        Removes the current buffer from the list of open files. Windows
-        showing it switch to another buffer.
+        Removes the current buffer from the list of open files. Every window
+        that showed it switches to another buffer, so splits keep their
+        layout.
 
 
     Editing
@@ -183,8 +184,9 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
 
     A language server gives go-to-definition, references, rename, hover docs,
     completion and diagnostics.
-    The LSP keys exist only in buffers where a server is attached. Elsewhere they
-    print a notice, and :LokiLsp explains why nothing is attached.
+    The LSP keys exist only in buffers where a server is attached. Elsewhere K,
+    gd, gD and gi keep their Vim meaning and the others print a notice, and
+    :LokiLsp explains why nothing is attached.
     Servers come from the language table (see :LokiHelp languages); Mason installs
     them.
 

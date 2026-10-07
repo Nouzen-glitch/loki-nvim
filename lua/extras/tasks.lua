@@ -6,7 +6,14 @@
 return {
     {
         "stevearc/overseer.nvim",
-        cmd = { "OverseerRun", "OverseerToggle", "OverseerOpen", "OverseerClose", "OverseerBuild", "OverseerQuickAction" },
+        cmd = {
+            "OverseerRun",
+            "OverseerToggle",
+            "OverseerOpen",
+            "OverseerClose",
+            "OverseerBuild",
+            "OverseerQuickAction",
+        },
         opts = {
             component_aliases = {
                 default_vscode = {

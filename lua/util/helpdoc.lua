@@ -52,12 +52,18 @@ local function key_entries(topic, add, o)
         local head = o.vimdoc and string.format("    `%s`  [%s]  %s", lhs_of(e), modes_of(e), e.desc)
             or string.format("    %s  [%s]", lhs_of(e), modes_of(e))
         if o.vimdoc then
-            for _, l in ipairs(wrap(head:gsub("^%s+", ""), 76, 4)) do add(l) end
+            for _, l in ipairs(wrap(head:gsub("^%s+", ""), 76, 4)) do
+                add(l)
+            end
         else
             add(head)
-            for _, l in ipairs(wrap(e.desc, o.width, 8)) do add(l) end
+            for _, l in ipairs(wrap(e.desc, o.width, 8)) do
+                add(l)
+            end
         end
-        for _, l in ipairs(wrap(e.long, o.width, 8)) do add(l) end
+        for _, l in ipairs(wrap(e.long, o.width, 8)) do
+            add(l)
+        end
         if e.example then
             add("        Example: " .. e.example)
         end
@@ -68,10 +74,14 @@ end
 local function body(name, o)
     local t = registry.topics[name]
     local lines = {}
-    local function add(s) lines[#lines + 1] = s end
+    local function add(s)
+        lines[#lines + 1] = s
+    end
 
     for _, p in ipairs(t.intro) do
-        for _, l in ipairs(wrap(p, o.width, 0)) do add(l) end
+        for _, l in ipairs(wrap(p, o.width, 0)) do
+            add(l)
+        end
     end
 
     key_entries(name, add, o)
@@ -82,8 +92,12 @@ local function body(name, o)
         for _, cname in ipairs(t.commands) do
             local c = registry.command(cname)
             add(string.format("    :%s%s", c.name, c.args and (" " .. c.args) or ""))
-            for _, l in ipairs(wrap(c.desc .. ". " .. c.long, o.width, 8)) do add(l) end
-            if c.example then add("        Example: " .. c.example) end
+            for _, l in ipairs(wrap(c.desc .. ". " .. c.long, o.width, 8)) do
+                add(l)
+            end
+            if c.example then
+                add("        Example: " .. c.example)
+            end
         end
     end
 
@@ -98,8 +112,10 @@ local function body(name, o)
     end
 
     add("")
-    add(o.vimdoc and ("    More: " .. t.see .. "   (:LokiDocs browses the docs)")
-        or ("MORE: " .. t.see .. "   :help " .. t.tag .. "   :LokiDocs"))
+    add(
+        o.vimdoc and ("    More: " .. t.see .. "   (:LokiDocs browses the docs)")
+            or ("MORE: " .. t.see .. "   :help " .. t.tag .. "   :LokiDocs")
+    )
     return lines
 end
 
@@ -108,7 +124,10 @@ function M.topic_lines(name)
     local t = registry.topics[name]
     local lines = { "LOKI HELP: " .. t.title:upper(), "" }
     vim.list_extend(lines, body(name, { width = 74 }))
-    vim.list_extend(lines, { "", "Other topics: :LokiHelp <topic>  (" .. table.concat(registry.topic_order, ", ") .. ")" })
+    vim.list_extend(
+        lines,
+        { "", "Other topics: :LokiHelp <topic>  (" .. table.concat(registry.topic_order, ", ") .. ")" }
+    )
     return lines
 end
 
@@ -121,7 +140,9 @@ end
 
 function M.vimdoc()
     local lines = {}
-    local function add(s) lines[#lines + 1] = s end
+    local function add(s)
+        lines[#lines + 1] = s
+    end
     local rule = string.rep("=", 78)
 
     add("*loki.txt*  Loki Neovim: keys, commands and features")
@@ -150,7 +171,9 @@ function M.vimdoc()
         "Find your way: <leader>? lists every key, <leader>fk searches keys, <leader>fc searches commands, :LokiHelp opens the one-screen guide.",
         "Check your setup with :checkhealth loki.",
     }) do
-        for _, l in ipairs(wrap(p, 76, 4)) do add(l) end
+        for _, l in ipairs(wrap(p, 76, 4)) do
+            add(l)
+        end
     end
 
     for i, name in ipairs(registry.topic_order) do
@@ -173,8 +196,12 @@ function M.vimdoc()
     for _, c in ipairs(registry.commands) do
         local head = ":" .. c.name .. (c.args and (" " .. c.args) or "")
         add(with_tag(head, ":" .. c.name))
-        for _, l in ipairs(wrap(c.desc .. ". " .. c.long, 78, 8)) do add(l) end
-        if c.example then add("        Example: " .. c.example) end
+        for _, l in ipairs(wrap(c.desc .. ". " .. c.long, 78, 8)) do
+            add(l)
+        end
+        if c.example then
+            add("        Example: " .. c.example)
+        end
         add("")
     end
     add(" vim:tw=78:ts=8:ft=help:norl:")

@@ -14,15 +14,22 @@ return {
                     or (vim.fn.executable("jdtls") == 1 and "jdtls")
                     or nil
                 if not cmd then
-                    vim.notify("jdtls is not installed yet. Open :Mason (package `jdtls`) or restart Neovim.",
-                        vim.log.levels.WARN)
+                    vim.notify(
+                        "jdtls is not installed yet. Open :Mason (package `jdtls`) or restart Neovim.",
+                        vim.log.levels.WARN
+                    )
                     return
                 end
-                local root = vim.fs.root(0, { "gradlew", "mvnw", "pom.xml", "build.gradle", "build.gradle.kts", ".git" })
-                    or vim.fn.getcwd()
+                local root = vim.fs.root(
+                    0,
+                    { "gradlew", "mvnw", "pom.xml", "build.gradle", "build.gradle.kts", ".git" }
+                ) or vim.fn.getcwd()
                 -- One workspace folder per project, under the cache (follows NVIM_APPNAME).
-                local workspace = vim.fn.stdpath("cache") .. "/jdtls/"
-                    .. vim.fs.basename(root) .. "-" .. vim.fn.sha256(root):sub(1, 8)
+                local workspace = vim.fn.stdpath("cache")
+                    .. "/jdtls/"
+                    .. vim.fs.basename(root)
+                    .. "-"
+                    .. vim.fn.sha256(root):sub(1, 8)
                 local config = { cmd = { cmd, "-data", workspace }, root_dir = root }
                 local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
                 if ok_cmp then
