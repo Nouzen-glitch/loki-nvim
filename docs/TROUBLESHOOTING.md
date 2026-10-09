@@ -44,7 +44,7 @@ enabled extras. For one buffer, `:LokiLsp` explains language support.
 | Backspace switches windows | Your terminal sends `<C-h>` for Backspace; remap Backspace in the terminal or pick other window keys in `lua/user/keymaps.lua` |
 | Arrow keys do nothing | By design; `vim.g.loki_disable_arrows = false` |
 | `jk` types j and k | Type them quickly, or use `<Esc>` |
-| Indent is 2 in some files | A project `.editorconfig`, or `vim.g.loki_ftplugin_indent = true`, sets it. Prettier ignores `shiftwidth`: add `indent_size = 4` to the project's `.editorconfig` so the formatter agrees |
+| Indent is 2 in some files | A project `.editorconfig`, or `vim.g.loki_ftplugin_indent = true`, sets it. Format on save uses your `shiftwidth` only when the project has no formatter config; a `.clang-format`, `.prettierrc`, `.editorconfig` or `stylua.toml` wins, so set the indent there |
 | Clipboard does not work | Install `wl-clipboard` (Wayland) or `xclip` (X11); `:checkhealth loki` |
 
 ## Language support

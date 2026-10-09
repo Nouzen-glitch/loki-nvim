@@ -15,7 +15,7 @@ Newest first. `scripts/update.sh` prints the new entries when you update.
 
 ### Changed
 
-- **Indent is 4 spaces in every filetype.** Neovim's filetype plugins (Lua, Python, Rust, Vim, Zig and others such as YAML and JSON) no longer override `shiftwidth`; a project `.editorconfig` still wins. Keep the old behaviour with `vim.g.loki_ftplugin_indent = true`. Prettier ignores `shiftwidth`: add `indent_size = 4` to the project's `.editorconfig` so format on save agrees.
+- **Indent is 4 spaces in every filetype.** Neovim's filetype plugins (Lua, Python, Rust, Vim, Zig and others such as YAML and JSON) no longer override `shiftwidth`; a project `.editorconfig` still wins. Keep the old behaviour with `vim.g.loki_ftplugin_indent = true`. Format on save agrees: clang-format, Prettier and StyLua use your `shiftwidth` when the project has no config of its own (`.clang-format`, `.prettierrc` / `.editorconfig` / `package.json`, `stylua.toml`); a project's own config always wins.
 - **Enter between a bracket pair opens an indented block** (`{` Enter gives three lines), like VS Code. Completion still works: with an item selected Enter accepts it.
 - **Brackets are coloured by nesting depth** (rainbow-delimiters.nvim). Turn off with `vim.g.loki_rainbow_brackets = false`.
 - `util.extras.tui` takes options (direction, size) and accepts commands with arguments.
