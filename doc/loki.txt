@@ -270,6 +270,12 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
 
 
     Completion
+    `<CR>` [i] Accept the selected completion item, or start a new line
+        Inserts the selected completion item. If nothing is selected, Enter
+        starts a new line; between a bracket pair such as {} it opens an
+        indented block with the closing bracket below.
+        Example: Type {, press Enter: three lines, cursor indented in the middle.
+
     `<C-Space>` [i] Open the completion menu
         Forces the completion menu open even before you type. Completion also
         opens by itself while you type.
@@ -288,10 +294,6 @@ is shown by :LokiHelp. Longer guides live in the docs/ folder; :LokiDocs browses
     `<S-Tab>` [i,s] Previous item, or jump back in a snippet
         With the menu open it selects the previous item. Inside a snippet it
         jumps to the previous field.
-
-    `<CR>` [i] Accept the selected completion item
-        Inserts the selected item. If nothing is selected, Enter just starts a
-        new line.
 
     `<C-e>` [i] Close the completion menu
         Closes the menu and keeps what you typed.

@@ -25,6 +25,16 @@ vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.smartindent = true
+
+-- Neovim's own ftplugins force their "recommended" indent (2 spaces for Lua,
+-- Python's own rules, ...) on top of shiftwidth. Switch that off so the
+-- shiftwidth above applies; autocmds.lua covers filetypes with no such switch.
+-- Keep a language's own style: vim.g.loki_ftplugin_indent = true in lua/user/options.lua.
+if not vim.g.loki_ftplugin_indent then
+    for _, lang in ipairs({ "lua", "python", "rust", "vim", "zig" }) do
+        vim.g[lang .. "_recommended_style"] = 0
+    end
+end
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 400
 vim.opt.completeopt = { "menu", "menuone", "noselect" }

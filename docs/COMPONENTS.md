@@ -16,6 +16,7 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | nvim-cmp (+ cmp-nvim-lsp, cmp-buffer, cmp-path, cmp-cmdline, cmp_luasnip) | Completion popup | `plugins/completion.lua` |
 | LuaSnip + friendly-snippets | Snippets | `plugins/completion.lua` |
 | nvim-treesitter (`master` branch) | Syntax parsing, highlighting, indent | `plugins/treesitter.lua` |
+| rainbow-delimiters | Brackets coloured by nesting depth | `plugins/treesitter.lua` |
 | Telescope + plenary + fzf-native | Fuzzy finding, live grep (fzf-native is loaded as an extension) | `plugins/telescope.lua` |
 | Conform | Formatting, format on save | `plugins/formatting.lua` |
 | Gitsigns | Git gutter and hunks | `plugins/git.lua` |

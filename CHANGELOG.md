@@ -15,12 +15,15 @@ Newest first. `scripts/update.sh` prints the new entries when you update.
 
 ### Changed
 
+- **Indent is 4 spaces in every filetype.** Neovim's filetype plugins (Lua, Python, Rust, Vim, Zig and others such as YAML and JSON) no longer override `shiftwidth`; a project `.editorconfig` still wins. Keep the old behaviour with `vim.g.loki_ftplugin_indent = true`. Prettier ignores `shiftwidth`: add `indent_size = 4` to the project's `.editorconfig` so format on save agrees.
+- **Enter between a bracket pair opens an indented block** (`{` Enter gives three lines), like VS Code. Completion still works: with an item selected Enter accepts it.
+- **Brackets are coloured by nesting depth** (rainbow-delimiters.nvim). Turn off with `vim.g.loki_rainbow_brackets = false`.
 - `util.extras.tui` takes options (direction, size) and accepts commands with arguments.
 - `test`: the extra's description and the `<leader>nn` help text now name all supported adapters.
 
 ### Upgrade notes
 
-- Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for the new plugins (installed only for the extras you enable).
+- Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for the new plugins (rainbow-delimiters, and the extras' plugins for the extras you enable).
 - With `dap` enabled, Mason installs `delve` (needs Go). With `java` enabled, Mason installs `jdtls` (needs a JDK).
 - External tools by extra: `lazygit` (git-ui), `gh` + `gh auth login` (github), ImageMagick (terminal images), `cargo-nextest` (Rust tests).
 

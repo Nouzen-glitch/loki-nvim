@@ -13,7 +13,7 @@ is preselected, so Enter never inserts something you did not choose.
 | `<C-Space>` | Open the menu |
 | `<C-j>` / `<C-k>` | Next / previous item |
 | `<Tab>` / `<S-Tab>` | Next / previous item; inside a snippet, next / previous field |
-| `<CR>` | Accept the selected item |
+| `<CR>` | Accept the selected item; with none selected, a new line. Between a bracket pair such as `{}` it opens an indented block |
 | `<C-e>` | Close the menu |
 | `<C-d>` / `<C-f>` | Scroll the documentation window up / down |
 | `<C-s>` | Signature help (Neovim built-in) |

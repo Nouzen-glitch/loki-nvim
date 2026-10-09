@@ -61,6 +61,8 @@ they are read while the config loads.
 | `vim.g.loki_extras = { "sessions", "dap" }` | none | Enable opt-in features. `:LokiExtras` lists them; see [EXTRAS.md](EXTRAS.md). |
 | `vim.g.loki_treesitter_folding = true` | manual folds | Automatic folds from the syntax tree (`za` toggles, `zR` opens all, `zM` closes all). Needs a parser for the filetype. |
 | `vim.g.loki_language_presets = { "go", "php" }` | none | Enable language presets (`go`, `php`, `csharp`, `ruby`, `zig`). See [ADDING_LANGUAGES.md](ADDING_LANGUAGES.md). |
+| `vim.g.loki_ftplugin_indent = true` | 4 spaces everywhere | Let filetype plugins pick their own indent (2 for Lua, YAML, ...) instead of `shiftwidth`. A project `.editorconfig` always wins. |
+| `vim.g.loki_rainbow_brackets = false` | brackets coloured by depth | Plain bracket colours. |
 | `vim.g.loki_lockfile_in_repo = true` | personal lockfile | Track plugin versions in the repo's `lazy-lock.json` instead of a personal copy. For maintainers who commit it. See [INSTALL.md](INSTALL.md) section 8. |
 
 Everything else is an ordinary Neovim option, for example

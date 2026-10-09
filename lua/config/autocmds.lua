@@ -44,6 +44,26 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
 })
 
+-- Filetype plugins (yaml, json, html, ...) set their own indent after your options.
+-- Re-apply the global shiftwidth / tabstop / softtabstop to normal file buffers, so
+-- the value you set (default 4) is what you get. A project's .editorconfig still wins.
+-- Opt out: vim.g.loki_ftplugin_indent = true in lua/user/options.lua.
+vim.api.nvim_create_autocmd("FileType", {
+    group = group,
+    callback = function(args)
+        if vim.g.loki_ftplugin_indent or vim.bo[args.buf].buftype ~= "" then
+            return
+        end
+        local ec = vim.b[args.buf].editorconfig
+        if type(ec) == "table" and (ec.indent_size or ec.tab_width or ec.indent_style) then
+            return
+        end
+        vim.bo[args.buf].shiftwidth = vim.go.shiftwidth
+        vim.bo[args.buf].tabstop = vim.go.tabstop
+        vim.bo[args.buf].softtabstop = vim.go.softtabstop
+    end,
+})
+
 -- Show diagnostics as virtual text, but keep them visually restrained.
 vim.diagnostic.config({
     virtual_text = {

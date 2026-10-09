@@ -150,7 +150,7 @@ Keys inside Telescope, nvim-tree and Trouble are listed in [PLUGIN_KEYS.md](PLUG
 | `<C-Space>` | Trigger completion |
 | `<C-j>` / `<C-k>` | Next / previous item |
 | `<Tab>` / `<S-Tab>` | Next / previous item, or jump in a snippet |
-| `<CR>` | Accept selected item (nothing preselected) |
+| `<CR>` | Accept selected item (nothing preselected); otherwise a new line, indented between `{}` / `()` / `[]` |
 | `<C-e>` | Close menu |
 | `<C-d>` / `<C-f>` | Scroll docs up / down |
 
@@ -172,7 +172,7 @@ type `i` (inside) or `a` (around) and a key: `(` `[` `{` `<` or `b` brackets,
 `"` `'` `` ` `` or `q` quotes, `t` tag, `f` function call, `a` argument (`dia`,
 `caq`, `yif`). The key popup lists them with descriptions. Function
 *definitions* (`af`/`if` in other editors) are not available: they need the
-`nvim-treesitter-textobjects` plugin. `mini.pairs` closes brackets and quotes as you type. Built-ins used
+`nvim-treesitter-textobjects` plugin. `mini.pairs` closes brackets and quotes as you type, and Enter between a pair opens an indented block. Built-ins used
 constantly: `ciw`, `ci"`, `ci(`, `da{`, `yiw`. `gcc` toggles a comment, `gc` +
 motion/selection comments a range.
 

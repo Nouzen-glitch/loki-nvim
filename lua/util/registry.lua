@@ -820,6 +820,31 @@ M.keys = {
     },
 
     -- ===================================================================
+    -- Enter (Insert mode): nvim-cmp falls back to this key when no completion item
+    -- is selected, so it has to exist before cmp loads (it is created at startup).
+    -- ===================================================================
+    {
+        group = "Completion",
+        mode = "i",
+        lhs = "<CR>",
+        rhs = function()
+            -- mini.pairs turns {|} + Enter into three lines with the cursor indented
+            -- in the middle. Without it (disabled), a plain Enter.
+            local ok, pairs_ = pcall(require, "mini.pairs")
+            if ok and type(pairs_.cr) == "function" then
+                return pairs_.cr()
+            end
+            return vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+        end,
+        opts = { expr = true, replace_keycodes = false },
+        desc = "Accept the selected completion item, or start a new line",
+        long = "Inserts the selected completion item. If nothing is selected, Enter starts a new line; "
+            .. "between a bracket pair such as {} it opens an indented block with the closing bracket below.",
+        example = "Type {, press Enter: three lines, cursor indented in the middle.",
+        see = "docs/COMPLETION.md",
+    },
+
+    -- ===================================================================
     -- Documented only: keys that plugins or Neovim create (set = false)
     -- ===================================================================
     {
@@ -869,15 +894,6 @@ M.keys = {
         desc = "Previous item, or jump back in a snippet",
         doc = "<Tab>` / `<S-Tab>",
         long = "With the menu open it selects the previous item. Inside a snippet it jumps to the previous field.",
-        see = "docs/COMPLETION.md",
-    },
-    {
-        group = "Completion",
-        set = false,
-        mode = "i",
-        lhs = "<CR>",
-        desc = "Accept the selected completion item",
-        long = "Inserts the selected item. If nothing is selected, Enter just starts a new line.",
         see = "docs/COMPLETION.md",
     },
     {

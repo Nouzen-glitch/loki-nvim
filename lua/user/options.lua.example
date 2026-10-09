@@ -11,6 +11,14 @@
 -- Hide the one-time welcome notice shown when the config was cloned by hand:
 -- vim.g.loki_hide_notices = true
 
+-- Indent is 4 spaces in every filetype by default. To change it:
 -- vim.opt.shiftwidth = 2
 -- vim.opt.tabstop = 2
+-- vim.opt.softtabstop = 2
+-- ...or let each filetype plugin pick its own (2 for Lua, YAML, ...):
+-- vim.g.loki_ftplugin_indent = true
+
+-- Brackets are coloured by nesting depth; turn that off:
+-- vim.g.loki_rainbow_brackets = false
+
 -- vim.opt.wrap = true
