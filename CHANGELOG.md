@@ -21,6 +21,10 @@ Newest first. `scripts/update.sh` prints the new entries when you update.
 - `util.extras.tui` takes options (direction, size) and accepts commands with arguments.
 - `test`: the extra's description and the `<leader>nn` help text now name all supported adapters.
 
+### Fixed
+
+- **Neovim 0.12: Enter inside `{}` left the cursor and the closing bracket at column 0.** nvim-treesitter's `master` branch (pinned for 0.11) broke on 0.12 (`attempt to call method 'type' (a nil value)`), which disabled tree-sitter indent. A small compatibility shim in `plugins/treesitter.lua` fixes it until the move to `main` (see `docs/TREESITTER_MIGRATION.md`).
+
 ### Upgrade notes
 
 - Run `:LokiLockReset`, restart, then `:Lazy restore` to adopt the lockfile entries for the new plugins (rainbow-delimiters, and the extras' plugins for the extras you enable).
