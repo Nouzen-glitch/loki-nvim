@@ -12,6 +12,7 @@ Newest first. `scripts/update.sh` prints the new entries when you update.
 - `tasks`: tasks.json output goes to quickfix and diagnostics; `<leader>ml` (run last task), `<leader>mq` (quickfix list).
 - Language presets: `vim.g.loki_language_presets = { "go", "php", "csharp", "ruby", "zig" }`.
 - Docs: `AI.md`, `REMOTE.md`.
+- **More colorschemes:** rose-pine, kanagawa and moonfly are installed (loaded only when picked). `:colorscheme rose-pine-moon`, or start with one: `vim.g.loki_colorscheme = "rose-pine-moon"`.
 
 ### Changed
 

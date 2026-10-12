@@ -18,6 +18,10 @@
 -- ...or let each filetype plugin pick its own (2 for Lua, YAML, ...):
 -- vim.g.loki_ftplugin_indent = true
 
+-- Colorscheme (try one first with :colorscheme NAME). Default is tokyonight (night).
+-- Installed: tokyonight-moon, rose-pine-moon, kanagawa-dragon, moonfly
+-- vim.g.loki_colorscheme = "rose-pine-moon"
+
 -- Brackets are coloured by nesting depth; turn that off:
 -- vim.g.loki_rainbow_brackets = false
 
