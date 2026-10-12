@@ -1,7 +1,7 @@
 -- Colorscheme: tokyonight (night) unless vim.g.loki_colorscheme names another one,
 -- for example "rose-pine-moon", "kanagawa-dragon", "moonfly" or "tokyonight-moon"
--- (set it in lua/user/options.lua). The extra themes below are lazy: nothing loads
--- until one is picked here or with :colorscheme.
+-- (set it in lua/user/options.lua). The extra themes below are loaded at startup so
+-- that :colorscheme <Tab> lists them; loading a theme plugin does not apply it.
 local function theme_plugin(name)
     if name:find("^rose%-pine") then
         return "rose-pine"
@@ -49,9 +49,9 @@ return {
 
     -- Extra themes (also available as plain :colorscheme names):
     --   rose-pine, rose-pine-moon, rose-pine-dawn / kanagawa, kanagawa-dragon, kanagawa-lotus / moonfly
-    { "rose-pine/neovim", name = "rose-pine", lazy = true },
-    { "rebelot/kanagawa.nvim", lazy = true },
-    { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = true },
+    { "rose-pine/neovim", name = "rose-pine", lazy = false },
+    { "rebelot/kanagawa.nvim", lazy = false },
+    { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false },
     {
         "nvim-lualine/lualine.nvim",
         event = "VeryLazy",

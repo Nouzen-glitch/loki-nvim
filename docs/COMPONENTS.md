@@ -26,7 +26,7 @@ Paths are relative to `lua/`. Plugin specs live in `plugins/`.
 | nvim-tree | File explorer | `plugins/ui.lua` |
 | lualine | Statusline and buffer tabline | `plugins/ui.lua` |
 | TokyoNight (night) | Theme (default) | `plugins/ui.lua` |
-| rose-pine, kanagawa, moonfly | Extra themes, loaded only when picked (`vim.g.loki_colorscheme` or `:colorscheme`) | `plugins/ui.lua` |
+| rose-pine, kanagawa, moonfly | Extra themes, listed by `:colorscheme <Tab>` (`vim.g.loki_colorscheme` picks the startup one) | `plugins/ui.lua` |
 | nvim-web-devicons | Icons | `plugins/ui.lua` |
 | toggleterm.nvim | Integrated terminal | `plugins/terminal.lua` |
 
